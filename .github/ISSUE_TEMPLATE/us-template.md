@@ -8,9 +8,9 @@ assignees: ''
 ---
 
 # User story
-**As a** [...]
-**I want to** [...]
-**so that** [...]
+**En tant que** [...]
+**Je veux** [...]
+**Afin** [...]
 
 # Acceptance Criteria
 - [...]
