@@ -1,7 +1,5 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
-import fr.cotedazur.univ.polytech.ttr.equipeb.cards.WagonCard;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

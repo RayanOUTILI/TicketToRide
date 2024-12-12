@@ -1,7 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.cards.Card;
-import fr.cotedazur.univ.polytech.ttr.equipeb.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.Card;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 
 import java.util.ArrayList;
 import java.util.List;
