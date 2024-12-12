@@ -45,4 +45,13 @@ class WagonCardDeckTest {
     void testPickCardEmptyDeck() {
         assertThrows(IllegalStateException.class, () -> wagonCardDeckInitEmpty.drawCard());
     }
+
+    @Test
+    void testRegenerateDeck() {
+        WagonCard card4 = new WagonCard();
+        List<WagonCard> cards = List.of(card4);
+        wagonCardDeckInitEmpty.regenerateDeck(cards);
+        assertEquals(1, wagonCardDeckInitEmpty.size());
+        assertEquals(card4, wagonCardDeckInitEmpty.getWagonCard(0));
+    }
 }
