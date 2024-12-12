@@ -7,12 +7,14 @@ public class Route {
     private City city2;
     private int capacity;
     private int placedWagons;
+    private boolean claimed;
 
     public Route(City city1, City city2, int length) {
         this.city1 = city1;
         this.city2 = city2;
         this.capacity = length;
         this.placedWagons = 0;
+        this.claimed = false;
         city1.addRoute(this);
         city2.addRoute(this);
     }
@@ -33,11 +35,15 @@ public class Route {
         return placedWagons;
     }
 
-    public void addWagon() {
-        if (placedWagons < capacity) {
-            placedWagons++;
-        } else {
+    public boolean isClaimed() {
+        return claimed;
+    }
+
+    public void addWagons(int count) {
+        if (placedWagons + count > capacity) {
             throw new ExceedMaxWagonsException("The number of placed wagons exceeds the length of the route.");
         }
+        placedWagons += count;
+        claimed = true;
     }
 }
