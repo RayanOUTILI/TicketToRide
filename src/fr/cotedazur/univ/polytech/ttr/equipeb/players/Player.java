@@ -1,10 +1,10 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.cards.Card;
-import fr.cotedazur.univ.polytech.ttr.equipeb.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.NotEnoughCardsException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.RouteAlreadyClaimedException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.Card;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,22 +92,15 @@ public class Player {
     }
 
     private int calculatePoints(int routeLength) {
-        switch (routeLength) {
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-            case 3:
-                return 4;
-            case 4:
-                return 7;
-            case 5:
-                return 10;
-            case 6:
-                return 15;
-            default:
-                return 0;
-        }
+        return switch (routeLength) {
+            case 1 -> 1;
+            case 2 -> 2;
+            case 3 -> 4;
+            case 4, 5 -> 7;
+            case 6 -> 15;
+            case 7, 8 -> 21;
+            default -> 0;
+        };
     }
 
     public int getScore() {

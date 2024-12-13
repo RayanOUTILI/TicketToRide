@@ -1,4 +1,4 @@
-package fr.cotedazur.univ.polytech.ttr.equipeb.cards;
+package fr.cotedazur.univ.polytech.ttr.equipeb.models.cards;
 
 public class Card {
     public void showCard() {

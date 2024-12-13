@@ -2,10 +2,10 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.map.Route;
-import fr.cotedazur.univ.polytech.ttr.equipeb.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.NotEnoughCardsException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.RouteAlreadyClaimedException;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
