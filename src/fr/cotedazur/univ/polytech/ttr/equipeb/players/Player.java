@@ -12,10 +12,12 @@ import java.util.List;
 public class Player {
     private List<Card> hand;
     private List<Route> ownedRoutes;
+    private int score;
 
     public Player() {
         this.hand = new ArrayList<>();
         this.ownedRoutes = new ArrayList<>();
+        this.score = 0;
     }
 
     public void pickCard(Card card) {
@@ -52,6 +54,7 @@ public class Player {
 
         route.addWagons(routeLength);
         ownedRoutes.add(route);
+        updateScore(routeLength);
     }
 
     /**
@@ -83,11 +86,39 @@ public class Player {
         throw new IllegalStateException("No Wagon cards left to remove.");
     }
 
+    private void updateScore(int routeLength) {
+        int points = calculatePoints(routeLength);
+        this.score += points;
+    }
+
+    private int calculatePoints(int routeLength) {
+        switch (routeLength) {
+            case 1:
+                return 1;
+            case 2:
+                return 2;
+            case 3:
+                return 4;
+            case 4:
+                return 7;
+            case 5:
+                return 10;
+            case 6:
+                return 15;
+            default:
+                return 0;
+        }
+    }
+
+    public int getScore() {
+        return score;
+    }
+
     public void showHand() {
         if (hand.isEmpty()) {
             System.out.println("The hand is empty.");
         } else {
-            System.out.println("Player's hand:");
+            System.out.println("Player's hand :");
             for (Card card : hand) {
                 System.out.println(card.toString());
             }

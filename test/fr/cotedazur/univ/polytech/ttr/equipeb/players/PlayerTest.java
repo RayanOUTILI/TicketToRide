@@ -1,14 +1,16 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.RouteAlreadyClaimedException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.map.Route;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.NotEnoughCardsException;
-import org.junit.jupiter.api.BeforeEach;
+import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.RouteAlreadyClaimedException;
+
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
 
 class PlayerTest {
 
@@ -23,6 +25,62 @@ class PlayerTest {
         route = new Route(city1, city2, 3);
         player1 = new Player();
         player2 = new Player();
+    }
+
+    @Test
+    void testClaimRouteAddsPoints() throws NotEnoughCardsException, RouteAlreadyClaimedException {
+        City city1 = new City("City1");
+        City city2 = new City("City2");
+        Route route = new Route(city1, city2, 3);
+        Player player = new Player();
+
+        player.pickCard(new WagonCard());
+        player.pickCard(new WagonCard());
+        player.pickCard(new WagonCard());
+
+        player.claimRoute(route);
+
+        assertEquals(4, player.getScore(), "Player should earn 4 points for a length-3 route");
+    }
+
+    @Test
+    void testScoreMultipleRoutes() throws NotEnoughCardsException, RouteAlreadyClaimedException {
+        City city1 = new City("City1");
+        City city2 = new City("City2");
+        City city3 = new City("City3");
+
+        Route route1 = new Route(city1, city2, 2); // Length 2 -> 2 points
+        Route route2 = new Route(city2, city3, 4); // Length 4 -> 7 points
+
+        Player player = new Player();
+
+        player.pickCard(new WagonCard());
+        player.pickCard(new WagonCard());
+        player.claimRoute(route1);
+
+        player.pickCard(new WagonCard());
+        player.pickCard(new WagonCard());
+        player.pickCard(new WagonCard());
+        player.pickCard(new WagonCard());
+        player.claimRoute(route2);
+
+        assertEquals(9, player.getScore(), "Player should earn 9 points in total (2 + 7)");
+    }
+
+    @Test
+    void testClaimRouteNotEnoughCards() {
+        City city1 = new City("City1");
+        City city2 = new City("City2");
+        Route route = new Route(city1, city2, 3);
+
+        Player player = new Player();
+
+        player.pickCard(new WagonCard());
+        player.pickCard(new WagonCard());
+
+        assertThrows(NotEnoughCardsException.class, () -> player.claimRoute(route),
+                "Player should not be able to claim a route without enough wagon cards");
+        assertEquals(0, player.getScore(), "Player's score should remain 0 if route claim fails");
     }
 
     @Test
