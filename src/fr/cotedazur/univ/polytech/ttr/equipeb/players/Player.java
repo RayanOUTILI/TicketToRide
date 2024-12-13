@@ -1,10 +1,10 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.cards.Card;
-import fr.cotedazur.univ.polytech.ttr.equipeb.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.NotEnoughCardsException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.RouteAlreadyClaimedException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.Card;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +12,12 @@ import java.util.List;
 public class Player {
     private List<Card> hand;
     private List<Route> ownedRoutes;
+    private int score;
 
     public Player() {
         this.hand = new ArrayList<>();
         this.ownedRoutes = new ArrayList<>();
+        this.score = 0;
     }
 
     public void pickCard(Card card) {
@@ -52,6 +54,7 @@ public class Player {
 
         route.addWagons(routeLength);
         ownedRoutes.add(route);
+        updateScore(routeLength);
     }
 
     /**
@@ -83,11 +86,32 @@ public class Player {
         throw new IllegalStateException("No Wagon cards left to remove.");
     }
 
+    private void updateScore(int routeLength) {
+        int points = calculatePoints(routeLength);
+        this.score += points;
+    }
+
+    private int calculatePoints(int routeLength) {
+        return switch (routeLength) {
+            case 1 -> 1;
+            case 2 -> 2;
+            case 3 -> 4;
+            case 4, 5 -> 7;
+            case 6 -> 15;
+            case 7, 8 -> 21;
+            default -> 0;
+        };
+    }
+
+    public int getScore() {
+        return score;
+    }
+
     public void showHand() {
         if (hand.isEmpty()) {
             System.out.println("The hand is empty.");
         } else {
-            System.out.println("Player's hand:");
+            System.out.println("Player's hand :");
             for (Card card : hand) {
                 System.out.println(card.toString());
             }
