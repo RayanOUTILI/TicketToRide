@@ -2,50 +2,45 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.models.deck;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
+/**
+ * Class representing the deck of wagon cards (hidden stack of cards)
+ */
 public class WagonCardDeck {
-    private LinkedList<WagonCard> deck;
+    private final Deque<WagonCard> stack;
 
-    // Constructor
+
     public WagonCardDeck(List<WagonCard> cards) {
-        this.deck = new LinkedList<>(cards);
+        this.stack = new ArrayDeque<>(cards);
     }
 
     public WagonCardDeck() {
-        this.deck = new LinkedList<>();
+        this(new ArrayList<>());
     }
 
-    // Regenerate the deck with a new list of cards
+    /**
+     * @param newCards, the new cards to add
+     */
     public void regenerateDeck(List<WagonCard> newCards) {
-        this.deck.clear();
-        this.deck.addAll(newCards);
+        this.stack.clear();
+        this.stack.addAll(newCards);
     }
 
-    // Draw the card at the top of the deck
+    /**
+     * @return the first card of the deck and remove it from the deck
+     */
     public WagonCard drawCard() {
-        if (deck.isEmpty()) {
+        if (stack.isEmpty()) {
             throw new IllegalStateException("The deck is empty!");
         }
-        return deck.removeFirst();
+        return stack.removeFirst();
     }
 
-    // Check if the deck is empty
+    /**
+     * @return true if the deck is empty
+     */
     public boolean isEmpty() {
-        return deck.isEmpty();
-    }
-
-    // Get the current size of the deck
-    public int size() {
-        return deck.size();
-    }
-
-    public void addCard(WagonCard card) {
-        deck.add(card);
-    }
-
-    public WagonCard getWagonCard(int index) {
-        return deck.get(index);
+        return stack.isEmpty();
     }
 }
