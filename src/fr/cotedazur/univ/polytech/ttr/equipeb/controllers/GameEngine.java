@@ -5,9 +5,8 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.Victory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.GameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.IPlayerActionsControllable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.PlayerController;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.PlayerEngine;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 
 public class GameEngine {
@@ -25,20 +24,19 @@ public class GameEngine {
 
     public void startGame(PlayerModel playerModel) {
 
-        IPlayerActionsControllable currentPlayer = new PlayerEngine(playerModel, gameModel);
-        IPlayerModelControllable playerModelControllable = playerModel;
+        PlayerController playerController = new PlayerController(new PlayerEngine(playerModel, gameModel), playerModel);
 
         Victory victory;
         while((victory = victoryController.endGame()) == null) {
-            Action action = currentPlayer.askAction();
+            Action action = playerController.actionsController().askAction();
             switch (action) {
                 case PICK_WAGON_CARD:
-                    pickWagonCard(playerModelControllable);
+                    pickWagonCard(playerController);
                     break;
                 case CLAIM_ROUTE:
-                    ClaimRoute claimRoute = currentPlayer.askClaimRoute();
-                    boolean done = claimRoute(playerModelControllable, claimRoute);
-                    if(!done) currentPlayer.claimRouteRefused(claimRoute);
+                    ClaimRoute claimRoute = playerController.actionsController().askClaimRoute();
+                    boolean done = claimRoute(playerController, claimRoute);
+                    if(!done) playerController.actionsController().claimRouteRefused(claimRoute);
                     break;
 
             }
@@ -46,16 +44,16 @@ public class GameEngine {
         System.out.println("end Game reason : " + victory.reason());
     }
 
-    protected void pickWagonCard(IPlayerModelControllable player) {
-        player.receivedWagonCard(gameModel.getWagonCardDeck().drawCard());
+    protected void pickWagonCard(PlayerController player) {
+        player.modelController().receivedWagonCard(gameModel.getWagonCardDeck().drawCard());
     }
 
-    protected boolean claimRoute(IPlayerModelControllable player, ClaimRoute claimRoute) {
+    protected boolean claimRoute(PlayerController player, ClaimRoute claimRoute) {
         Route route = routesController.canClaimRoute(claimRoute);
         if(route != null) {
-            int removedCards = wagonCardsController.removeWagonCardsToPlayer(player, claimRoute.wagonCards());
+            int removedCards = wagonCardsController.removeWagonCardsToPlayer(player.modelController(), claimRoute.wagonCards());
             if(removedCards == claimRoute.wagonCards().size()) {
-                routesController.claimRoute(player, route);
+                routesController.claimRoute(player.modelController(), route);
                 return true;
             }
         }
