@@ -9,6 +9,11 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentificatio
 public interface NonControllableRoute {
 
     /**
+     * @return the id of the route
+     */
+    int getId();
+
+    /**
      * @return the first city connected by the route
      */
     City getFirstCity();

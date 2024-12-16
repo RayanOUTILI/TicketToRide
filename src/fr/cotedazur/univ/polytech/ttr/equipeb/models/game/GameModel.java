@@ -1,4 +1,4 @@
-package fr.cotedazur.univ.polytech.ttr.equipeb.models;
+package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.NonControllableRoute;
@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GameModel implements IPlayerGameModel {
+public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, IVictoryControllerGameModel, IWagonCardsControllerGameModel {
 
     private List<PlayerModel> playerModels;
     // Its needed to change how the WagonCardDeck works
@@ -36,10 +36,12 @@ public class GameModel implements IPlayerGameModel {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    @Override
     public WagonCardDeck getWagonCardDeck() {
         return wagonCardDeck;
     }
 
+    @Override
     public List<Route> getRoutes() {
         return routes;
     }

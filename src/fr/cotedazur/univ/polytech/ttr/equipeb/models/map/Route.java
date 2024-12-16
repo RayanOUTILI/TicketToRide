@@ -6,6 +6,9 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentificatio
  * Represents a route between two cities on the map
  */
 public class Route implements NonControllableRoute {
+    private static int idCounter = 0;
+
+    private final int id;
 
     private final City firstCity;
 
@@ -16,10 +19,16 @@ public class Route implements NonControllableRoute {
     private PlayerIdentification claimerPlayer;
 
     public Route(City firstCity, City secondCity, int length) {
+        id = idCounter++;
         this.firstCity = firstCity;
         this.secondCity = secondCity;
         this.length = length;
         claimerPlayer = null;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     @Override
