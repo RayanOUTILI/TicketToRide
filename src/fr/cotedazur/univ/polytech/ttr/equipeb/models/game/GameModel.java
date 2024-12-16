@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.NonControllableRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
@@ -13,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, IVictoryControllerGameModel, IWagonCardsControllerGameModel {
+public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, IVictoryControllerGameModel, IWagonCardsControllerGameModel, IDestinationCardsControllerGameModel {
 
     private List<PlayerModel> playerModels;
     // Its needed to change how the WagonCardDeck works
@@ -22,11 +23,13 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     // Also we need to add the discard pile cause when the deck is empty
     // The discard pile is added to the deck
     private WagonCardDeck wagonCardDeck;
+    private DestinationCardDeck destinationCardDeck;
     private List<Route> routes;
 
-    public GameModel(List<PlayerModel> playerModels, WagonCardDeck wagonCardDeck, List<Route> routes) {
+    public GameModel(List<PlayerModel> playerModels, WagonCardDeck wagonCardDeck, DestinationCardDeck destinationCardDeck, List<Route> routes) {
         this.playerModels = playerModels;
         this.wagonCardDeck = wagonCardDeck;
+        this.destinationCardDeck = destinationCardDeck;
         this.routes = routes;
     }
 
@@ -49,5 +52,10 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     @Override
     public List<NonControllableRoute> getNonControllableRoutes() {
         return new ArrayList<>(routes);
+    }
+
+    @Override
+    public DestinationCardDeck getDestinationCardDeck() {
+        return destinationCardDeck;
     }
 }

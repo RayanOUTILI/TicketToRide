@@ -1,8 +1,10 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.GameEngine;
+import fr.cotedazur.univ.polytech.ttr.equipeb.factories.DestinationCardsFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.MapFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.WagonCardsFactory;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
@@ -16,7 +18,8 @@ public class Main {
         PlayerModel playerModel = new PlayerModel(PlayerIdentification.DEFAULT);
         List<Route> routes = (new MapFactory()).getSmallMap();
         WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
-        GameModel gameModel = new GameModel(List.of(playerModel), wagonCardDeck, routes);
+        DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getDestinationCards());
+        GameModel gameModel = new GameModel(List.of(playerModel), wagonCardDeck, destinationCardDeck, routes);
 
         GameEngine gameEngine = new GameEngine(gameModel);
         gameEngine.startGame(playerModel);

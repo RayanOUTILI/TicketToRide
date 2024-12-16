@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.NonControllableRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
@@ -13,12 +14,14 @@ import java.util.List;
  */
 public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     private PlayerIdentification playerIdentification;
-    private List<WagonCard> wagonCards;
+    private final List<WagonCard> wagonCards;
+    private final List<DestinationCard> destinationCards;
     private final IPlayerViewable view;
 
     public PlayerModel(PlayerIdentification playerIdentification) {
         this.playerIdentification = playerIdentification;
         this.wagonCards = new ArrayList<>();
+        this.destinationCards = new ArrayList<>();
         this.view = new PlayerConsoleView(playerIdentification);
     }
 
@@ -47,6 +50,12 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     @Override
     public void notifyClaimedRoute(NonControllableRoute route) {
         this.view.displayClaimedRoute(route);
+    }
+
+    @Override
+    public void receivedDestinationCards(List<DestinationCard> destinationCards) {
+        this.destinationCards.addAll(destinationCards);
+        this.view.displayReceivedDestinationCards(destinationCards);
     }
 
     @Override

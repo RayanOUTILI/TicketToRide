@@ -3,7 +3,6 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.Victory;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.PlayerController;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.PlayerEngine;
@@ -15,6 +14,7 @@ public class GameEngine {
     private final RoutesController routesController;
     private final WagonCardsController wagonCardsController;
     private final VictoryController victoryController;
+    private final DestinationCardsController destinationCardsController;
     private final GameModel gameModel;
     private final IGameViewable gameView;
 
@@ -23,6 +23,7 @@ public class GameEngine {
         this.routesController = new RoutesController(gameModel);
         this.wagonCardsController = new WagonCardsController(gameModel);
         this.victoryController = new VictoryController(gameModel);
+        this.destinationCardsController = new DestinationCardsController(gameModel);
         this.gameView = new GameConsoleView();
     }
 
@@ -43,8 +44,18 @@ public class GameEngine {
         switch (action) {
             case PICK_WAGON_CARD -> wagonCardsController.pickWagonCard(playerController);
             case CLAIM_ROUTE -> handleClaimRoute(playerController);
+            case PICK_DESTINATION_CARDS -> handleDestinationCards(playerController);
             default -> throw new IllegalStateException("Action non supportée: " + action);
         }
+    }
+
+    private void handleDestinationCards(PlayerController player) {
+        if (destinationCardsController.canPlayerPickDestinationCards()) {
+            boolean success = destinationCardsController.pickDestinationCards(player);
+
+            if (!success) player.actionsController().pickDestinationCardsRefused();
+            else  player.actionsController().pickDestinationCardsCompleted();
+        } else  player.actionsController().pickDestinationCardsRefused();
     }
 
     private void handleClaimRoute(PlayerController playerController) {
