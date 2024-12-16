@@ -8,18 +8,22 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.PlayerController;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.PlayerEngine;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
+import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 
 public class GameEngine {
     private final RoutesController routesController;
     private final WagonCardsController wagonCardsController;
     private final VictoryController victoryController;
     private final GameModel gameModel;
+    private final IGameViewable gameView;
 
     public GameEngine(GameModel gameModel) {
         this.gameModel = gameModel;
         this.routesController = new RoutesController(gameModel);
         this.wagonCardsController = new WagonCardsController(gameModel);
         this.victoryController = new VictoryController(gameModel);
+        this.gameView = new GameConsoleView();
     }
 
     public void startGame(PlayerModel playerModel) {
@@ -31,7 +35,7 @@ public class GameEngine {
             Action action = playerController.actionsController().askAction();
             switch (action) {
                 case PICK_WAGON_CARD:
-                    pickWagonCard(playerController);
+                    wagonCardsController.pickWagonCard(playerController);
                     break;
                 case CLAIM_ROUTE:
                     ClaimRoute claimRoute = playerController.actionsController().askClaimRoute();
@@ -41,11 +45,7 @@ public class GameEngine {
 
             }
         }
-        System.out.println("end Game reason : " + victory.reason());
-    }
-
-    protected void pickWagonCard(PlayerController player) {
-        player.modelController().receivedWagonCard(gameModel.getWagonCardDeck().drawCard());
+        gameView.displayEndGameReason(victory.reason());
     }
 
     protected boolean claimRoute(PlayerController player, ClaimRoute claimRoute) {
