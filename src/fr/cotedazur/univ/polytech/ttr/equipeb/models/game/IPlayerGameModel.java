@@ -1,4 +1,4 @@
-package fr.cotedazur.univ.polytech.ttr.equipeb.models;
+package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.NonControllableRoute;
 

@@ -3,7 +3,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.GameEngine;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.MapFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.WagonCardsFactory;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.GameModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;

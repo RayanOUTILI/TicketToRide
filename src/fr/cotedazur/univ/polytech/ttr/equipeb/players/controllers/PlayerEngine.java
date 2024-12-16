@@ -2,7 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.IPlayerGameModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 

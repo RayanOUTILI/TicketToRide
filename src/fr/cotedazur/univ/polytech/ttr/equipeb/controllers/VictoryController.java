@@ -1,15 +1,16 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.EndGameReasons;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.GameModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.Victory;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IVictoryControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 
 public class VictoryController {
-    private final GameModel gameModel;
+    private final IVictoryControllerGameModel gameModel;
 
-    public VictoryController(GameModel gameModel) {
+    public VictoryController(IVictoryControllerGameModel gameModel) {
         this.gameModel = gameModel;
     }
 
