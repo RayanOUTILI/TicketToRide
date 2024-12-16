@@ -32,31 +32,28 @@ public class GameEngine {
 
         Victory victory;
         while((victory = victoryController.endGame()) == null) {
-            Action action = playerController.actionsController().askAction();
-            switch (action) {
-                case PICK_WAGON_CARD:
-                    wagonCardsController.pickWagonCard(playerController);
-                    break;
-                case CLAIM_ROUTE:
-                    ClaimRoute claimRoute = playerController.actionsController().askClaimRoute();
-                    boolean done = claimRoute(playerController, claimRoute);
-                    if(!done) playerController.actionsController().claimRouteRefused(claimRoute);
-                    break;
-
-            }
+            handlePlayerAction(playerController);
         }
         gameView.displayEndGameReason(victory.reason());
     }
 
-    protected boolean claimRoute(PlayerController player, ClaimRoute claimRoute) {
-        Route route = routesController.canClaimRoute(claimRoute);
-        if(route != null) {
-            int removedCards = wagonCardsController.removeWagonCardsToPlayer(player.modelController(), claimRoute.wagonCards());
-            if(removedCards == claimRoute.wagonCards().size()) {
-                routesController.claimRoute(player.modelController(), route);
-                return true;
-            }
+    private void handlePlayerAction(PlayerController playerController) {
+        Action action = playerController.actionsController().askAction();
+
+        switch (action) {
+            case PICK_WAGON_CARD -> wagonCardsController.pickWagonCard(playerController);
+            case CLAIM_ROUTE -> handleClaimRoute(playerController);
+            default -> throw new IllegalStateException("Action non supportée: " + action);
         }
-        return false;
+    }
+
+    private void handleClaimRoute(PlayerController playerController) {
+        ClaimRoute claimRoute = playerController.actionsController().askClaimRoute();
+
+        boolean success = routesController.attemptClaimRoute(playerController, claimRoute, wagonCardsController);
+
+        if (!success) {
+            playerController.actionsController().claimRouteRefused(claimRoute);
+        }
     }
 }

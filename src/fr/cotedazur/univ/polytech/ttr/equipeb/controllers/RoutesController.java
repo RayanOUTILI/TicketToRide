@@ -3,6 +3,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IRoutesControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.PlayerController;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 
 public class RoutesController {
@@ -23,5 +24,15 @@ public class RoutesController {
         return true;
     }
 
+    public boolean attemptClaimRoute(PlayerController player, ClaimRoute claimRoute, WagonCardsController wagonCardsController) {
+        Route route = canClaimRoute(claimRoute);
+        if (route == null) return false;
+
+        int removedCards = wagonCardsController.removeWagonCardsToPlayer(player.modelController(), claimRoute.wagonCards());
+        if (removedCards != claimRoute.wagonCards().size()) return false;
+
+        claimRoute(player.modelController(), route);
+        return true;
+    }
 
 }
