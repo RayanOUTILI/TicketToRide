@@ -16,8 +16,8 @@ public class RoutesController extends Controller {
     }
 
     private Route getRoute(ClaimRoute wantedRoute) {
-        if(wantedRoute == null) return null;
-        Route route = gameModel.getRoutes().stream().filter(r -> r.getId() == wantedRoute.route().getId()).findFirst().orElse(null);
+        if(wantedRoute == null || wantedRoute.route() == null) return null;
+        Route route = gameModel.getRoute(wantedRoute.route().getId());
         return route != null && !route.isClaimed() && route.getLength() == wantedRoute.wagonCards().size() ? route : null;
     }
 

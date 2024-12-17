@@ -1,7 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IDestinationCardsControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
@@ -16,14 +15,13 @@ public class DestinationCardsController extends Controller {
 
     @Override
     public boolean doAction(Player player) {
-        if(gameModel.getDestinationCardDeck().isEmpty()) return false;
-        DestinationCardDeck deck = gameModel.getDestinationCardDeck();
+        if(gameModel.isDestinationCardDeckEmpty()) return false;
 
-        List<DestinationCard> cards = deck.drawCard(3);
+        List<DestinationCard> cards = gameModel.drawDestinationCards(3);
         List<DestinationCard> chosenCards = player.askDestinationCards(cards);
 
         if (chosenCards == null || chosenCards.isEmpty()) {
-            deck.addCardsAtBottom(cards);
+            gameModel.returnDestinationCardsToTheBottom(cards);
             return false;
         }
 

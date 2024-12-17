@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
@@ -41,11 +42,6 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     }
 
     @Override
-    public List<Route> getRoutes() {
-        return routes;
-    }
-
-    @Override
     public boolean isAllRoutesClaimed() {
         return routes.stream().allMatch(Route::isClaimed);
     }
@@ -66,7 +62,22 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     }
 
     @Override
-    public DestinationCardDeck getDestinationCardDeck() {
-        return destinationCardDeck;
+    public Route getRoute(int id) {
+        return routes.stream().filter(r -> r.getId() == id).findFirst().orElse(null);
+    }
+
+    @Override
+    public boolean isDestinationCardDeckEmpty() {
+        return destinationCardDeck.isEmpty();
+    }
+
+    @Override
+    public List<DestinationCard> drawDestinationCards(int maximumCards) {
+        return destinationCardDeck.drawCard(maximumCards);
+    }
+
+    @Override
+    public void returnDestinationCardsToTheBottom(List<DestinationCard> cards) {
+        destinationCardDeck.addCardsAtBottom(cards);
     }
 }

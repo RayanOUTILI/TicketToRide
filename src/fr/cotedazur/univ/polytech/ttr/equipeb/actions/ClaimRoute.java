@@ -7,5 +7,20 @@ import java.util.List;
 /**
  * Claim route action
  */
-public record ClaimRoute(RouteReadOnly route, List<WagonCard> wagonCards) {
+public class ClaimRoute {
+    private final RouteReadOnly route;
+    private final List<WagonCard> wagonCards;
+
+    public ClaimRoute(RouteReadOnly route, List<WagonCard> wagonCards) {
+        this.route = route;
+        this.wagonCards = wagonCards;
+    }
+
+    public RouteReadOnly route() {
+        return route;
+    }
+
+    public List<WagonCard> wagonCards() {
+        return wagonCards;
+    }
 }
