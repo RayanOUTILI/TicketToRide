@@ -5,7 +5,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentificatio
 /**
  * Represents a route between two cities on the map
  */
-public class Route implements NonControllableRoute {
+public class Route implements RouteReadOnly {
     private static int idCounter = 0;
 
     private final int id;

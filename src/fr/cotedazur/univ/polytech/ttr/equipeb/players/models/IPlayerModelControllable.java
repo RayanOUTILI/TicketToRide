@@ -2,7 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.NonControllableRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 
 import java.util.List;
 
@@ -13,6 +13,6 @@ public interface IPlayerModelControllable {
     PlayerIdentification getIdentification();
     void receivedWagonCard(WagonCard wagonCard);
     int removeWagonCards(List<WagonCard> wagonCards);
-    void notifyClaimedRoute(NonControllableRoute route);
+    void notifyClaimedRoute(RouteReadOnly route);
     void receivedDestinationCards(List<DestinationCard> destinationCards);
 }

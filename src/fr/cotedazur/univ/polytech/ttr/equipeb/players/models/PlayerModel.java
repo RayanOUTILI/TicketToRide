@@ -1,7 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.NonControllableRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
@@ -48,7 +48,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     }
 
     @Override
-    public void notifyClaimedRoute(NonControllableRoute route) {
+    public void notifyClaimedRoute(RouteReadOnly route) {
         this.view.displayClaimedRoute(route);
     }
 

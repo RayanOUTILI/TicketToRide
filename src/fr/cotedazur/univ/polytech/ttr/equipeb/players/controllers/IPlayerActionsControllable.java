@@ -14,11 +14,9 @@ public interface IPlayerActionsControllable {
 
     ClaimRoute askClaimRoute();
 
-    void claimRouteRefused(ClaimRoute claimRoute);
-
     List<DestinationCard> askDestinationCards(List<DestinationCard> cards);
 
-    void pickDestinationCardsRefused();
+    void actionRefused(Action action);
 
-    void pickDestinationCardsCompleted();
+    void actionCompleted(Action action);
 }

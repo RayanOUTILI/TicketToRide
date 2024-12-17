@@ -1,24 +1,21 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IWagonCardsControllerGameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.PlayerController;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
-import java.util.List;
-
-public class WagonCardsController {
+public class WagonCardsController extends Controller {
     private final IWagonCardsControllerGameModel gameModel;
 
     public WagonCardsController(IWagonCardsControllerGameModel gameModel) {
         this.gameModel = gameModel;
     }
 
-    public int removeWagonCardsToPlayer(IPlayerModelControllable player, List<WagonCard> wagonCards) {
-        return player.removeWagonCards(wagonCards);
-    }
+    @Override
+    public boolean doAction(Player player) {
+        if (gameModel.getWagonCardDeck().isEmpty()) return false;
 
-    protected void pickWagonCard(PlayerController player) {
         player.modelController().receivedWagonCard(gameModel.getWagonCardDeck().drawCard());
+
+        return true;
     }
 }

@@ -1,6 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.GameEngine;
+import fr.cotedazur.univ.polytech.ttr.equipeb.engine.GameEngine;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.DestinationCardsFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.MapFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.WagonCardsFactory;

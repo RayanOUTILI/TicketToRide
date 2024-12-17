@@ -27,12 +27,7 @@ public class PlayerEngine implements IPlayerActionsControllable {
 
     @Override
     public ClaimRoute askClaimRoute() {
-        return new ClaimRoute(gameModel.getNonControllableRoutes().get(0), playerModel.getWagonCards(3));
-    }
-
-    @Override
-    public void claimRouteRefused(ClaimRoute claimRoute) {
-        System.out.println("Route refused");
+        return new ClaimRoute(gameModel.getNonControllableRoutes().getFirst(), playerModel.getWagonCards(3));
     }
 
     @Override
@@ -41,12 +36,12 @@ public class PlayerEngine implements IPlayerActionsControllable {
     }
 
     @Override
-    public void pickDestinationCardsRefused() {
-
+    public void actionRefused(Action action) {
+        System.out.println("Action refused: " + action);
     }
 
     @Override
-    public void pickDestinationCardsCompleted() {
-
+    public void actionCompleted(Action action) {
+        System.out.println("Action completed: " + action);
     }
 }

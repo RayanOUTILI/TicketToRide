@@ -6,7 +6,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentificatio
  * Represents a route that can be claimed by a player
  * This interface disallows the player to modify the route (set the owner)
  */
-public interface NonControllableRoute {
+public interface RouteReadOnly {
 
     /**
      * @return the id of the route

@@ -1,38 +1,42 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IRoutesControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.PlayerController;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
-public class RoutesController {
+import java.util.List;
+
+public class RoutesController extends Controller {
     private final IRoutesControllerGameModel gameModel;
 
     public RoutesController(IRoutesControllerGameModel gameModel) {
         this.gameModel = gameModel;
     }
 
-    public Route canClaimRoute(ClaimRoute wantedRoute) {
+    private Route getRoute(ClaimRoute wantedRoute) {
+        if(wantedRoute == null) return null;
         Route route = gameModel.getRoutes().stream().filter(r -> r.getId() == wantedRoute.route().getId()).findFirst().orElse(null);
         return route != null && !route.isClaimed() && route.getLength() == wantedRoute.wagonCards().size() ? route : null;
     }
 
-    public boolean claimRoute(IPlayerModelControllable player, Route route) {
-        route.setClaimerPlayer(player.getIdentification());
-        player.notifyClaimedRoute(route);
-        return true;
-    }
-
-    public boolean attemptClaimRoute(PlayerController player, ClaimRoute claimRoute, WagonCardsController wagonCardsController) {
-        Route route = canClaimRoute(claimRoute);
+    @Override
+    public boolean doAction(Player player) {
+        ClaimRoute claimRoute = player.actionsController().askClaimRoute();
+        Route route = getRoute(claimRoute);
         if (route == null) return false;
 
-        int removedCards = wagonCardsController.removeWagonCardsToPlayer(player.modelController(), claimRoute.wagonCards());
-        if (removedCards != claimRoute.wagonCards().size()) return false;
+        List<WagonCard> wagonCards = claimRoute.wagonCards();
 
-        claimRoute(player.modelController(), route);
+        int removedCards = player.modelController().removeWagonCards(wagonCards);
+
+        if (removedCards != wagonCards.size()) return false;
+
+
+        route.setClaimerPlayer(player.modelController().getIdentification());
+        player.modelController().notifyClaimedRoute(route);
+
         return true;
     }
-
 }

@@ -1,6 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.NonControllableRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 
 import java.util.List;
 
@@ -11,5 +11,5 @@ public interface IPlayerGameModel {
     /**
      * @return the list of routes for the game with a type encapsulating the route disallowing the player to modify it (set the owner)
      */
-    List<NonControllableRoute> getNonControllableRoutes();
+    List<RouteReadOnly> getNonControllableRoutes();
 }

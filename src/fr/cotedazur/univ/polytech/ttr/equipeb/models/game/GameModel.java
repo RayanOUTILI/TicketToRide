@@ -2,7 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.NonControllableRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
@@ -50,7 +50,7 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     }
 
     @Override
-    public List<NonControllableRoute> getNonControllableRoutes() {
+    public List<RouteReadOnly> getNonControllableRoutes() {
         return new ArrayList<>(routes);
     }
 
