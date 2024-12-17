@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
@@ -40,13 +41,23 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     }
 
     @Override
-    public WagonCardDeck getWagonCardDeck() {
-        return wagonCardDeck;
+    public List<Route> getRoutes() {
+        return routes;
     }
 
     @Override
-    public List<Route> getRoutes() {
-        return routes;
+    public boolean isAllRoutesClaimed() {
+        return routes.stream().allMatch(Route::isClaimed);
+    }
+
+    @Override
+    public boolean isWagonCardDeckEmpty() {
+        return wagonCardDeck.isEmpty();
+    }
+
+    @Override
+    public WagonCard drawCardFromWagonCardDeck() {
+        return wagonCardDeck.drawCard();
     }
 
     @Override

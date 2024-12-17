@@ -1,7 +1,9 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 
 public interface IWagonCardsControllerGameModel {
-    WagonCardDeck getWagonCardDeck();
+    boolean isWagonCardDeckEmpty();
+
+    WagonCard drawCardFromWagonCardDeck();
 }

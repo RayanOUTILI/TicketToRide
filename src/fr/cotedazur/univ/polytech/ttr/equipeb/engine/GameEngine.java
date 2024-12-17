@@ -42,16 +42,16 @@ public class GameEngine {
     }
 
     private void handlePlayerAction(Player player) {
-        Action action = player.actionsController().askAction();
+        Action action = player.askAction();
 
         if(action == null || !controllers.containsKey(action)) {
-            player.actionsController().actionRefused(action);
+            player.actionRefused(action);
             return;
         }
 
         Controller controller = controllers.get(action);
         boolean success = controller.doAction(player);
-        if (!success) player.actionsController().actionRefused(action);
-        else  player.actionsController().actionCompleted(action);
+        if (!success) player.actionRefused(action);
+        else  player.actionCompleted(action);
     }
 }

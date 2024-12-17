@@ -6,8 +6,9 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import java.util.List;
 
 public interface IVictoryControllerGameModel {
-    List<Route> getRoutes();
 
-    WagonCardDeck getWagonCardDeck();
+    boolean isAllRoutesClaimed();
+
+    boolean isWagonCardDeckEmpty();
 
 }

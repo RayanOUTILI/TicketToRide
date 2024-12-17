@@ -14,8 +14,8 @@ public class VictoryController {
     }
 
     public Victory endGame() {
-        if(gameModel.getRoutes().stream().allMatch(Route::isClaimed)) return new Victory(PlayerIdentification.DEFAULT, EndGameReasons.ALL_ROUTES_CLAIMED);
-        if(gameModel.getWagonCardDeck().isEmpty()) return new Victory(PlayerIdentification.DEFAULT, EndGameReasons.EMPTY_WAGON_CARDS_DECK);
+        if(gameModel.isAllRoutesClaimed()) return new Victory(PlayerIdentification.DEFAULT, EndGameReasons.ALL_ROUTES_CLAIMED);
+        if(gameModel.isWagonCardDeckEmpty()) return new Victory(PlayerIdentification.DEFAULT, EndGameReasons.EMPTY_WAGON_CARDS_DECK);
         return null;
     }
 }

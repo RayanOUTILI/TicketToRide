@@ -12,9 +12,9 @@ public class WagonCardsController extends Controller {
 
     @Override
     public boolean doAction(Player player) {
-        if (gameModel.getWagonCardDeck().isEmpty()) return false;
+        if (gameModel.isWagonCardDeckEmpty()) return false;
 
-        player.modelController().receivedWagonCard(gameModel.getWagonCardDeck().drawCard());
+        player.receivedWagonCard(gameModel.drawCardFromWagonCardDeck());
 
         return true;
     }

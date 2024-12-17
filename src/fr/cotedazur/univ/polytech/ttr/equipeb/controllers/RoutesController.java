@@ -23,19 +23,19 @@ public class RoutesController extends Controller {
 
     @Override
     public boolean doAction(Player player) {
-        ClaimRoute claimRoute = player.actionsController().askClaimRoute();
+        ClaimRoute claimRoute = player.askClaimRoute();
         Route route = getRoute(claimRoute);
         if (route == null) return false;
 
         List<WagonCard> wagonCards = claimRoute.wagonCards();
 
-        int removedCards = player.modelController().removeWagonCards(wagonCards);
+        int removedCards = player.removeWagonCards(wagonCards);
 
         if (removedCards != wagonCards.size()) return false;
 
 
-        route.setClaimerPlayer(player.modelController().getIdentification());
-        player.modelController().notifyClaimedRoute(route);
+        route.setClaimerPlayer(player.getIdentification());
+        player.notifyClaimedRoute(route);
 
         return true;
     }

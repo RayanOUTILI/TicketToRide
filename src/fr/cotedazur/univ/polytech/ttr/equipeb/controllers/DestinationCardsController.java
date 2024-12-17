@@ -20,14 +20,14 @@ public class DestinationCardsController extends Controller {
         DestinationCardDeck deck = gameModel.getDestinationCardDeck();
 
         List<DestinationCard> cards = deck.drawCard(3);
-        List<DestinationCard> chosenCards = player.actionsController().askDestinationCards(cards);
+        List<DestinationCard> chosenCards = player.askDestinationCards(cards);
 
         if (chosenCards == null || chosenCards.isEmpty()) {
             deck.addCardsAtBottom(cards);
             return false;
         }
 
-        player.modelController().receivedDestinationCards(chosenCards);
+        player.receivedDestinationCards(chosenCards);
 
         return true;
     }
