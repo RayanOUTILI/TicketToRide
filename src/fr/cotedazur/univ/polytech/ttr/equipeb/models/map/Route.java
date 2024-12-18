@@ -16,14 +16,23 @@ public class Route implements RouteReadOnly {
 
     private final int length;
 
+    private final RouteType type;
+
+    private final RouteColor color;
+
     private PlayerIdentification claimerPlayer;
 
-    public Route(City firstCity, City secondCity, int length) {
+    private final int nbLocomotives;
+
+    public Route(City firstCity, City secondCity, int length, RouteType type, RouteColor color, int nbLocomotives) {
         id = idCounter++;
         this.firstCity = firstCity;
         this.secondCity = secondCity;
         this.length = length;
+        this.type = type;
+        this.color = color;
         claimerPlayer = null;
+        this.nbLocomotives = nbLocomotives;
     }
 
     @Override
@@ -44,6 +53,18 @@ public class Route implements RouteReadOnly {
     @Override
     public int getLength() {
         return length;
+    }
+
+    public RouteType getType() {
+        return type;
+    }
+
+    public RouteColor getColor() {
+        return color;
+    }
+
+    public int getNbLocomotives() {
+        return nbLocomotives;
     }
 
     @Override

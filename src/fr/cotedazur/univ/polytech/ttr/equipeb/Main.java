@@ -21,6 +21,10 @@ public class Main {
         DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getDestinationCards());
         GameModel gameModel = new GameModel(List.of(playerModel), wagonCardDeck, destinationCardDeck, routes);
 
+        MapFactory mapFactory = new MapFactory();
+        List<Route> routesJson = mapFactory.getMapFromJson("data/routes-europe.json");
+        routesJson.forEach(route -> System.out.println(route.getFirstCity().getName() + " - " + route.getSecondCity().getName() + " - " + route.getLength() + " - " + route.getType() + " - " + route.getColor() + " - " + route.getNbLocomotives()));
+
         GameEngine gameEngine = new GameEngine(gameModel);
         gameEngine.startGame(playerModel);
     }

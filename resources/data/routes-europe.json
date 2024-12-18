@@ -1,5 +1,4 @@
-{
-  "routes": [
+[
     {
       "start": "Lisboa",
       "end": "Cadiz",
@@ -809,4 +808,3 @@
       "nbLocomotives": 0
     }
   ]
-}

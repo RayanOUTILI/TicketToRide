@@ -27,7 +27,7 @@ public class PlayerEngine implements IPlayerActionsControllable {
 
     @Override
     public ClaimRoute askClaimRoute() {
-        return new ClaimRoute(gameModel.getNonControllableRoutes().getFirst(), playerModel.getWagonCards(3));
+        return new ClaimRoute(gameModel.getNonControllableRoutes().get(0), playerModel.getWagonCards(3));
     }
 
     @Override
