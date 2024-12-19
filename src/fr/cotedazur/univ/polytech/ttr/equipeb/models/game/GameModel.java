@@ -55,6 +55,11 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     }
 
     @Override
+    public boolean fillWagonCardDeck() {
+        return wagonCardDeck.fillDeck();
+    }
+
+    @Override
     public WagonCard drawCardFromWagonCardDeck() {
         return wagonCardDeck.drawCard();
     }
@@ -123,6 +128,11 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     @Override
     public int getNbOfPlayers() {
         return playerModels.size();
+    }
+
+    @Override
+    public boolean discardWagonCards(List<WagonCard> wagonCards) {
+        return wagonCardDeck.addCardToDiscardPile(wagonCards);
     }
 
     @Override

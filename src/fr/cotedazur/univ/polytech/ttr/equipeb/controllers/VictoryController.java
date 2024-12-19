@@ -17,4 +17,8 @@ public class VictoryController {
         if(gameModel.isWagonCardDeckEmpty()) return new Victory(PlayerIdentification.DEFAULT, EndGameReasons.EMPTY_WAGON_CARDS_DECK);
         return null;
     }
+
+    public void endTurn() {
+        if(gameModel.isWagonCardDeckEmpty()) gameModel.fillWagonCardDeck();
+    }
 }

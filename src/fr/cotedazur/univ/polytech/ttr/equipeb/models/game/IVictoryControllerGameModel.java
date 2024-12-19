@@ -11,4 +11,6 @@ public interface IVictoryControllerGameModel {
 
     boolean isWagonCardDeckEmpty();
 
+    boolean fillWagonCardDeck();
+
 }

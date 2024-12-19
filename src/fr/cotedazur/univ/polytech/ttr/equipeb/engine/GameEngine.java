@@ -37,6 +37,7 @@ public class GameEngine {
         Victory victory;
         while((victory = victoryController.endGame()) == null) {
             handlePlayerAction(player);
+            victoryController.endTurn();
         }
         gameView.displayEndGameReason(victory.reason());
     }
