@@ -5,7 +5,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.Victory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.PlayerEngine;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.EasyBotEngine;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
@@ -30,9 +30,7 @@ public class GameEngine {
         );
     }
 
-    public void startGame(PlayerModel playerModel) {
-
-        Player player = new Player(new PlayerEngine(playerModel, gameModel), playerModel);
+    public void startGame(Player player) {
 
         controllers.values().forEach(controller -> controller.init(player));
 
