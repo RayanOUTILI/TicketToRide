@@ -89,6 +89,32 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     }
 
     @Override
+    public Route getDoubleRouteOf(int id) {
+        Route route = getRoute(id);
+        if (route == null) return null;
+        return routes.stream()
+                .filter(r ->
+                        ((r.getFirstCity().equals(route.getFirstCity()) && r.getSecondCity().equals(route.getSecondCity())) ||
+                        (r.getFirstCity().equals(route.getSecondCity()) && r.getSecondCity().equals(route.getFirstCity())))
+                        && r.getId() != route.getId()
+                )
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public boolean deleteRoute(int id) {
+        Route route = getRoute(id);
+        if (route == null) return false;
+        return routes.remove(route);
+    }
+
+    @Override
+    public int getNbOfPlayers() {
+        return playerModels.size();
+    }
+
+    @Override
     public boolean shuffleDestinationCardDeck() {
         return destinationCardDeck.shuffle();
     }

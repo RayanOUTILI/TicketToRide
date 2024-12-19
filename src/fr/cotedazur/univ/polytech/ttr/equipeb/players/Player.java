@@ -66,8 +66,13 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
-    public int removeWagonCards(List<WagonCard> wagonCards) {
+    public List<WagonCard> removeWagonCards(List<WagonCard> wagonCards) {
         return modelController.removeWagonCards(wagonCards);
+    }
+
+    @Override
+    public void replaceRemovedWagonCards(List<WagonCard> wagonCards) {
+        modelController.replaceRemovedWagonCards(wagonCards);
     }
 
     @Override

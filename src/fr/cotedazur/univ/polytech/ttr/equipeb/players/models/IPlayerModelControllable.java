@@ -13,7 +13,12 @@ public interface IPlayerModelControllable {
     PlayerIdentification getIdentification();
     void receivedWagonCard(WagonCard wagonCard);
     void receivedWagonCards(List<WagonCard> wagonCards);
-    int removeWagonCards(List<WagonCard> wagonCards);
+    List<WagonCard> removeWagonCards(List<WagonCard> wagonCards);
+
+    /**
+     * Replace the removed wagon cards to the player in case of failure to claim a route
+     */
+    void replaceRemovedWagonCards(List<WagonCard> wagonCards);
     void notifyClaimedRoute(RouteReadOnly route);
     void receivedDestinationCards(List<DestinationCard> destinationCards);
 }

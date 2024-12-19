@@ -42,15 +42,20 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     }
 
     @Override
-    public int removeWagonCards(List<WagonCard> wagonCards) {
-        int removedCards = 0;
+    public List<WagonCard> removeWagonCards(List<WagonCard> wagonCards) {
+        List<WagonCard> removedCards = new ArrayList<>();
         for (WagonCard card : wagonCards) {
             if (!this.wagonCards.remove(card)) {
                 return removedCards;
             }
-            removedCards++;
+            removedCards.add(card);
         }
         return removedCards;
+    }
+
+    @Override
+    public void replaceRemovedWagonCards(List<WagonCard> wagonCards) {
+        this.wagonCards.addAll(wagonCards);
     }
 
     @Override
