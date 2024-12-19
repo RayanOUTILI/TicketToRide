@@ -10,6 +10,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 
@@ -18,18 +19,25 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         try {
-            PlayerModel playerModel = new PlayerModel(PlayerIdentification.DEFAULT);
-            List<Route> routes = (new MapFactory()).getSmallMap();
+            List<Route> routes = (new MapFactory()).getMapFromJson();
             WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
             DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getShortDestinationCards());
-            GameModel gameModel = new GameModel(List.of(playerModel), wagonCardDeck, destinationCardDeck, routes);
 
             PlayerFactory playerFactory = new PlayerFactory();
 
-            GameEngine gameEngine = new GameEngine(gameModel);
-            gameEngine.startGame(playerFactory.createEasyBot(playerModel, gameModel));
-        }
-        catch (JsonParseException e) {
+            List<PlayerModel> playerModels = List.of(
+                    new PlayerModel(PlayerIdentification.BLUE),
+                    new PlayerModel(PlayerIdentification.RED),
+                    new PlayerModel(PlayerIdentification.GREEN)
+            );
+
+            GameModel gameModel = new GameModel(playerModels, wagonCardDeck, destinationCardDeck, routes);
+            List<Player> players = playerFactory.createThreeEasyBots(playerModels, gameModel);
+
+            GameEngine gameEngine = new GameEngine(gameModel, players);
+            gameEngine.startGame();
+
+        } catch (JsonParseException e) {
             e.printStackTrace();
         }
     }

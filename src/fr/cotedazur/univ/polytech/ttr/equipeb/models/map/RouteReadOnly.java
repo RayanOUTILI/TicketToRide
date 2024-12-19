@@ -39,4 +39,9 @@ public interface RouteReadOnly {
      * @return the player who claimed the route
      */
     PlayerIdentification getClaimerPlayer();
+
+    /*
+     * @return the type of the route
+     */
+    String toString();
 }
