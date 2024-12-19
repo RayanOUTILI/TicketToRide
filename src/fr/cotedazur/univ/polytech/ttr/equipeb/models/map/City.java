@@ -21,4 +21,9 @@ public class City {
         }
         return getName().equals(city.getName());
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

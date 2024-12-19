@@ -85,4 +85,19 @@ public class Route implements RouteReadOnly {
         claimerPlayer = player;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Route [%d] from '%s' to '%s': length=%d, color=%s, locomotives=%d, type=%s, %s",
+                id,
+                firstCity.getName(),
+                secondCity.getName(),
+                length,
+                color,
+                nbLocomotives,
+                type,
+                isClaimed() ? "claimed by " + claimerPlayer : "not claimed"
+        );
+    }
+
+
 }

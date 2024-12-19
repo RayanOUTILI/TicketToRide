@@ -14,12 +14,12 @@ class PlayerModelTest {
 
     @BeforeEach
     void setUp() {
-        playerModel = new PlayerModel(PlayerIdentification.DEFAULT);
+        playerModel = new PlayerModel(PlayerIdentification.BLUE);
     }
 
     @org.junit.jupiter.api.Test
     void getIdentification() {
-        assertEquals(PlayerIdentification.DEFAULT, playerModel.getIdentification());
+        assertEquals(PlayerIdentification.BLUE, playerModel.getIdentification());
     }
 
     @org.junit.jupiter.api.Test

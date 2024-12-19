@@ -5,11 +5,10 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.Victory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.EasyBotEngine;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 
+import java.util.List;
 import java.util.Map;
 
 public class GameEngine {
@@ -17,9 +16,12 @@ public class GameEngine {
     private final GameModel gameModel;
     private final IGameViewable gameView;
     private final Map<Action, Controller> controllers;
+    private final List<Player> players;
+    private int currentPlayerIndex = 0;
 
-    public GameEngine(GameModel gameModel) {
+    public GameEngine(GameModel gameModel, List<Player> players) {
         this.gameModel = gameModel;
+        this.players = players;
 
         this.victoryController = new VictoryController(gameModel);
         this.gameView = new GameConsoleView();
@@ -30,19 +32,21 @@ public class GameEngine {
         );
     }
 
-    public void startGame(Player player) {
+    public void startGame() {
 
-        controllers.values().forEach(controller -> controller.init(player));
+        players.forEach(player -> controllers.values().forEach(controller -> controller.init(player)));
 
         Victory victory;
         while((victory = victoryController.endGame()) == null) {
-            handlePlayerAction(player);
+            Player currentPlayer = players.get(currentPlayerIndex);
+            handlePlayerAction(currentPlayer);
             victoryController.endTurn();
+            nextPlayer();
         }
         gameView.displayEndGameReason(victory.reason());
     }
 
-    private void handlePlayerAction(Player player) {
+    protected void handlePlayerAction(Player player) {
         Action action = player.askAction();
 
         if(action == null || !controllers.containsKey(action)) {
@@ -54,5 +58,9 @@ public class GameEngine {
         boolean success = controller.doAction(player);
         if (!success) player.actionRefused(action);
         else  player.actionCompleted(action);
+    }
+
+    private void nextPlayer() {
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     }
 }

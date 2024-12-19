@@ -6,10 +6,12 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,12 +21,14 @@ import java.util.Map;
  */
 public class DestinationCardsParser {
     private final ObjectMapper objectMapper;
+    private final Map<String, City> cityMap;
 
     /**
-     * Constructor initializing the JSON object mapper.
+     * Constructor initializing the JSON object mapper and the city map.
      */
     public DestinationCardsParser() {
         this.objectMapper = new ObjectMapper();
+        this.cityMap = new HashMap<>();
     }
 
     /**
@@ -47,16 +51,16 @@ public class DestinationCardsParser {
             List<Map<String, Object>> longCardsData = cardsData.get("longDestinations");
 
             for (Map<String, Object> cardData : shortCardsData) {
-                String start = (String) cardData.get("start");
-                String end = (String) cardData.get("end");
+                City start = getOrCreateCity((String) cardData.get("start"));
+                City end = getOrCreateCity((String) cardData.get("end"));
                 int points = (Integer) cardData.get("points");
 
                 allCards.add(new ShortDestinationCard(start, end, points));
             }
 
             for (Map<String, Object> cardData : longCardsData) {
-                String start = (String) cardData.get("start");
-                String end = (String) cardData.get("end");
+                City start = getOrCreateCity((String) cardData.get("start"));
+                City end = getOrCreateCity((String) cardData.get("end"));
                 int points = (Integer) cardData.get("points");
 
                 allCards.add(new LongDestinationCard(start, end, points));
@@ -89,8 +93,8 @@ public class DestinationCardsParser {
             List<Map<String, Object>> shortCardsData = cardsData.get("shortDestinations");
 
             for (Map<String, Object> cardData : shortCardsData) {
-                String start = (String) cardData.get("start");
-                String end = (String) cardData.get("end");
+                City start = getOrCreateCity((String) cardData.get("start"));
+                City end = getOrCreateCity((String) cardData.get("end"));
                 int points = (Integer) cardData.get("points");
 
                 shortCards.add(new ShortDestinationCard(start, end, points));
@@ -122,8 +126,8 @@ public class DestinationCardsParser {
             List<Map<String, Object>> longCardsData = cardsData.get("longDestinations");
 
             for (Map<String, Object> cardData : longCardsData) {
-                String start = (String) cardData.get("start");
-                String end = (String) cardData.get("end");
+                City start = getOrCreateCity((String) cardData.get("start"));
+                City end = getOrCreateCity((String) cardData.get("end"));
                 int points = (Integer) cardData.get("points");
 
                 longCards.add(new LongDestinationCard(start, end, points));
@@ -134,5 +138,16 @@ public class DestinationCardsParser {
         }
 
         return longCards;
+    }
+
+    /**
+     * Get the city with the given name or create it if it does not exist.
+     * Uses a map to ensure that cities are created only once.
+     *
+     * @param cityName The name of the city.
+     * @return The city.
+     */
+    private City getOrCreateCity(String cityName) {
+        return cityMap.computeIfAbsent(cityName, City::new);
     }
 }
