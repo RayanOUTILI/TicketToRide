@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
@@ -135,12 +136,12 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     }
 
     @Override
-    public List<DestinationCard> drawDestinationCards(int maximumCards) {
+    public List<ShortDestinationCard> drawDestinationCards(int maximumCards) {
         return destinationCardDeck.drawCard(maximumCards);
     }
 
     @Override
-    public void returnDestinationCardsToTheBottom(List<DestinationCard> cards) {
+    public void returnDestinationCardsToTheBottom(List<ShortDestinationCard> cards) {
         destinationCardDeck.addCardsAtBottom(cards);
     }
 }

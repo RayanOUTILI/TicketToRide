@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
@@ -74,7 +75,7 @@ class GameModelTest {
 
     @Test
     void testDrawDestinationCards() {
-        List<DestinationCard> destinationCards = List.of(mock(DestinationCard.class));
+        List<ShortDestinationCard> destinationCards = List.of(mock(ShortDestinationCard.class));
         when(destinationCardDeck.drawCard(1)).thenReturn(destinationCards);
         when(destinationCardDeck.drawCard(3)).thenReturn(destinationCards);
         assertEquals(gameModel.drawDestinationCards(1), destinationCards);
@@ -83,7 +84,7 @@ class GameModelTest {
 
     @Test
     void testReturnDestinationCardsToTheBottom() {
-        List<DestinationCard> destinationCards = List.of(mock(DestinationCard.class));
+        List<ShortDestinationCard> destinationCards = List.of(mock(ShortDestinationCard.class));
         gameModel.returnDestinationCardsToTheBottom(destinationCards);
         verify(destinationCardDeck).addCardsAtBottom(destinationCards);
     }

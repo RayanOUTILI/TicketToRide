@@ -21,7 +21,7 @@ public class Main {
             PlayerModel playerModel = new PlayerModel(PlayerIdentification.DEFAULT);
             List<Route> routes = (new MapFactory()).getMapFromJson();
             WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
-            DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getAllDestinationCards());
+            DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getShortDestinationCards());
             GameModel gameModel = new GameModel(List.of(playerModel), wagonCardDeck, destinationCardDeck, routes);
 
             PlayerFactory playerFactory = new PlayerFactory();

@@ -3,6 +3,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
@@ -47,10 +48,10 @@ public class EasyBotEngine implements IPlayerActionsControllable {
     }
 
     @Override
-    public List<DestinationCard> askDestinationCards(List<DestinationCard> cards) {
+    public List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards) {
         int maxCardsNumber = cards.size();
 
-        List<DestinationCard> cardsToKeep = new ArrayList<>(cards);
+        List<ShortDestinationCard> cardsToKeep = new ArrayList<>(cards);
 
         if (!cards.isEmpty() && maxCardsNumber > 1) {
             int nbCardsToRemove = random.nextInt(maxCardsNumber - 1);

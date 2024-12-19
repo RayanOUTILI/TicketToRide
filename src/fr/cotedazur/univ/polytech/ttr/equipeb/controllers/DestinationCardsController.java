@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IDestinationCardsControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
@@ -23,7 +24,7 @@ public class DestinationCardsController extends Controller {
 
         if (!shuffled) return false;
 
-        List<DestinationCard> cards = gameModel.drawDestinationCards(STARTING_DESTINATION_CARDS);
+        List<ShortDestinationCard> cards = gameModel.drawDestinationCards(STARTING_DESTINATION_CARDS);
 
         if(cards == null || cards.isEmpty() || cards.size() != STARTING_DESTINATION_CARDS) return false;
 
@@ -36,8 +37,8 @@ public class DestinationCardsController extends Controller {
     public boolean doAction(Player player) {
         if(gameModel.isDestinationCardDeckEmpty()) return false;
 
-        List<DestinationCard> cards = gameModel.drawDestinationCards(MAX_DESTINATION_CARDS);
-        List<DestinationCard> chosenCards = player.askDestinationCards(cards);
+        List<ShortDestinationCard> cards = gameModel.drawDestinationCards(MAX_DESTINATION_CARDS);
+        List<ShortDestinationCard> chosenCards = player.askDestinationCards(cards);
 
         if (chosenCards == null || chosenCards.isEmpty()) {
             gameModel.returnDestinationCardsToTheBottom(cards);
