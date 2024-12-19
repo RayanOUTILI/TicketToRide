@@ -14,8 +14,21 @@ import java.util.List;
 public class MapFactory {
     private final RouteParser routeParser;
 
+    /**
+     * Default constructor initializing with a standard RouteParser.
+     */
     public MapFactory() {
         this.routeParser = new RouteParser();
+    }
+
+    /**
+     * Constructor allowing dependency injection of a custom RouteParser.
+     * This is primarily used for testing purposes.
+     *
+     * @param routeParser the RouteParser to use
+     */
+    public MapFactory(RouteParser routeParser) {
+        this.routeParser = routeParser;
     }
 
     /*
