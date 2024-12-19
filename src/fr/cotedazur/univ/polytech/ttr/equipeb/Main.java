@@ -19,7 +19,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             PlayerModel playerModel = new PlayerModel(PlayerIdentification.DEFAULT);
-            List<Route> routes = (new MapFactory()).getMapFromJson();
+            List<Route> routes = (new MapFactory()).getSmallMap();
             WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
             DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getAllDestinationCards());
             GameModel gameModel = new GameModel(List.of(playerModel), wagonCardDeck, destinationCardDeck, routes);

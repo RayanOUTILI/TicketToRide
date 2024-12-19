@@ -17,12 +17,14 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     private final List<WagonCard> wagonCards;
     private final List<DestinationCard> destinationCards;
     private final IPlayerViewable view;
+    private int score;
 
     public PlayerModel(PlayerIdentification playerIdentification) {
         this.playerIdentification = playerIdentification;
         this.wagonCards = new ArrayList<>();
         this.destinationCards = new ArrayList<>();
         this.view = new PlayerConsoleView(playerIdentification);
+        this.score = 0;
     }
 
     public PlayerIdentification getIdentification() {
@@ -61,6 +63,16 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     @Override
     public void notifyClaimedRoute(RouteReadOnly route) {
         this.view.displayClaimedRoute(route);
+    }
+
+    @Override
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    @Override
+    public int getScore() {
+        return this.score;
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, IVictoryControllerGameModel, IWagonCardsControllerGameModel, IDestinationCardsControllerGameModel {
+public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, IVictoryControllerGameModel, IWagonCardsControllerGameModel, IDestinationCardsControllerGameModel, IScoreControllerGameModel{
 
     private List<PlayerModel> playerModels;
     // Its needed to change how the WagonCardDeck works
@@ -142,5 +142,12 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     @Override
     public void returnDestinationCardsToTheBottom(List<DestinationCard> cards) {
         destinationCardDeck.addCardsAtBottom(cards);
+    }
+
+    @Override
+    public List<RouteReadOnly> getAllRoutesClaimedByPlayer(PlayerIdentification player) {
+        return routes.stream()
+                .filter(r -> r.isClaimed() && r.getClaimerPlayer().equals(player))
+                .collect(Collectors.toList());
     }
 }

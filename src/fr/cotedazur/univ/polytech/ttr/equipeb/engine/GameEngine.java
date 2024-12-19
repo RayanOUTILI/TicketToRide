@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class GameEngine {
     private final VictoryController victoryController;
+    private final ScoreController scoreController;
     private final GameModel gameModel;
     private final IGameViewable gameView;
     private final Map<Action, Controller> controllers;
@@ -28,6 +29,7 @@ public class GameEngine {
             Action.CLAIM_ROUTE, new RoutesController(gameModel),
             Action.PICK_DESTINATION_CARDS, new DestinationCardsController(gameModel)
         );
+        this.scoreController = new ScoreController(gameModel);
     }
 
     public void startGame(Player player) {
@@ -37,6 +39,8 @@ public class GameEngine {
         Victory victory;
         while((victory = victoryController.endGame()) == null) {
             handlePlayerAction(player);
+            scoreController.updateScore(player);
+            gameView.displayPlayerScore(player.getIdentification(), player.getScore());
         }
         gameView.displayEndGameReason(victory.reason());
     }
@@ -51,6 +55,7 @@ public class GameEngine {
 
         Controller controller = controllers.get(action);
         boolean success = controller.doAction(player);
+
         if (!success) player.actionRefused(action);
         else  player.actionCompleted(action);
     }
