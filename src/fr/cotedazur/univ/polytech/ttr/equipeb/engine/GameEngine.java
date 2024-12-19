@@ -43,8 +43,8 @@ public class GameEngine {
             Player currentPlayer = players.get(currentPlayerIndex);
             handlePlayerAction(currentPlayer);
 
-            scoreController.updateScore(player);
-            gameView.displayPlayerScore(player.getIdentification(), player.getScore());
+            scoreController.updateScore(currentPlayer);
+            gameView.displayPlayerScore(currentPlayer.getIdentification(), currentPlayer.getScore());
             victoryController.endTurn();
             nextPlayer();
         }
