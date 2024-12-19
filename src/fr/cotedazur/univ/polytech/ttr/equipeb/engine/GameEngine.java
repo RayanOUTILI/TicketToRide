@@ -46,7 +46,7 @@ public class GameEngine {
         gameView.displayEndGameReason(victory.reason());
     }
 
-    private void handlePlayerAction(Player player) {
+    protected void handlePlayerAction(Player player) {
         Action action = player.askAction();
 
         if(action == null || !controllers.containsKey(action)) {

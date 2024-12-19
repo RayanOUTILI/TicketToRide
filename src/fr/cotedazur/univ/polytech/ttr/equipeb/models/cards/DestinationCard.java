@@ -1,21 +1,23 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.cards;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
+
 public class DestinationCard extends Card{
-    private final String startCity;
-    private final String endCity;
+    private final City startCity;
+    private final City endCity;
     private final int points;
 
-    public DestinationCard(String startCity, String endCity, int points) {
+    public DestinationCard(City startCity, City endCity, int points) {
         this.startCity = startCity;
         this.endCity = endCity;
         this.points = points;
     }
 
-    public String getStartCity() {
+    public City getStartCity() {
         return startCity;
     }
 
-    public String getEndCity() {
+    public City getEndCity() {
         return endCity;
     }
 
