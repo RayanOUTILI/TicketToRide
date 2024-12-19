@@ -22,6 +22,11 @@ public class RoutesController extends Controller {
     }
 
     @Override
+    public boolean init(Player player) {
+        return gameModel.setAllRoutesNotClaimed();
+    }
+
+    @Override
     public boolean doAction(Player player) {
         ClaimRoute claimRoute = player.askClaimRoute();
         Route route = getRoute(claimRoute);

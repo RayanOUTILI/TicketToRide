@@ -6,7 +6,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
-;
 
 import java.io.IOException;
 import java.io.InputStream;

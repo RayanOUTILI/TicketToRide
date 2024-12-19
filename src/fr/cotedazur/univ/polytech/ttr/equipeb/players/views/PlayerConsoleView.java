@@ -24,6 +24,14 @@ public class PlayerConsoleView extends IPlayerViewable {
     }
 
     @Override
+    public void displayReceivedWagonCards(List<WagonCard> wagonCards) {
+        System.out.println("Player {" + this.getPlayerIdentification() + "} Received wagon cards: ");
+        for (WagonCard wagonCard : wagonCards) {
+            System.out.println(wagonCard);
+        }
+    }
+
+    @Override
     public void displayReceivedDestinationCards(List<DestinationCard> destinationCards) {
         System.out.println("Player {" + this.getPlayerIdentification() + "} Received destination cards: ");
         for (DestinationCard destinationCard : destinationCards) {

@@ -13,7 +13,7 @@ import java.util.List;
  * Class representing the player model
  */
 public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
-    private PlayerIdentification playerIdentification;
+    private final PlayerIdentification playerIdentification;
     private final List<WagonCard> wagonCards;
     private final List<DestinationCard> destinationCards;
     private final IPlayerViewable view;
@@ -33,6 +33,12 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     public void receivedWagonCard(WagonCard wagonCard) {
         wagonCards.add(wagonCard);
         this.view.displayReceivedWagonCards(wagonCard);
+    }
+
+    @Override
+    public void receivedWagonCards(List<WagonCard> wagonCards) {
+        this.wagonCards.addAll(wagonCards);
+        this.view.displayReceivedWagonCards(wagonCards);
     }
 
     @Override

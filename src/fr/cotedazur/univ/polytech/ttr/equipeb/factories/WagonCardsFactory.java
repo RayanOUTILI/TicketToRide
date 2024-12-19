@@ -7,7 +7,7 @@ import java.util.List;
 
 public class WagonCardsFactory {
     public List<WagonCard> getWagonCards() {
-        int numberOfCards = 5;
+        int numberOfCards = 110;
         List<WagonCard> wagonCards = new ArrayList<>();
         for (int i = 0; i < numberOfCards; i++) {
             wagonCards.add(new WagonCard());

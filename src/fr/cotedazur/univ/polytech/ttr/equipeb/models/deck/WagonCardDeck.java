@@ -43,4 +43,12 @@ public class WagonCardDeck {
     public boolean isEmpty() {
         return stack.isEmpty();
     }
+
+    public boolean shuffle() {
+        List<WagonCard> cards = new ArrayList<>(stack);
+        Collections.shuffle(cards);
+        stack.clear();
+        stack.addAll(cards);
+        return true;
+    }
 }

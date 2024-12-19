@@ -7,6 +7,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 
 import java.util.ArrayList;
@@ -35,15 +36,19 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
         this.routes = routes;
     }
 
-    public Set<City> getAllCities(){
-        return routes.stream()
-                .flatMap(route -> Stream.of(route.getFirstCity(), route.getSecondCity()))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
     @Override
     public boolean isAllRoutesClaimed() {
         return routes.stream().allMatch(Route::isClaimed);
+    }
+
+    @Override
+    public boolean shuffleWagonCardDeck() {
+        return wagonCardDeck.shuffle();
+    }
+
+    @Override
+    public List<PlayerIdentification> getPlayers() {
+        return null;
     }
 
     @Override
@@ -57,13 +62,35 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     }
 
     @Override
+    public List<WagonCard> drawCardsFromWagonCardDeck(int numberOfCards) {
+        List<WagonCard> cards = new ArrayList<>();
+
+        for (int i = 0; i < numberOfCards; i++) {
+            cards.add(wagonCardDeck.drawCard());
+        }
+
+        return cards;
+    }
+
+    @Override
     public List<RouteReadOnly> getNonControllableRoutes() {
         return new ArrayList<>(routes);
     }
 
     @Override
+    public boolean setAllRoutesNotClaimed() {
+        routes.forEach(r -> r.setClaimerPlayer(null));
+        return true;
+    }
+
+    @Override
     public Route getRoute(int id) {
         return routes.stream().filter(r -> r.getId() == id).findFirst().orElse(null);
+    }
+
+    @Override
+    public boolean shuffleDestinationCardDeck() {
+        return destinationCardDeck.shuffle();
     }
 
     @Override

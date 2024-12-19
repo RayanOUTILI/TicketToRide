@@ -2,10 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.models.deck;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 public class DestinationCardDeck {
     private final Deque<DestinationCard> stack;
@@ -30,13 +27,9 @@ public class DestinationCardDeck {
     }
 
     public List<DestinationCard> drawCard(int maximumDraw) {
-        if (stack.isEmpty()) {
-            throw new IllegalStateException("The deck is empty!");
-        }
-
         List<DestinationCard> cards = new ArrayList<>();
 
-        for (int i = 0; i < maximumDraw; i++) {
+        for (int i = 0; i < maximumDraw && !stack.isEmpty(); i++) {
             cards.add(stack.removeFirst());
         }
 
@@ -52,5 +45,13 @@ public class DestinationCardDeck {
      */
     public boolean isEmpty() {
         return stack.isEmpty();
+    }
+
+    public boolean shuffle() {
+        List<DestinationCard> list = new ArrayList<>(stack);
+        Collections.shuffle(list);
+        stack.clear();
+        stack.addAll(list);
+        return true;
     }
 }

@@ -34,6 +34,8 @@ public class GameEngine {
 
         Player player = new Player(new PlayerEngine(playerModel, gameModel), playerModel);
 
+        controllers.values().forEach(controller -> controller.init(player));
+
         Victory victory;
         while((victory = victoryController.endGame()) == null) {
             handlePlayerAction(player);

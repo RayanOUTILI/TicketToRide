@@ -24,6 +24,8 @@ public abstract class IPlayerViewable {
 
     public abstract void displayReceivedWagonCards(WagonCard... wagonCards);
 
+    public abstract void displayReceivedWagonCards(List<WagonCard> wagonCards);
+
     public void displayClaimedRoute(RouteReadOnly route) {
         System.out.println("Player " + playerIdentification + " claimed route " + route);
     }

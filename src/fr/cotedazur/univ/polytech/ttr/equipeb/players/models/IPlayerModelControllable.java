@@ -12,6 +12,7 @@ import java.util.List;
 public interface IPlayerModelControllable {
     PlayerIdentification getIdentification();
     void receivedWagonCard(WagonCard wagonCard);
+    void receivedWagonCards(List<WagonCard> wagonCards);
     int removeWagonCards(List<WagonCard> wagonCards);
     void notifyClaimedRoute(RouteReadOnly route);
     void receivedDestinationCards(List<DestinationCard> destinationCards);
