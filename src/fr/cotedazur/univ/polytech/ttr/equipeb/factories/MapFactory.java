@@ -17,8 +17,11 @@ public class MapFactory {
         this.routeParser = new RouteParser();
     }
 
-    public List<Route> getMapFromJson(String filePath){
-        return routeParser.parseRoutes(filePath);
+    /*
+     * Get the map from the JSON file
+     */
+    public List<Route> getMapFromJson() {
+        return routeParser.parseRoutes("data-europe/routes.json");
     }
 
     public List<Route> getSmallMap() {

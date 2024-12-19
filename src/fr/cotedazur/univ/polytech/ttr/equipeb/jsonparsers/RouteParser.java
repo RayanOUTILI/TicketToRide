@@ -16,15 +16,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Parser for reading routes from a JSON file.
+ */
 public class RouteParser {
     private ObjectMapper objectMapper;
     private Map<String, City> cityMap;
 
+    /**
+     * Constructor initializing the JSON object mapper and the city map.
+     */
     public RouteParser() {
         this.objectMapper = new ObjectMapper();
         this.cityMap = new HashMap<>();
     }
 
+    /**
+     * Parse the routes from the given JSON file
+     * @param filePath the path to the JSON file
+     * @return the list of routes
+     */
     public List<Route> parseRoutes(String filePath){
         List<Route> routes = new ArrayList<>();
 

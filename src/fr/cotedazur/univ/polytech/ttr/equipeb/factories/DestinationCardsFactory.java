@@ -1,20 +1,50 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.factories;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.jsonparsers.DestinationCardsParser;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Factory class for creating destination cards using a JSON parser.
+ */
 public class DestinationCardsFactory {
-    public List<DestinationCard> getDestinationCards() {
-        ArrayList<DestinationCard> destinationCards = new ArrayList<>();
+    private final DestinationCardsParser parser;
 
-        destinationCards.add(new DestinationCard("Budapest", "Sofia", 5));
-        destinationCards.add(new DestinationCard("Sofia", "Smyrna", 5));
-        destinationCards.add(new DestinationCard("Warszawa", "Smolensk", 7));
-        destinationCards.add(new DestinationCard("London", "Berlin", 7));
-        destinationCards.add(new DestinationCard("Brest", "Marseille", 7));
+    /**
+     * Constructor initializing the factory with a destination cards parser.
+     */
+    public DestinationCardsFactory() {
+        this.parser = new DestinationCardsParser();
+    }
 
-        return destinationCards;
+    /**
+     * Retrieves all destination cards (short and long combined) from the JSON file.
+     * 
+     * @return A list of all destination cards.
+     */
+    public List<DestinationCard> getAllDestinationCards() {
+        return parser.parseAllDestinationCards("data-europe/destination-cards.json");
+    }
+
+    /**
+     * Retrieves only the short destination cards from the JSON file.
+     * 
+     * @return A list of short destination cards.
+     */
+    public List<ShortDestinationCard> getShortDestinationCards() {
+        return parser.parseShortDestinationCards("data-europe/destination-cards.json");
+    }
+
+    /**
+     * Retrieves only the long destination cards from the JSON file.
+     * 
+     * @return A list of long destination cards.
+     */
+    public List<LongDestinationCard> getLongDestinationCards() {
+        return parser.parseLongDestinationCards("data-europe/destination-cards.json");
     }
 }
