@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.engine.GameEngine;
+import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.DestinationCardsFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.MapFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.WagonCardsFactory;
@@ -15,13 +16,18 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        PlayerModel playerModel = new PlayerModel(PlayerIdentification.DEFAULT);
-        List<Route> routes = (new MapFactory()).getSmallMap();
-        WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
-        DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getDestinationCards());
-        GameModel gameModel = new GameModel(List.of(playerModel), wagonCardDeck, destinationCardDeck, routes);
+        try {
+            PlayerModel playerModel = new PlayerModel(PlayerIdentification.DEFAULT);
+            List<Route> routes = (new MapFactory()).getSmallMap();
+            WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
+            DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getAllDestinationCards());
+            GameModel gameModel = new GameModel(List.of(playerModel), wagonCardDeck, destinationCardDeck, routes);
 
-        GameEngine gameEngine = new GameEngine(gameModel);
-        gameEngine.startGame(playerModel);
+            GameEngine gameEngine = new GameEngine(gameModel);
+            gameEngine.startGame(playerModel);
+        }
+        catch (JsonParseException e) {
+            e.printStackTrace();
+        }
     }
 }
