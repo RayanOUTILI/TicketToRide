@@ -45,11 +45,6 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     }
 
     @Override
-    public List<PlayerIdentification> getPlayers() {
-        return null;
-    }
-
-    @Override
     public boolean isWagonCardDeckEmpty() {
         return wagonCardDeck.isEmpty();
     }
