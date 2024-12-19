@@ -4,6 +4,8 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IScoreControllerGameMo
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 
+import java.util.List;
+
 public class ScoreController {
     IScoreControllerGameModel gameModel;
 
@@ -25,5 +27,11 @@ public class ScoreController {
                             })
                             .sum();
         player.setScore(score);
+    }
+
+    public void calculateFinalScores(){
+        List<IPlayerModelControllable> players = gameModel.getPlayers();
+
+
     }
 }

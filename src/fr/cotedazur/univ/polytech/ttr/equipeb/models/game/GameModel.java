@@ -8,6 +8,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 
@@ -155,5 +156,10 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
         return routes.stream()
                 .filter(r -> r.isClaimed() && r.getClaimerPlayer().equals(player))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<IPlayerModelControllable> getPlayers() {
+        return new ArrayList<>(playerModels);
     }
 }
