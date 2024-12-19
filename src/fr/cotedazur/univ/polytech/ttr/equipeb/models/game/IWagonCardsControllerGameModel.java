@@ -8,8 +8,6 @@ import java.util.List;
 public interface IWagonCardsControllerGameModel {
     boolean shuffleWagonCardDeck();
 
-    List<PlayerIdentification> getPlayers();
-
     boolean isWagonCardDeckEmpty();
 
     WagonCard drawCardFromWagonCardDeck();

@@ -4,6 +4,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IDestinationCardsControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,16 @@ class DestinationCardsControllerTest {
         gameModel = mock(IDestinationCardsControllerGameModel.class);
         destinationCardsController = new DestinationCardsController(gameModel);
         player = mock(Player.class);
+    }
+
+    @Test
+    void testInit() {
+        when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
+        when(gameModel.shuffleDestinationCardDeck()).thenReturn(true);
+        List<ShortDestinationCard> cards = List.of(mock(ShortDestinationCard.class), mock(ShortDestinationCard.class), mock(ShortDestinationCard.class));
+        when(gameModel.drawDestinationCards(3)).thenReturn(cards);
+        assertTrue(destinationCardsController.init(player));
+        verify(player).receivedDestinationCards(cards);
     }
 
     @org.junit.jupiter.api.Test

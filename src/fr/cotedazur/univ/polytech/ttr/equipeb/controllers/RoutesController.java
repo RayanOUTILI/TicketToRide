@@ -44,7 +44,6 @@ public class RoutesController extends Controller {
 
         gameModel.discardWagonCards(removedCards);
 
-
         route.setClaimerPlayer(player.getIdentification());
 
         if(gameModel.getNbOfPlayers() >= MINIMUM_PLAYERS_TO_KEEP_DOUBLE_ROUTES) {
