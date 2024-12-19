@@ -13,8 +13,8 @@ public class VictoryController {
     }
 
     public Victory endGame() {
-        if(gameModel.isAllRoutesClaimed()) return new Victory(PlayerIdentification.DEFAULT, EndGameReasons.ALL_ROUTES_CLAIMED);
-        if(gameModel.isWagonCardDeckEmpty()) return new Victory(PlayerIdentification.DEFAULT, EndGameReasons.EMPTY_WAGON_CARDS_DECK);
+        if(gameModel.isAllRoutesClaimed()) return new Victory(PlayerIdentification.BLUE, EndGameReasons.ALL_ROUTES_CLAIMED);
+        if(gameModel.isWagonCardDeckEmpty()) return new Victory(PlayerIdentification.BLUE, EndGameReasons.EMPTY_WAGON_CARDS_DECK);
         return null;
     }
 
