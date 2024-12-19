@@ -1,0 +1,810 @@
+[
+    {
+      "start": "Lisboa",
+      "end": "Cadiz",
+      "size": 2,
+      "type": "train",
+      "color": "blue",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Lisboa",
+      "end": "Madrid",
+      "size": 3,
+      "type": "train",
+      "color": "pink",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Cadiz",
+      "end": "Madrid",
+      "size": 3,
+      "type": "train",
+      "color": "orange",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Madrid",
+      "end": "Barcelona",
+      "size": 2,
+      "type": "train",
+      "color": "yellow",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Madrid",
+      "end": "Pamplona",
+      "size": 3,
+      "type": "tunnel",
+      "color": "white",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Madrid",
+      "end": "Pamplona",
+      "size": 3,
+      "type": "tunnel",
+      "color": "black",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Barcelona",
+      "end": "Pamplona",
+      "size": 2,
+      "type": "tunnel",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Barcelona",
+      "end": "Marseille",
+      "size": 4,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Pamplona",
+      "end": "Marseille",
+      "size": 4,
+      "type": "train",
+      "color": "red",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Pamplona",
+      "end": "Paris",
+      "size": 4,
+      "type": "train",
+      "color": "blue",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Pamplona",
+      "end": "Paris",
+      "size": 4,
+      "type": "train",
+      "color": "green",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Pamplona",
+      "end": "Brest",
+      "size": 4,
+      "type": "train",
+      "color": "pink",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Brest",
+      "end": "Paris",
+      "size": 3,
+      "type": "train",
+      "color": "black",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Brest",
+      "end": "Dieppe",
+      "size": 2,
+      "type": "train",
+      "color": "orange",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Dieppe",
+      "end": "Paris",
+      "size": 1,
+      "type": "train",
+      "color": "pink",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Dieppe",
+      "end": "London",
+      "size": 2,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Dieppe",
+      "end": "London",
+      "size": 2,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Dieppe",
+      "end": "Brussels",
+      "size": 2,
+      "type": "train",
+      "color": "green",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Brussels",
+      "end": "Paris",
+      "size": 2,
+      "type": "train",
+      "color": "yellow",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Brussels",
+      "end": "Paris",
+      "size": 2,
+      "type": "train",
+      "color": "red",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Brussels",
+      "end": "Amsterdam",
+      "size": 1,
+      "type": "train",
+      "color": "black",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Amsterdam",
+      "end": "London",
+      "size": 2,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 2
+    },
+    {
+      "start": "London",
+      "end": "Edinburgh",
+      "size": 4,
+      "type": "train",
+      "color": "black",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "London",
+      "end": "Edinburgh",
+      "size": 4,
+      "type": "train",
+      "color": "orange",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Erzurum",
+      "end": "Angora",
+      "size": 3,
+      "type": "train",
+      "color": "black",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Erzurum",
+      "end": "Sevastopol",
+      "size": 4,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 2
+    },
+    {
+      "start": "Erzurum",
+      "end": "Sochi",
+      "size": 3,
+      "type": "train",
+      "color": "red",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Angora",
+      "end": "Smyrna",
+      "size": 3,
+      "type": "tunnel",
+      "color": "orange",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Angora",
+      "end": "Constantinople",
+      "size": 2,
+      "type": "tunnel",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Sochi",
+      "end": "Sevastopol",
+      "size": 2,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Sochi",
+      "end": "Rostov",
+      "size": 2,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Sevastopol",
+      "end": "Constantinople",
+      "size": 4,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 2
+    },
+    {
+      "start": "Sevastopol",
+      "end": "Bucuresti",
+      "size": 4,
+      "type": "train",
+      "color": "white",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Rostov",
+      "end": "Sevastopol",
+      "size": 4,
+      "type": "tunnel",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Rostov",
+      "end": "Kharkov",
+      "size": 2,
+      "type": "train",
+      "color": "green",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Kharkov",
+      "end": "Moskva",
+      "size": 4,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Kharkov",
+      "end": "Kyiv",
+      "size": 4,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Moskva",
+      "end": "Smolensk",
+      "size": 2,
+      "type": "train",
+      "color": "orange",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Moskva",
+      "end": "Petrograd",
+      "size": 4,
+      "type": "train",
+      "color": "white",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Kyiv",
+      "end": "Smolensk",
+      "size": 3,
+      "type": "train",
+      "color": "red",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Kyiv",
+      "end": "Wilno",
+      "size": 2,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Kyiv",
+      "end": "Warszawa",
+      "size": 4,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Kyiv",
+      "end": "Budapest",
+      "size": 6,
+      "type": "tunnel",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Wilno",
+      "end": "Smolensk",
+      "size": 3,
+      "type": "train",
+      "color": "yellow",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Wilno",
+      "end": "Warszawa",
+      "size": 3,
+      "type": "train",
+      "color": "red",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Wilno",
+      "end": "Riga",
+      "size": 4,
+      "type": "train",
+      "color": "green",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Wilno",
+      "end": "Petrograd",
+      "size": 4,
+      "type": "train",
+      "color": "blue",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Riga",
+      "end": "Petrograd",
+      "size": 4,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Stockholm",
+      "end": "Petrograd",
+      "size": 8,
+      "type": "tunnel",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Smyrna",
+      "end": "Constantinople",
+      "size": 2,
+      "type": "tunnel",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Smyrna",
+      "end": "Palermo",
+      "size": 6,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 2
+    },
+    {
+      "start": "Smyrna",
+      "end": "Athina",
+      "size": 2,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Constantinople",
+      "end": "Sofia",
+      "size": 3,
+      "type": "train",
+      "color": "blue",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Constantinople",
+      "end": "Bucuresti",
+      "size": 3,
+      "type": "train",
+      "color": "yellow",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Bucuresti",
+      "end": "Sofia",
+      "size": 2,
+      "type": "tunnel",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Bucuresti",
+      "end": "Budapest",
+      "size": 4,
+      "type": "tunnel",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Bucuresti",
+      "end": "Kyiv",
+      "size": 4,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Riga",
+      "end": "Danzig",
+      "size": 3,
+      "type": "train",
+      "color": "black",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Stockholm",
+      "end": "Kobenhavn",
+      "size": 3,
+      "type": "train",
+      "color": "yellow",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Stockholm",
+      "end": "Kobenhavn",
+      "size": 3,
+      "type": "train",
+      "color": "white",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Kobenhavn",
+      "end": "Essen",
+      "size": 3,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Kobenhavn",
+      "end": "Essen",
+      "size": 3,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Danzig",
+      "end": "Berlin",
+      "size": 4,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Danzig",
+      "end": "Warszawa",
+      "size": 2,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Warszawa",
+      "end": "Berlin",
+      "size": 4,
+      "type": "train",
+      "color": "pink",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Warszawa",
+      "end": "Berlin",
+      "size": 4,
+      "type": "train",
+      "color": "yellow",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Warszawa",
+      "end": "Wien",
+      "size": 4,
+      "type": "train",
+      "color": "blue",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Wien",
+      "end": "Budapest",
+      "size": 1,
+      "type": "train",
+      "color": "red",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Wien",
+      "end": "Budapest",
+      "size": 1,
+      "type": "train",
+      "color": "white",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Budapest",
+      "end": "Zagrab",
+      "size": 2,
+      "type": "train",
+      "color": "orange",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Budapest",
+      "end": "Sarajevo",
+      "size": 3,
+      "type": "train",
+      "color": "pink",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Sarajevo",
+      "end": "Sofia",
+      "size": 2,
+      "type": "tunnel",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Sofia",
+      "end": "Athina",
+      "size": 3,
+      "type": "train",
+      "color": "pink",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Sarajevo",
+      "end": "Zagrab",
+      "size": 3,
+      "type": "train",
+      "color": "red",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Sarajevo",
+      "end": "Athina",
+      "size": 4,
+      "type": "train",
+      "color": "green",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Athina",
+      "end": "Brindisi",
+      "size": 4,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Palermo",
+      "end": "Brindisi",
+      "size": 3,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Roma",
+      "end": "Brindisi",
+      "size": 2,
+      "type": "train",
+      "color": "white",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Roma",
+      "end": "Venezia",
+      "size": 2,
+      "type": "train",
+      "color": "black",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Roma",
+      "end": "Marseille",
+      "size": 4,
+      "type": "tunnel",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Roma",
+      "end": "Palermo",
+      "size": 4,
+      "type": "ferry",
+      "color": "grey",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Berlin",
+      "end": "Frankfurt",
+      "size": 3,
+      "type": "train",
+      "color": "black",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Berlin",
+      "end": "Frankfurt",
+      "size": 3,
+      "type": "train",
+      "color": "red",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Berlin",
+      "end": "Wien",
+      "size": 3,
+      "type": "train",
+      "color": "green",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Essen",
+      "end": "Amsterdam",
+      "size": 3,
+      "type": "train",
+      "color": "yellow",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Essen",
+      "end": "Frankfurt",
+      "size": 2,
+      "type": "train",
+      "color": "green",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Essen",
+      "end": "Berlin",
+      "size": 2,
+      "type": "train",
+      "color": "blue",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Amsterdam",
+      "end": "Frankfurt",
+      "size": 2,
+      "type": "train",
+      "color": "white",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Frankfurt",
+      "end": "Bruxelles",
+      "size": 2,
+      "type": "train",
+      "color": "blue",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Frankfurt",
+      "end": "Paris",
+      "size": 3,
+      "type": "train",
+      "color": "white",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Frankfurt",
+      "end": "Paris",
+      "size": 3,
+      "type": "train",
+      "color": "orange",
+      "nbLocomotives": 1
+    },
+    {
+      "start": "Frankfurt",
+      "end": "Munchen",
+      "size": 2,
+      "type": "train",
+      "color": "pink",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Munchen",
+      "end": "Zurich",
+      "size": 2,
+      "type": "tunnel",
+      "color": "yellow",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Munchen",
+      "end": "Venezia",
+      "size": 2,
+      "type": "tunnel",
+      "color": "blue",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Munchen",
+      "end": "Wien",
+      "size": 3,
+      "type": "train",
+      "color": "orange",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Zagrab",
+      "end": "Wien",
+      "size": 2,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Zagrab",
+      "end": "Venezia",
+      "size": 2,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Zurich",
+      "end": "Venezia",
+      "size": 2,
+      "type": "tunnel",
+      "color": "green",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Zurich",
+      "end": "Marseille",
+      "size": 2,
+      "type": "tunnel",
+      "color": "pink",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Zurich",
+      "end": "Paris",
+      "size": 3,
+      "type": "tunnel",
+      "color": "grey",
+      "nbLocomotives": 0
+    },
+    {
+      "start": "Paris",
+      "end": "Marseille",
+      "size": 4,
+      "type": "train",
+      "color": "grey",
+      "nbLocomotives": 0
+    }
+  ]

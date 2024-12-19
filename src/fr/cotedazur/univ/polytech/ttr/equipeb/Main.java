@@ -1,49 +1,36 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.RouteAlreadyClaimedException;
-import fr.cotedazur.univ.polytech.ttr.equipeb.map.City;
-import fr.cotedazur.univ.polytech.ttr.equipeb.map.Route;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ObjectiveCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.CardDeck;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
-import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.NotEnoughCardsException;
+import fr.cotedazur.univ.polytech.ttr.equipeb.engine.GameEngine;
+import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
+import fr.cotedazur.univ.polytech.ttr.equipeb.factories.DestinationCardsFactory;
+import fr.cotedazur.univ.polytech.ttr.equipeb.factories.MapFactory;
+import fr.cotedazur.univ.polytech.ttr.equipeb.factories.PlayerFactory;
+import fr.cotedazur.univ.polytech.ttr.equipeb.factories.WagonCardsFactory;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
+
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Welcome to Ticket to Ride!");
-
-        City city1 = new City("Paris");
-        City city2 = new City("Berlin");
-        Route route = new Route(city1, city2, 3);
-
-        Player player = new Player();
-        System.out.println("A player just joined the game.");
-
-        System.out.println("Player's pick 3 cards...");
-        player.pickCard(new WagonCard());
-        player.pickCard(new WagonCard());
-        player.pickCard(new WagonCard());
-        CardDeck deck = new CardDeck();
-        deck.addCard(new ObjectiveCard());
-        deck.addCard(new ObjectiveCard());
-        deck.addCard(new ObjectiveCard());
-        player.pickCard(deck.drawCard());
-        player.pickCard(deck.drawCard());
-        System.out.println("Player's hand : " + player.getHand());
-
-        System.out.println("Player tries to claim a route between"
-                + city1.getName() + " and " + city2.getName() + ".");
-
         try {
-            player.claimRoute(route);
-            System.out.println("Route claimed with success!");
-            System.out.println("Current score : " + player.getScore());
-        } catch (NotEnoughCardsException | RouteAlreadyClaimedException e) {
-            System.out.println("Impossible to claim the road : " + e.getMessage());
-        }
+            PlayerModel playerModel = new PlayerModel(PlayerIdentification.DEFAULT);
+            List<Route> routes = (new MapFactory()).getMapFromJson();
+            WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
+            DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getShortDestinationCards());
+            GameModel gameModel = new GameModel(List.of(playerModel), wagonCardDeck, destinationCardDeck, routes);
 
-        System.out.println("Player's hand : ");
-        player.showHand();
+            PlayerFactory playerFactory = new PlayerFactory();
+
+            GameEngine gameEngine = new GameEngine(gameModel);
+            gameEngine.startGame(playerFactory.createEasyBot(playerModel, gameModel));
+        }
+        catch (JsonParseException e) {
+            e.printStackTrace();
+        }
     }
 }
