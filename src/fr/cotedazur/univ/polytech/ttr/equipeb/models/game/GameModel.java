@@ -10,10 +10,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -75,6 +72,19 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     @Override
     public List<RouteReadOnly> getNonControllableRoutes() {
         return new ArrayList<>(routes);
+    }
+
+    public List<RouteReadOnly> getNonControllableAvailableRoutes() {
+        return routes.stream()
+                .filter(r -> !r.isClaimed())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RouteReadOnly> getNonControllableAvailableRoutes(int maxLength) {
+        return routes.stream()
+                .filter(r -> !r.isClaimed() && r.getLength() < maxLength)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -4,6 +4,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.engine.GameEngine;
 import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.DestinationCardsFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.MapFactory;
+import fr.cotedazur.univ.polytech.ttr.equipeb.factories.PlayerFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.WagonCardsFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
@@ -18,13 +19,15 @@ public class Main {
     public static void main(String[] args) {
         try {
             PlayerModel playerModel = new PlayerModel(PlayerIdentification.DEFAULT);
-            List<Route> routes = (new MapFactory()).getSmallMap();
+            List<Route> routes = (new MapFactory()).getMapFromJson();
             WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
             DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getAllDestinationCards());
             GameModel gameModel = new GameModel(List.of(playerModel), wagonCardDeck, destinationCardDeck, routes);
 
+            PlayerFactory playerFactory = new PlayerFactory();
+
             GameEngine gameEngine = new GameEngine(gameModel);
-            gameEngine.startGame(playerModel);
+            gameEngine.startGame(playerFactory.createEasyBot(playerModel, gameModel));
         }
         catch (JsonParseException e) {
             e.printStackTrace();
