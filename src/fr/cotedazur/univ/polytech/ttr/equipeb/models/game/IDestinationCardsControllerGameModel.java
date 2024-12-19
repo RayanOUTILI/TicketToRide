@@ -1,13 +1,16 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 
 import java.util.List;
 
 public interface IDestinationCardsControllerGameModel {
+    boolean shuffleDestinationCardDeck();
+
     boolean isDestinationCardDeckEmpty();
 
-    List<DestinationCard> drawDestinationCards(int maximumCards);
+    List<ShortDestinationCard> drawDestinationCards(int maximumCards);
 
-    void returnDestinationCardsToTheBottom(List<DestinationCard> cards);
+    void returnDestinationCardsToTheBottom(List<ShortDestinationCard> cards);
 }

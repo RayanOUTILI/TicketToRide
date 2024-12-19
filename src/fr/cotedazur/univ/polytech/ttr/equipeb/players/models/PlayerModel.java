@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
@@ -13,7 +14,7 @@ import java.util.List;
  * Class representing the player model
  */
 public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
-    private PlayerIdentification playerIdentification;
+    private final PlayerIdentification playerIdentification;
     private final List<WagonCard> wagonCards;
     private final List<DestinationCard> destinationCards;
     private final IPlayerViewable view;
@@ -36,15 +37,26 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     }
 
     @Override
-    public int removeWagonCards(List<WagonCard> wagonCards) {
-        int removedCards = 0;
+    public void receivedWagonCards(List<WagonCard> wagonCards) {
+        this.wagonCards.addAll(wagonCards);
+        this.view.displayReceivedWagonCards(wagonCards);
+    }
+
+    @Override
+    public List<WagonCard> removeWagonCards(List<WagonCard> wagonCards) {
+        List<WagonCard> removedCards = new ArrayList<>();
         for (WagonCard card : wagonCards) {
             if (!this.wagonCards.remove(card)) {
                 return removedCards;
             }
-            removedCards++;
+            removedCards.add(card);
         }
         return removedCards;
+    }
+
+    @Override
+    public void replaceRemovedWagonCards(List<WagonCard> wagonCards) {
+        this.wagonCards.addAll(wagonCards);
     }
 
     @Override
@@ -53,7 +65,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     }
 
     @Override
-    public void receivedDestinationCards(List<DestinationCard> destinationCards) {
+    public void receivedDestinationCards(List<ShortDestinationCard> destinationCards) {
         this.destinationCards.addAll(destinationCards);
         this.view.displayReceivedDestinationCards(destinationCards);
     }

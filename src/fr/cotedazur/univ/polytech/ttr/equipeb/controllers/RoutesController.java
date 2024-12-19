@@ -9,6 +9,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import java.util.List;
 
 public class RoutesController extends Controller {
+    private static final int MINIMUM_PLAYERS_TO_KEEP_DOUBLE_ROUTES = 3;
     private final IRoutesControllerGameModel gameModel;
 
     public RoutesController(IRoutesControllerGameModel gameModel) {
@@ -22,6 +23,11 @@ public class RoutesController extends Controller {
     }
 
     @Override
+    public boolean init(Player player) {
+        return gameModel.setAllRoutesNotClaimed();
+    }
+
+    @Override
     public boolean doAction(Player player) {
         ClaimRoute claimRoute = player.askClaimRoute();
         Route route = getRoute(claimRoute);
@@ -29,12 +35,25 @@ public class RoutesController extends Controller {
 
         List<WagonCard> wagonCards = claimRoute.wagonCards();
 
-        int removedCards = player.removeWagonCards(wagonCards);
+        List<WagonCard> removedCards = player.removeWagonCards(wagonCards);
 
-        if (removedCards != wagonCards.size()) return false;
+        if (removedCards.size() != wagonCards.size()) {
+            player.replaceRemovedWagonCards(removedCards);
+            return false;
+        }
+
+        gameModel.discardWagonCards(removedCards);
 
 
         route.setClaimerPlayer(player.getIdentification());
+
+        if(gameModel.getNbOfPlayers() >= MINIMUM_PLAYERS_TO_KEEP_DOUBLE_ROUTES) {
+            Route doubleRoute = gameModel.getDoubleRouteOf(route.getId());
+            if(doubleRoute != null) {
+                gameModel.deleteRoute(doubleRoute.getId());
+            }
+        }
+
         player.notifyClaimedRoute(route);
 
         return true;

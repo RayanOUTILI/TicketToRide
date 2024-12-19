@@ -10,4 +10,15 @@ public class City {
     public String getName() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof City city)) {
+            return false;
+        }
+        return getName().equals(city.getName());
+    }
 }

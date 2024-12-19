@@ -3,6 +3,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.IPlayerActionsControllable;
@@ -35,7 +36,7 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
-    public List<DestinationCard> askDestinationCards(List<DestinationCard> cards) {
+    public List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards) {
         return actionsController.askDestinationCards(cards);
     }
 
@@ -61,8 +62,18 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
-    public int removeWagonCards(List<WagonCard> wagonCards) {
+    public void receivedWagonCards(List<WagonCard> wagonCards) {
+        modelController.receivedWagonCards(wagonCards);
+    }
+
+    @Override
+    public List<WagonCard> removeWagonCards(List<WagonCard> wagonCards) {
         return modelController.removeWagonCards(wagonCards);
+    }
+
+    @Override
+    public void replaceRemovedWagonCards(List<WagonCard> wagonCards) {
+        modelController.replaceRemovedWagonCards(wagonCards);
     }
 
     @Override
@@ -72,7 +83,7 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
-    public void receivedDestinationCards(List<DestinationCard> destinationCards) {
+    public void receivedDestinationCards(List<ShortDestinationCard> destinationCards) {
         modelController.receivedDestinationCards(destinationCards);
     }
 }
