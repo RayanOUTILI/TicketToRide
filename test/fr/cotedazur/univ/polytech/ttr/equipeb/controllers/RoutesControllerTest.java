@@ -23,6 +23,7 @@ class RoutesControllerTest {
     private ClaimRoute claimRoute;
     private Route route;
     private List<WagonCard> wagonCards;
+
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
         gameModel = mock(IRoutesControllerGameModel.class);
@@ -37,6 +38,12 @@ class RoutesControllerTest {
         when(gameModel.getRoute(1)).thenReturn(route);
         when(claimRoute.route()).thenReturn(route);
 
+    }
+
+    @Test
+    void testInit() {
+        when(gameModel.setAllRoutesNotClaimed()).thenReturn(true);
+        assertTrue(routesController.init(player));
     }
 
     @org.junit.jupiter.api.Test
@@ -82,6 +89,7 @@ class RoutesControllerTest {
         when(claimRoute.wagonCards()).thenReturn(wagonCards);
         when(player.removeWagonCards(wagonCards)).thenReturn(wagonCards);
         assertTrue(routesController.doAction(player));
+        verify(gameModel).discardWagonCards(wagonCards);
         verify(player).askClaimRoute();
         verify(player).removeWagonCards(wagonCards);
         verify(route).setClaimerPlayer(player.getIdentification());
@@ -104,9 +112,24 @@ class RoutesControllerTest {
 
         verify(player).askClaimRoute();
         verify(player).removeWagonCards(wagonCards);
+        verify(gameModel).discardWagonCards(wagonCards);
         verify(route).setClaimerPlayer(player.getIdentification());
         verify(gameModel).getDoubleRouteOf(1);
         verify(gameModel).deleteRoute(2);
+        verify(gameModel).getNbOfPlayers();
+    }
+
+    @Test
+    void testDifferentRemovedCardSize() {
+        wagonCards = List.of(mock(WagonCard.class), mock(WagonCard.class));
+        List<WagonCard> removedCards = List.of(mock(WagonCard.class));
+        when(player.askClaimRoute()).thenReturn(claimRoute);
+        when(claimRoute.wagonCards()).thenReturn(wagonCards);
+        when(player.removeWagonCards(wagonCards)).thenReturn(removedCards);
+        assertFalse(routesController.doAction(player));
+        verify(player).replaceRemovedWagonCards(removedCards);
+        verify(player).askClaimRoute();
+        verify(player).removeWagonCards(wagonCards);
     }
 
 

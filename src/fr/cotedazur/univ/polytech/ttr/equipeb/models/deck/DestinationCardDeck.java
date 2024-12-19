@@ -1,42 +1,25 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.deck;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 
 import java.util.*;
 
 public class DestinationCardDeck {
-    private final Deque<DestinationCard> stack;
+    private final Deque<ShortDestinationCard> stack;
 
-
-    public DestinationCardDeck(List<DestinationCard> cards) {
+    public DestinationCardDeck(List<ShortDestinationCard> cards) {
         this.stack = new ArrayDeque<>(cards);
     }
 
-    public DestinationCardDeck() {
-        this(new ArrayList<>());
-    }
+    public List<ShortDestinationCard> drawCard(int maximumDraw) {
+        List<ShortDestinationCard> cards = new ArrayList<>();
 
-    /**
-     * @return the first card of the deck and remove it from the deck
-     */
-    public DestinationCard drawCard() {
-        if (stack.isEmpty()) {
-            throw new IllegalStateException("The deck is empty!");
-        }
-        return stack.removeFirst();
-    }
-
-    public List<DestinationCard> drawCard(int maximumDraw) {
-        List<DestinationCard> cards = new ArrayList<>();
-
-        for (int i = 0; i < maximumDraw && !stack.isEmpty(); i++) {
-            cards.add(stack.removeFirst());
-        }
+        for (int i = 0; i < maximumDraw && !stack.isEmpty(); i++) cards.add(stack.removeFirst());
 
         return cards;
     }
 
-    public void addCardsAtBottom(List<DestinationCard> cards) {
+    public void addCardsAtBottom(List<ShortDestinationCard> cards) {
         cards.forEach(stack::addLast);
     }
 
@@ -48,7 +31,7 @@ public class DestinationCardDeck {
     }
 
     public boolean shuffle() {
-        List<DestinationCard> list = new ArrayList<>(stack);
+        List<ShortDestinationCard> list = new ArrayList<>(stack);
         Collections.shuffle(list);
         stack.clear();
         stack.addAll(list);

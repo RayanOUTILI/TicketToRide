@@ -2,6 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.views;
 
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
@@ -30,5 +31,5 @@ public abstract class IPlayerViewable {
         System.out.println("Player " + playerIdentification + " claimed route " + route);
     }
 
-    public abstract void displayReceivedDestinationCards(List<DestinationCard> destinationCards);
+    public abstract void displayReceivedDestinationCards(List<ShortDestinationCard> destinationCards);
 }

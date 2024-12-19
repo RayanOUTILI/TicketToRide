@@ -1,8 +1,10 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IDestinationCardsControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,16 @@ class DestinationCardsControllerTest {
         player = mock(Player.class);
     }
 
+    @Test
+    void testInit() {
+        when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
+        when(gameModel.shuffleDestinationCardDeck()).thenReturn(true);
+        List<ShortDestinationCard> cards = List.of(mock(ShortDestinationCard.class), mock(ShortDestinationCard.class), mock(ShortDestinationCard.class));
+        when(gameModel.drawDestinationCards(3)).thenReturn(cards);
+        assertTrue(destinationCardsController.init(player));
+        verify(player).receivedDestinationCards(cards);
+    }
+
     @org.junit.jupiter.api.Test
     void testWithEmptyDeck() {
         when(gameModel.isDestinationCardDeckEmpty()).thenReturn(true);
@@ -30,7 +42,7 @@ class DestinationCardsControllerTest {
 
     @org.junit.jupiter.api.Test
     void testWithNullChosenCards() {
-        List<DestinationCard> cards = List.of(mock(DestinationCard.class), mock(DestinationCard.class), mock(DestinationCard.class));
+        List<ShortDestinationCard> cards = List.of(mock(ShortDestinationCard.class), mock(ShortDestinationCard.class), mock(ShortDestinationCard.class));
         when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
         when(gameModel.drawDestinationCards(3)).thenReturn(cards);
         when(player.askDestinationCards(cards)).thenReturn(null);
@@ -40,10 +52,10 @@ class DestinationCardsControllerTest {
 
     @org.junit.jupiter.api.Test
     void testWithEmptyChosenCards() {
-        List<DestinationCard> cards = List.of(mock(DestinationCard.class), mock(DestinationCard.class), mock(DestinationCard.class));
+        List<ShortDestinationCard> cards = List.of(mock(ShortDestinationCard.class), mock(ShortDestinationCard.class), mock(ShortDestinationCard.class));
         when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
         when(gameModel.drawDestinationCards(3)).thenReturn(cards);
-        List<DestinationCard> emptyList = new ArrayList<>();
+        List<ShortDestinationCard> emptyList = new ArrayList<>();
         when(player.askDestinationCards(cards)).thenReturn(emptyList);
         assertFalse(destinationCardsController.doAction(player));
         verify(gameModel).returnDestinationCardsToTheBottom(cards);
@@ -51,7 +63,7 @@ class DestinationCardsControllerTest {
 
     @org.junit.jupiter.api.Test
     void testCompleted() {
-        List<DestinationCard> cards = List.of(mock(DestinationCard.class), mock(DestinationCard.class), mock(DestinationCard.class));
+        List<ShortDestinationCard> cards = List.of(mock(ShortDestinationCard.class), mock(ShortDestinationCard.class), mock(ShortDestinationCard.class));
         when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
         when(gameModel.drawDestinationCards(3)).thenReturn(cards);
         when(player.askDestinationCards(cards)).thenReturn(cards);

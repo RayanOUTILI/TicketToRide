@@ -9,22 +9,11 @@ import java.util.*;
  */
 public class WagonCardDeck {
     private final Deque<WagonCard> stack;
+    private final Deque<WagonCard> discardPile = new ArrayDeque<>();
 
 
     public WagonCardDeck(List<WagonCard> cards) {
         this.stack = new ArrayDeque<>(cards);
-    }
-
-    public WagonCardDeck() {
-        this(new ArrayList<>());
-    }
-
-    /**
-     * @param newCards, the new cards to add
-     */
-    public void regenerateDeck(List<WagonCard> newCards) {
-        this.stack.clear();
-        this.stack.addAll(newCards);
     }
 
     /**
@@ -35,6 +24,19 @@ public class WagonCardDeck {
             throw new IllegalStateException("The deck is empty!");
         }
         return stack.removeFirst();
+    }
+
+    public boolean addCardToDiscardPile(List<WagonCard> cards) {
+        return discardPile.addAll(cards);
+    }
+
+    public boolean fillDeck() {
+        if (stack.isEmpty()) {
+            stack.addAll(discardPile);
+            discardPile.clear();
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -4,8 +4,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.EndGameReasons;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IVictoryControllerGameModel;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class VictoryControllerTest {
 
@@ -42,6 +41,13 @@ class VictoryControllerTest {
         when(gameModel.isWagonCardDeckEmpty()).thenReturn(true);
 
         assertEquals(EndGameReasons.EMPTY_WAGON_CARDS_DECK, victoryController.endGame().reason());
+    }
+
+    @org.junit.jupiter.api.Test
+    void endTurn() {
+        when(gameModel.isWagonCardDeckEmpty()).thenReturn(true);
+        victoryController.endTurn();
+        verify(gameModel).fillWagonCardDeck();
     }
 
 }

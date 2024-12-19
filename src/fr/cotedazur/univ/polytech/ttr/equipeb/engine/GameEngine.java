@@ -39,8 +39,10 @@ public class GameEngine {
         Victory victory;
         while((victory = victoryController.endGame()) == null) {
             handlePlayerAction(player);
+
             scoreController.updateScore(player);
             gameView.displayPlayerScore(player.getIdentification(), player.getScore());
+            victoryController.endTurn();
         }
         gameView.displayEndGameReason(victory.reason());
     }

@@ -42,6 +42,7 @@ public class RoutesController extends Controller {
             return false;
         }
 
+        gameModel.discardWagonCards(removedCards);
 
         route.setClaimerPlayer(player.getIdentification());
 

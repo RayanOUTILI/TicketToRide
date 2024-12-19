@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 
@@ -20,7 +21,7 @@ public interface IPlayerModelControllable {
      */
     void replaceRemovedWagonCards(List<WagonCard> wagonCards);
     void notifyClaimedRoute(RouteReadOnly route);
-    void receivedDestinationCards(List<DestinationCard> destinationCards);
     void setScore(int score);
     int getScore();
+    void receivedDestinationCards(List<ShortDestinationCard> destinationCards);
 }

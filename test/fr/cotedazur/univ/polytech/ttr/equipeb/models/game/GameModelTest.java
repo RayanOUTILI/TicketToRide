@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
@@ -43,6 +44,12 @@ class GameModelTest {
     }
 
     @Test
+    void testShuffleWagonCardDeck() {
+        when(wagonCardDeck.shuffle()).thenReturn(true);
+        assertTrue(gameModel.shuffleWagonCardDeck());
+    }
+
+    @Test
     void testIsWagonCardDeckEmpty() {
         when(wagonCardDeck.isEmpty()).thenReturn(true);
         assertTrue(gameModel.isWagonCardDeckEmpty());
@@ -53,6 +60,16 @@ class GameModelTest {
         WagonCard wagonCard = mock(WagonCard.class);
         when(wagonCardDeck.drawCard()).thenReturn(wagonCard);
         assertEquals(gameModel.drawCardFromWagonCardDeck(), wagonCard);
+    }
+
+    @Test
+    void testDrawWagonCards() {
+        WagonCard wagonCard1 = mock(WagonCard.class);
+        WagonCard wagonCard2 = mock(WagonCard.class);
+        List<WagonCard> wagonCards = List.of(wagonCard1, wagonCard2);
+        when(wagonCardDeck.drawCard()).thenReturn(wagonCard1, wagonCard2, wagonCard1, wagonCard2);
+        assertEquals(gameModel.drawCardsFromWagonCardDeck(2), wagonCards);
+        assertEquals(gameModel.drawCardsFromWagonCardDeck(2), wagonCards);
     }
 
     @Test
@@ -74,7 +91,7 @@ class GameModelTest {
 
     @Test
     void testDrawDestinationCards() {
-        List<DestinationCard> destinationCards = List.of(mock(DestinationCard.class));
+        List<ShortDestinationCard> destinationCards = List.of(mock(ShortDestinationCard.class));
         when(destinationCardDeck.drawCard(1)).thenReturn(destinationCards);
         when(destinationCardDeck.drawCard(3)).thenReturn(destinationCards);
         assertEquals(gameModel.drawDestinationCards(1), destinationCards);
@@ -83,7 +100,7 @@ class GameModelTest {
 
     @Test
     void testReturnDestinationCardsToTheBottom() {
-        List<DestinationCard> destinationCards = List.of(mock(DestinationCard.class));
+        List<ShortDestinationCard> destinationCards = List.of(mock(ShortDestinationCard.class));
         gameModel.returnDestinationCardsToTheBottom(destinationCards);
         verify(destinationCardDeck).addCardsAtBottom(destinationCards);
     }
@@ -114,5 +131,37 @@ class GameModelTest {
         when(route.getId()).thenReturn(1);
         assertTrue(gameModel.deleteRoute(1));
         assertNull(gameModel.getRoute(1));
+    }
+
+    @Test
+    void testDiscardWagonCards() {
+        WagonCard wagonCard = mock(WagonCard.class);
+        List<WagonCard> wagonCards = List.of(wagonCard);
+        when(wagonCardDeck.addCardToDiscardPile(wagonCards)).thenReturn(true);
+        assertTrue(gameModel.discardWagonCards(wagonCards));
+    }
+
+    @Test
+    void testShuffleDestinationCardDeck() {
+        when(destinationCardDeck.shuffle()).thenReturn(true);
+        assertTrue(gameModel.shuffleDestinationCardDeck());
+    }
+
+    @Test
+    void testGetNbOfPlayers() {
+        assertEquals(1, gameModel.getNbOfPlayers());
+    }
+
+    @Test
+    void testSetAllRoutesNotClaimed() {
+        when(route.isClaimed()).thenReturn(true);
+        gameModel.setAllRoutesNotClaimed();
+        routes.forEach(route -> assertTrue(route.isClaimed()));
+    }
+
+    @Test
+    void testFillWagonCardDeck() {
+        when(wagonCardDeck.fillDeck()).thenReturn(true);
+        assertTrue(gameModel.fillWagonCardDeck());
     }
 }
