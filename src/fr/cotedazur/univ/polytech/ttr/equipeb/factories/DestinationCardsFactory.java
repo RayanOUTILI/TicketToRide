@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.factories;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.jsonparsers.DestinationCardsParser;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
@@ -26,7 +27,7 @@ public class DestinationCardsFactory {
      * 
      * @return A list of all destination cards.
      */
-    public List<DestinationCard> getAllDestinationCards() {
+    public List<DestinationCard> getAllDestinationCards() throws JsonParseException {
         return parser.parseAllDestinationCards("data-europe/destination-cards.json");
     }
 
@@ -35,7 +36,7 @@ public class DestinationCardsFactory {
      * 
      * @return A list of short destination cards.
      */
-    public List<ShortDestinationCard> getShortDestinationCards() {
+    public List<ShortDestinationCard> getShortDestinationCards() throws JsonParseException {
         return parser.parseShortDestinationCards("data-europe/destination-cards.json");
     }
 
@@ -44,7 +45,7 @@ public class DestinationCardsFactory {
      * 
      * @return A list of long destination cards.
      */
-    public List<LongDestinationCard> getLongDestinationCards() {
+    public List<LongDestinationCard> getLongDestinationCards() throws JsonParseException {
         return parser.parseLongDestinationCards("data-europe/destination-cards.json");
     }
 }

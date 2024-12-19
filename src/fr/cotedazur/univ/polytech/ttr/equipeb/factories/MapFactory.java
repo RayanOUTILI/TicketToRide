@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.factories;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.jsonparsers.RouteParser;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
@@ -20,7 +21,7 @@ public class MapFactory {
     /*
      * Get the map from the JSON file
      */
-    public List<Route> getMapFromJson() {
+    public List<Route> getMapFromJson() throws JsonParseException {
         return routeParser.parseRoutes("data-europe/routes.json");
     }
 

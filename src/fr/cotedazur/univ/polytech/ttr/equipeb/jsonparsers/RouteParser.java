@@ -2,13 +2,12 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.jsonparsers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteColor;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -36,11 +35,14 @@ public class RouteParser {
      * @param filePath the path to the JSON file
      * @return the list of routes
      */
-    public List<Route> parseRoutes(String filePath){
+    public List<Route> parseRoutes(String filePath) throws JsonParseException {
         List<Route> routes = new ArrayList<>();
 
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
+            if (inputStream == null) {
+                throw new JsonParseException("File not found: " + filePath);
+            }
             List<Map<String, Object>> routeDataList = objectMapper.readValue(inputStream, new TypeReference<List<Map<String, Object>>>(){});
 
 
@@ -59,8 +61,8 @@ public class RouteParser {
 
                 routes.add(new Route(city1, city2, size, routeType, routeColor, nbLocomotives));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | IllegalArgumentException e) {
+            throw new JsonParseException("Error while parsing route", e);
         }
 
         return routes;
