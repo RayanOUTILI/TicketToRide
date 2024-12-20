@@ -166,4 +166,17 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
                 .findFirst()
                 .orElse(null);
     }
+    public PlayerModel getWinner() {
+        if (playerModels == null || playerModels.isEmpty()) {
+            return null;
+        }
+
+        PlayerModel winner = playerModels.get(0);
+        for (PlayerModel player : playerModels) {
+            if (player.getScore() > winner.getScore()) {
+                winner = player;
+            }
+        }
+        return winner;
+    }
 }

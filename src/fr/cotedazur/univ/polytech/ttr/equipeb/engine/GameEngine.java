@@ -80,10 +80,8 @@ public class GameEngine {
                 player -> gameView.displayPlayerScore(player.getIdentification(), player.getScore())
         );
 
-        PlayerIdentification player = victory.getPlayerIdentification();
-        PlayerModel winner = gameModel.getPlayer(player);
-
-        if (winner != null) gameView.displayWinner(player, winner.getScore());
+        PlayerModel winner = gameModel.getWinner();
+        if(winner != null) gameView.displayWinner(winner.getIdentification(), winner.getScore());
 
         return nbTurn;
     }
