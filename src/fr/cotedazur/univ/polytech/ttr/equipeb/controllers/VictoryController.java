@@ -1,9 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.EndGameReasons;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.Victory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IVictoryControllerGameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 
 public class VictoryController {
     private final IVictoryControllerGameModel gameModel;
@@ -12,9 +10,9 @@ public class VictoryController {
         this.gameModel = gameModel;
     }
 
-    public Victory endGame() {
-        if(gameModel.isAllRoutesClaimed()) return new Victory(null, EndGameReasons.ALL_ROUTES_CLAIMED);
-        if(gameModel.isWagonCardDeckEmpty()) return new Victory(null, EndGameReasons.EMPTY_WAGON_CARDS_DECK);
+    public EndGameReasons endGame() {
+        if(gameModel.isAllRoutesClaimed()) return EndGameReasons.ALL_ROUTES_CLAIMED;
+        if(gameModel.isWagonCardDeckEmpty()) return EndGameReasons.EMPTY_WAGON_CARDS_DECK;
         return null;
     }
 

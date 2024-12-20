@@ -70,7 +70,11 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
 
     @Override
     public void setScore(int score) {
-        this.score = score;
+        if(this.score != score) {
+            this.score = score;
+            if(view != null) this.view.displayNewScore(score);
+        }
+
     }
 
     @Override

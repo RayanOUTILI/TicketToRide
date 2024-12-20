@@ -34,7 +34,7 @@ class ScoreControllerTest {
     void setUp() {
         gameModel = mock(IScoreControllerGameModel.class);
         scoreController = new ScoreController(gameModel);
-        player = new PlayerModel(PlayerIdentification.BLACK, new PlayerConsoleView(PlayerIdentification.BLACK));
+        player = new PlayerModel(PlayerIdentification.BLACK, null);
 
         routeLength1 = mock(RouteReadOnly.class);
             when(routeLength1.getLength()).thenReturn(1);
@@ -108,7 +108,7 @@ class ScoreControllerTest {
     void testCalculateDestinationsScores() {
         ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
 
-        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, new PlayerConsoleView(PlayerIdentification.BLACK));
+        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, null);
         playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));
 
         Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, RouteColor.BLACK , 5);
@@ -129,7 +129,7 @@ class ScoreControllerTest {
         ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Berlin"), new City("Paris"), 10);
         ShortDestinationCard parisToDakarDestination = new ShortDestinationCard(new City("Paris"), new City("Dakar"), 5);
 
-        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, new PlayerConsoleView(PlayerIdentification.BLACK));
+        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, null);
         playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination, parisToDakarDestination));
 
         Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, RouteColor.BLACK , 5);
@@ -149,7 +149,7 @@ class ScoreControllerTest {
     void testCyclicDestinationsScores() {
         ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
 
-        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, new PlayerConsoleView(PlayerIdentification.BLACK));
+        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, null);
         playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));
 
         Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, RouteColor.BLACK , 5);

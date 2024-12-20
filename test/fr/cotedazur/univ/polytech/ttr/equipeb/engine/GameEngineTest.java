@@ -5,7 +5,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.Controller;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ScoreController;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.VictoryController;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.EndGameReasons;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.Victory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
@@ -46,7 +45,7 @@ class GameEngineTest {
 
     @Test
     void testEndGame() {
-        when(victoryController.endGame()).thenReturn(null, new Victory(null, EndGameReasons.EMPTY_WAGON_CARDS_DECK));
+        when(victoryController.endGame()).thenReturn(null, EndGameReasons.EMPTY_WAGON_CARDS_DECK);
         when(controller.init(any())).thenReturn(true);
         when(controller.doAction(any())).thenReturn(true);
         players.forEach(player -> when(player.askAction()).thenReturn(Action.PICK_WAGON_CARD));
@@ -61,7 +60,7 @@ class GameEngineTest {
     void testWrongAction() {
         when(player1.askAction()).thenReturn(null, Action.PICK_WAGON_CARD);
         when(player2.askAction()).thenReturn(Action.PICK_WAGON_CARD);
-        when(victoryController.endGame()).thenReturn(null, null, new Victory(null, EndGameReasons.EMPTY_WAGON_CARDS_DECK));
+        when(victoryController.endGame()).thenReturn(null, null, EndGameReasons.EMPTY_WAGON_CARDS_DECK);
         when(controller.init(any())).thenReturn(true);
         when(controller.doAction(any())).thenReturn(true);
 

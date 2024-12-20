@@ -10,10 +10,6 @@ public class GameConsoleView implements IGameViewable {
     }
 
     @Override
-    public void displayPlayerScore(PlayerIdentification playerId, int score) {
-        System.out.println("Player " + playerId + " scored " + score);
-    }
-    @Override
     public void displayWinner(PlayerIdentification playerId, int score) {
         System.out.println("Player " + playerId + " won with a score of " + score);
     }

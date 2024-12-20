@@ -32,7 +32,7 @@ class VictoryControllerTest {
         when(gameModel.isAllRoutesClaimed()).thenReturn(true);
         when(gameModel.isWagonCardDeckEmpty()).thenReturn(false);
 
-        assertEquals(EndGameReasons.ALL_ROUTES_CLAIMED, victoryController.endGame().reason());
+        assertEquals(EndGameReasons.ALL_ROUTES_CLAIMED, victoryController.endGame());
     }
 
     @org.junit.jupiter.api.Test
@@ -40,7 +40,7 @@ class VictoryControllerTest {
         when(gameModel.isAllRoutesClaimed()).thenReturn(false);
         when(gameModel.isWagonCardDeckEmpty()).thenReturn(true);
 
-        assertEquals(EndGameReasons.EMPTY_WAGON_CARDS_DECK, victoryController.endGame().reason());
+        assertEquals(EndGameReasons.EMPTY_WAGON_CARDS_DECK, victoryController.endGame());
     }
 
     @org.junit.jupiter.api.Test

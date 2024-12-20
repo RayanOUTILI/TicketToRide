@@ -2,10 +2,9 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.engine;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.*;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.Victory;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.EndGameReasons;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
@@ -58,8 +57,8 @@ public class GameEngine {
 
         players.forEach(player -> controllers.values().forEach(controller -> controller.init(player)));
 
-        Victory victory;
-        while((victory = victoryController.endGame()) == null) {
+        EndGameReasons endGameReason;
+        while((endGameReason = victoryController.endGame()) == null) {
             boolean success;
             do {
                 success = handlePlayerAction(currentPlayer);
@@ -68,17 +67,13 @@ public class GameEngine {
             if (newTurn){
     
             scoreController.updateScore(currentPlayer);
-            gameView.displayPlayerScore(currentPlayer.getIdentification(), currentPlayer.getScore());
             victoryController.endTurn();
                 nbTurn++;
             }
         }
         scoreController.calculateFinalScores();
-        gameView.displayEndGameReason(victory.reason());
 
-        gameModel.getPlayers().forEach(
-                player -> gameView.displayPlayerScore(player.getIdentification(), player.getScore())
-        );
+        gameView.displayEndGameReason(endGameReason);
 
         PlayerModel winner = gameModel.getWinner();
         if(winner != null) gameView.displayWinner(winner.getIdentification(), winner.getScore());
