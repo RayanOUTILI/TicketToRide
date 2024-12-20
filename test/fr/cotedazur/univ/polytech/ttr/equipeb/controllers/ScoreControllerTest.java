@@ -111,16 +111,38 @@ public class ScoreControllerTest {
         IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK);
         playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));
 
-        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 3, RouteType.TRAIN, RouteColor.BLACK , 5);
+        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, RouteColor.BLACK , 5);
         routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
 
-        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 3, RouteType.TRAIN, RouteColor.BLACK, 5);
+        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, RouteColor.BLACK, 5);
         routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
 
 
         when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid));
         when(gameModel.getPlayers()).thenReturn(List.of(playerWithDestinations));
         scoreController.calculateFinalScores();
-        assertEquals(18, playerWithDestinations.getScore());
+        assertEquals(10, playerWithDestinations.getScore());
     }
+
+    @Test
+    void testCalculateDestinationsScoresWithAnIncompleteObjective() {
+        ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Berlin"), new City("Paris"), 10);
+        ShortDestinationCard parisToDakarDestination = new ShortDestinationCard(new City("Paris"), new City("Dakar"), 5);
+
+        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK);
+        playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination, parisToDakarDestination));
+
+        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, RouteColor.BLACK , 5);
+        routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
+
+        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, RouteColor.BLACK, 5);
+        routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
+
+
+        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid));
+        when(gameModel.getPlayers()).thenReturn(List.of(playerWithDestinations));
+        scoreController.calculateFinalScores();
+        assertEquals(5, playerWithDestinations.getScore());
+    }
+
 }
