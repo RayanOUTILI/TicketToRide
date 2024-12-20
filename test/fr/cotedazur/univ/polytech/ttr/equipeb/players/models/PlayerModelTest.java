@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
@@ -14,7 +15,7 @@ class PlayerModelTest {
 
     @BeforeEach
     void setUp() {
-        playerModel = new PlayerModel(PlayerIdentification.BLUE);
+        playerModel = new PlayerModel(PlayerIdentification.BLUE, null);
     }
 
     @org.junit.jupiter.api.Test

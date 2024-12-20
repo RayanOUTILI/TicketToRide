@@ -8,7 +8,10 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
 
+import javax.swing.text.View;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,13 +19,19 @@ import java.util.Random;
 public class EasyBotEngine implements IPlayerActionsControllable {
     private final IPlayerGameModel gameModel;
     private final IPlayerModel playerModel;
+    private final IPlayerEngineViewable view;
 
-    private final Random random;
+    private final RandomGenerator random;
 
-    public EasyBotEngine(PlayerModel playerModel, IPlayerGameModel gameModel) {
+    public EasyBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view) {
+        this(playerModel, gameModel, view, new RandomGenerator());
+    }
+
+    protected EasyBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view, RandomGenerator random) {
         this.gameModel = gameModel;
         this.playerModel = playerModel;
-        this.random = new Random();
+        this.view = view;
+        this.random = random;
     }
 
 
@@ -68,11 +77,15 @@ public class EasyBotEngine implements IPlayerActionsControllable {
 
     @Override
     public void actionRefused(Action action) {
-        System.err.println("Action refused: " + action);
+        if(view != null) {
+            view.displayActionRefused(action);
+        }
     }
 
     @Override
     public void actionCompleted(Action action) {
-        System.out.println("Action completed: " + action);
+        if(view != null) {
+            view.displayActionCompleted(action);
+        }
     }
 }

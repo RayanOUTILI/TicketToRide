@@ -3,6 +3,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
@@ -21,11 +22,11 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     private final IPlayerViewable view;
     private int score;
 
-    public PlayerModel(PlayerIdentification playerIdentification) {
+    public PlayerModel(PlayerIdentification playerIdentification, IPlayerViewable view) {
         this.playerIdentification = playerIdentification;
         this.wagonCards = new ArrayList<>();
         this.destinationCards = new ArrayList<>();
-        this.view = new PlayerConsoleView(playerIdentification);
+        this.view = view;
         this.score = 0;
     }
 
@@ -36,13 +37,13 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     @Override
     public void receivedWagonCard(WagonCard wagonCard) {
         wagonCards.add(wagonCard);
-        this.view.displayReceivedWagonCards(wagonCard);
+        if(view != null) this.view.displayReceivedWagonCards(wagonCard);
     }
 
     @Override
     public void receivedWagonCards(List<WagonCard> wagonCards) {
         this.wagonCards.addAll(wagonCards);
-        this.view.displayReceivedWagonCards(wagonCards);
+        if(view != null) this.view.displayReceivedWagonCards(wagonCards);
     }
 
     @Override
@@ -64,7 +65,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
 
     @Override
     public void notifyClaimedRoute(RouteReadOnly route) {
-        this.view.displayClaimedRoute(route);
+        if(view != null) this.view.displayClaimedRoute(route);
     }
 
     @Override
@@ -79,7 +80,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
 
     public void receivedDestinationCards(List<ShortDestinationCard> destinationCards) {
         this.destinationCards.addAll(destinationCards);
-        this.view.displayReceivedDestinationCards(destinationCards);
+        if(view != null) this.view.displayReceivedDestinationCards(destinationCards);
     }
 
     @Override

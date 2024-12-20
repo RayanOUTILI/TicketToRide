@@ -4,6 +4,8 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.EasyBotEngine;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
+
 import java.util.List;
 
 public class PlayerFactory {
@@ -15,7 +17,7 @@ public class PlayerFactory {
      * @return Un objet Player qui est un bot.
      */
     public Player createEasyBot(PlayerModel playerModel, GameModel gameModel) {
-        return new Player(new EasyBotEngine(playerModel, gameModel), playerModel);
+        return new Player(new EasyBotEngine(playerModel, gameModel, new PlayerConsoleView(playerModel.getIdentification())), playerModel);
     }
 
     /**
