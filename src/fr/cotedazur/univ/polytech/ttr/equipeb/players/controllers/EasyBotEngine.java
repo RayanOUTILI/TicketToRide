@@ -50,6 +50,7 @@ public class EasyBotEngine implements IPlayerActionsControllable {
     @Override
     public ClaimRoute askClaimRoute() {
         List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes(playerModel.getNumberOfWagonCards());
+
         int routeIndex = random.nextInt(availableRoutes.size());
         RouteReadOnly route = availableRoutes.get(routeIndex);
 

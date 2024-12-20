@@ -5,14 +5,17 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.Victory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class GameEngine {
     private final VictoryController victoryController;
+    private final ScoreController scoreController;
     private final GameModel gameModel;
     private final IGameViewable gameView;
     private final Map<Action, Controller> controllers;
@@ -30,6 +33,7 @@ public class GameEngine {
             Action.CLAIM_ROUTE, new RoutesController(gameModel),
             Action.PICK_DESTINATION_CARDS, new DestinationCardsController(gameModel)
         );
+        this.scoreController = new ScoreController(gameModel);
     }
 
     public void startGame() {
@@ -40,10 +44,17 @@ public class GameEngine {
         while((victory = victoryController.endGame()) == null) {
             Player currentPlayer = players.get(currentPlayerIndex);
             handlePlayerAction(currentPlayer);
+
+            scoreController.updateScore(currentPlayer);
+            gameView.displayPlayerScore(currentPlayer.getIdentification(), currentPlayer.getScore());
             victoryController.endTurn();
             nextPlayer();
         }
+        scoreController.calculateFinalScores();
         gameView.displayEndGameReason(victory.reason());
+        gameModel.getPlayers().forEach(
+                player -> gameView.displayPlayerScore(player.getIdentification(), player.getScore())
+        );
     }
 
     protected void handlePlayerAction(Player player) {
@@ -56,6 +67,7 @@ public class GameEngine {
 
         Controller controller = controllers.get(action);
         boolean success = controller.doAction(player);
+
         if (!success) player.actionRefused(action);
         else  player.actionCompleted(action);
     }

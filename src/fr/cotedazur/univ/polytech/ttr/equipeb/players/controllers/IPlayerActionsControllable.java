@@ -20,4 +20,5 @@ public interface IPlayerActionsControllable {
     void actionRefused(Action action);
 
     void actionCompleted(Action action);
+
 }
