@@ -86,4 +86,19 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     public void receivedDestinationCards(List<ShortDestinationCard> destinationCards) {
         modelController.receivedDestinationCards(destinationCards);
     }
+
+    @Override
+    public List<DestinationCard> getDestinationCardsHand() {
+        return modelController.getDestinationCardsHand();
+    }
+
+    @Override
+    public void setScore(int score) {
+        modelController.setScore(score);
+    }
+
+    @Override
+    public int getScore() {
+        return modelController.getScore();
+    }
 }

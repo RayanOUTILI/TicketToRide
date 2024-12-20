@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.views;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * Player console view
  */
-public class PlayerConsoleView extends IPlayerViewable {
+public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineViewable {
     public PlayerConsoleView(PlayerIdentification playerIdentification) {
         super(playerIdentification);
     }
@@ -38,5 +39,15 @@ public class PlayerConsoleView extends IPlayerViewable {
         for (ShortDestinationCard destinationCard : destinationCards) {
             System.out.println(destinationCard);
         }
+    }
+
+    @Override
+    public void displayActionRefused(Action action) {
+        System.out.println("Player {" + this.getPlayerIdentification() + "} Action refused: " + action);
+    }
+
+    @Override
+    public void displayActionCompleted(Action action) {
+        System.out.println("Player {" + this.getPlayerIdentification() + "} Action completed: " + action);
     }
 }

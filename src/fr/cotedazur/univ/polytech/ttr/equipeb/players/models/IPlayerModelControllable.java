@@ -21,5 +21,9 @@ public interface IPlayerModelControllable {
      */
     void replaceRemovedWagonCards(List<WagonCard> wagonCards);
     void notifyClaimedRoute(RouteReadOnly route);
+    void setScore(int score);
+    int getScore();
     void receivedDestinationCards(List<ShortDestinationCard> destinationCards);
+
+    List<DestinationCard> getDestinationCardsHand();
 }
