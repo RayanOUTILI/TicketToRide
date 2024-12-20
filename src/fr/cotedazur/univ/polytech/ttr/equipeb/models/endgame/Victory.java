@@ -6,4 +6,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentificatio
  * Victory class
  */
 public record Victory(PlayerIdentification player, EndGameReasons reason) {
+    public PlayerIdentification getPlayerIdentification() {
+        return player;
+    }
 }

@@ -6,6 +6,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.Victory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 
@@ -23,7 +24,6 @@ public class GameEngine {
     private Iterator<Player> playerIterator;
 
     private Player currentPlayer;
-
     public GameEngine(GameModel gameModel, List<Player> players) {
         this.gameModel = gameModel;
         this.players = players;
@@ -40,7 +40,7 @@ public class GameEngine {
         this.currentPlayer = playerIterator.next();
     }
 
-    protected GameEngine(GameModel gameModel, List<Player> players, VictoryController victoryController, IGameViewable gameView, Map<Action, Controller> controllers) {
+    protected GameEngine(GameModel gameModel, List<Player> players, VictoryController victoryController, IGameViewable gameView, Map<Action, Controller> controllers, ScoreController scoreController) {
         this.gameModel = gameModel;
         this.players = players;
         this.victoryController = victoryController;
@@ -49,6 +49,8 @@ public class GameEngine {
 
         this.playerIterator = players.iterator();
         this.currentPlayer = playerIterator.next();
+        this.scoreController = new ScoreController(gameModel);
+
     }
 
     public int startGame() {
@@ -77,6 +79,12 @@ public class GameEngine {
         gameModel.getPlayers().forEach(
                 player -> gameView.displayPlayerScore(player.getIdentification(), player.getScore())
         );
+
+        PlayerIdentification player = victory.getPlayerIdentification();
+        PlayerModel winner = gameModel.getPlayer(player);
+
+        if (winner != null) gameView.displayWinner(player, winner.getScore());
+
         return nbTurn;
     }
 

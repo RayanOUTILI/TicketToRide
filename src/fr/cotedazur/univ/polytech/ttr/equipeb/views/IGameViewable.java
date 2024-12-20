@@ -6,4 +6,5 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentificatio
 public interface IGameViewable {
     void displayEndGameReason(EndGameReasons reason);
     void displayPlayerScore(PlayerIdentification playerId, int score);
+    void displayWinner(PlayerIdentification playerId, int score);
 }

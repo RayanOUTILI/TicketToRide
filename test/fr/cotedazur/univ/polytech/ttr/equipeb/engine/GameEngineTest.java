@@ -2,6 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.engine;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.Controller;
+import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ScoreController;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.VictoryController;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.EndGameReasons;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.Victory;
@@ -28,6 +29,8 @@ class GameEngineTest {
     private Player player2;
     private List<Player> players;
 
+    private ScoreController scoreController;
+
     @BeforeEach
     void setUp() {
         gameModel = mock(GameModel.class);
@@ -36,8 +39,9 @@ class GameEngineTest {
         controller = mock(Controller.class);
         player1 = mock(Player.class);
         player2 = mock(Player.class);
+        scoreController = mock(ScoreController.class);
         players = List.of(player1, player2);
-        gameEngine = new GameEngine(gameModel, players, victoryController, gameView, Map.of(Action.PICK_WAGON_CARD, controller));
+        gameEngine = new GameEngine(gameModel, players, victoryController, gameView, Map.of(Action.PICK_WAGON_CARD, controller), scoreController);
     }
 
     @Test
