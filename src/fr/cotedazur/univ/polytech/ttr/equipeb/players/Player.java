@@ -88,6 +88,11 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
+    public List<DestinationCard> getDestinationCardsHand() {
+        return modelController.getDestinationCardsHand();
+    }
+
+    @Override
     public void setScore(int score) {
         modelController.setScore(score);
     }

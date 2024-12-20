@@ -5,9 +5,11 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.Victory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +50,11 @@ public class GameEngine {
             victoryController.endTurn();
             nextPlayer();
         }
+        scoreController.calculateFinalScores();
         gameView.displayEndGameReason(victory.reason());
+        gameModel.getPlayers().forEach(
+                player -> gameView.displayPlayerScore(player.getIdentification(), player.getScore())
+        );
     }
 
     protected void handlePlayerAction(Player player) {

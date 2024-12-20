@@ -24,4 +24,6 @@ public interface IPlayerModelControllable {
     void setScore(int score);
     int getScore();
     void receivedDestinationCards(List<ShortDestinationCard> destinationCards);
+
+    List<DestinationCard> getDestinationCardsHand();
 }

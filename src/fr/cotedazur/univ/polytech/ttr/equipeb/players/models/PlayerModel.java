@@ -9,6 +9,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Class representing the player model
@@ -79,6 +80,11 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     public void receivedDestinationCards(List<ShortDestinationCard> destinationCards) {
         this.destinationCards.addAll(destinationCards);
         this.view.displayReceivedDestinationCards(destinationCards);
+    }
+
+    @Override
+    public List<DestinationCard> getDestinationCardsHand() {
+        return destinationCards;
     }
 
     @Override
