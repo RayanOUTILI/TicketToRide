@@ -1,0 +1,106 @@
+package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
+
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
+
+class EasyBotEngineTest {
+    private EasyBotEngine easyBotEngine;
+    private IPlayerModel playerModel;
+    private IPlayerGameModel gameModel;
+    private IPlayerEngineViewable view;
+    private RandomGenerator random;
+
+    @BeforeEach
+    void setUp() {
+        playerModel = mock(IPlayerModel.class);
+        gameModel = mock(IPlayerGameModel.class);
+        random = mock(RandomGenerator.class);
+        view = mock(IPlayerEngineViewable.class);
+
+        easyBotEngine = new EasyBotEngine(playerModel, gameModel, view, random);
+    }
+
+    @Test
+    void testAskActionPickDestinationCards() {
+        when(random.nextInt(anyInt())).thenReturn(0);
+        when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
+
+        assertEquals(Action.PICK_DESTINATION_CARDS, easyBotEngine.askAction());
+    }
+
+    @Test
+    void testAskActionClaimRoute() {
+        when(random.nextInt(2)).thenReturn(1);
+        when(playerModel.getNumberOfWagonCards()).thenReturn(1);
+        List<RouteReadOnly> routes = new ArrayList<>(List.of(mock(RouteReadOnly.class)));
+        when(gameModel.getNonControllableAvailableRoutes(anyInt())).thenReturn(routes);
+
+        assertEquals(Action.CLAIM_ROUTE, easyBotEngine.askAction());
+    }
+
+    @Test
+    void testAskActionPickWagonCard() {
+        when(random.nextInt(2)).thenReturn(1);
+        when(gameModel.getNonControllableAvailableRoutes(anyInt())).thenReturn(new ArrayList<>());
+
+        assertEquals(Action.PICK_WAGON_CARD, easyBotEngine.askAction());
+    }
+
+    @Test
+    void testAskClaimRoute() {
+        Route route = mock(Route.class);
+        when(route.getLength()).thenReturn(1);
+        List<RouteReadOnly> routes = new ArrayList<>(List.of(route));
+        when(gameModel.getNonControllableAvailableRoutes(anyInt())).thenReturn(routes);
+        when(random.nextInt(anyInt())).thenReturn(0);
+        when(playerModel.getWagonCards(anyInt())).thenReturn(new ArrayList<>(List.of(mock(WagonCard.class))));
+
+        assertNotNull(easyBotEngine.askClaimRoute());
+    }
+
+    @Test
+    void testAskDestinationCards() {
+        List<ShortDestinationCard> cards = new ArrayList<>(List.of(
+                mock(ShortDestinationCard.class),
+                mock(ShortDestinationCard.class),
+                mock(ShortDestinationCard.class)
+        ));
+
+        when(random.nextInt(anyInt())).thenReturn(1);
+        when(random.nextInt(anyInt())).thenReturn(1);
+
+        List<ShortDestinationCard> result = easyBotEngine.askDestinationCards(cards);
+
+        assertEquals(2, result.size());
+        assertTrue(cards.containsAll(result));
+    }
+
+    @Test
+    void testActionRefused() {
+        easyBotEngine.actionRefused(Action.PICK_DESTINATION_CARDS);
+        verify(view).displayActionRefused(Action.PICK_DESTINATION_CARDS);
+    }
+
+    @Test
+    void testActionCompleted() {
+        easyBotEngine.actionCompleted(Action.PICK_DESTINATION_CARDS);
+        verify(view).displayActionCompleted(Action.PICK_DESTINATION_CARDS);
+    }
+}
