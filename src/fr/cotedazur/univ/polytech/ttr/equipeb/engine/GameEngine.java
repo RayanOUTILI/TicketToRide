@@ -8,6 +8,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,9 @@ public class GameEngine {
     private final IGameViewable gameView;
     private final Map<Action, Controller> controllers;
     private final List<Player> players;
-    private int currentPlayerIndex = 0;
+    private Iterator<Player> playerIterator;
+
+    private Player currentPlayer;
 
     public GameEngine(GameModel gameModel, List<Player> players) {
         this.gameModel = gameModel;
@@ -30,37 +33,65 @@ public class GameEngine {
             Action.CLAIM_ROUTE, new RoutesController(gameModel),
             Action.PICK_DESTINATION_CARDS, new DestinationCardsController(gameModel)
         );
+        this.playerIterator = players.iterator();
+        this.currentPlayer = playerIterator.next();
     }
 
-    public void startGame() {
+    protected GameEngine(GameModel gameModel, List<Player> players, VictoryController victoryController, IGameViewable gameView, Map<Action, Controller> controllers) {
+        this.gameModel = gameModel;
+        this.players = players;
+        this.victoryController = victoryController;
+        this.gameView = gameView;
+        this.controllers = controllers;
+
+        this.playerIterator = players.iterator();
+        this.currentPlayer = playerIterator.next();
+    }
+
+    public int startGame() {
+        int nbTurn = 0;
 
         players.forEach(player -> controllers.values().forEach(controller -> controller.init(player)));
 
         Victory victory;
         while((victory = victoryController.endGame()) == null) {
-            Player currentPlayer = players.get(currentPlayerIndex);
-            handlePlayerAction(currentPlayer);
-            victoryController.endTurn();
-            nextPlayer();
+            boolean success;
+            do {
+                success = handlePlayerAction(currentPlayer);
+            } while (!success);
+            boolean newTurn = nextPlayer();
+            if (newTurn){
+                victoryController.endTurn();
+                nbTurn++;
+            }
         }
         gameView.displayEndGameReason(victory.reason());
+
+        return nbTurn;
     }
 
-    protected void handlePlayerAction(Player player) {
+    protected boolean handlePlayerAction(Player player) {
         Action action = player.askAction();
 
         if(action == null || !controllers.containsKey(action)) {
             player.actionRefused(action);
-            return;
+            return false;
         }
 
         Controller controller = controllers.get(action);
         boolean success = controller.doAction(player);
         if (!success) player.actionRefused(action);
         else  player.actionCompleted(action);
+        return success;
     }
 
-    private void nextPlayer() {
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    private boolean nextPlayer() {
+        if (!playerIterator.hasNext()){
+            playerIterator = players.iterator();
+            currentPlayer = playerIterator.next();
+            return false;
+        }
+        currentPlayer = playerIterator.next();
+        return true;
     }
 }
