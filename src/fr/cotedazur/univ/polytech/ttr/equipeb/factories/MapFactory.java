@@ -38,6 +38,16 @@ public class MapFactory {
         return routeParser.parseRoutes("data-europe/routes.json");
     }
 
+    /**
+     * Get the map from the JSON file
+     * Test purpose
+     * @param filePath the path to the JSON file
+     * @return the list of routes
+     */
+    protected List<Route> getMapFromJson(String filePath) throws JsonParseException {
+        return routeParser.parseRoutes(filePath);
+    }
+
     public List<Route> getSmallMap() {
         List<Route> routes = new ArrayList<>();
         City paris = new City("Paris");

@@ -1,73 +1,45 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.jsonparsers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Parser for reading destination cards from a JSON file.
- * Supports loading short and long destination cards separately.
- */
-public class DestinationCardsParser {
-    private final ObjectMapper objectMapper;
-    private final Map<String, City> cityMap;
-
-    /**
-     * Constructor initializing the JSON object mapper and the city map.
-     */
-    public DestinationCardsParser() {
-        this.objectMapper = new ObjectMapper();
-        this.cityMap = new HashMap<>();
-    }
+public class DestinationCardsParser extends BaseParser<Map<String, List<Map<String, Object>>>> {
 
     /**
      * Parses all destination cards (short and long) from a JSON file.
      *
      * @param filePath The path to the JSON file.
-     * @return A list of all destination cards (short and long combined).
+     * @return A list of all destination cards.
      */
     public List<DestinationCard> parseAllDestinationCards(String filePath) throws JsonParseException {
+        Map<String, List<Map<String, Object>>> cardsData = parseJsonFile(filePath, new TypeReference<>() {});
         List<DestinationCard> allCards = new ArrayList<>();
 
-        try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
-            if (inputStream == null) {
-                throw new JsonParseException("Le fichier JSON est introuvable.");
-            }
+        List<Map<String, Object>> shortCardsData = cardsData.get("shortDestinations");
+        List<Map<String, Object>> longCardsData = cardsData.get("longDestinations");
 
-            Map<String, List<Map<String, Object>>> cardsData = objectMapper.readValue(inputStream, new TypeReference<>() {});
-            List<Map<String, Object>> shortCardsData = cardsData.get("shortDestinations");
-            List<Map<String, Object>> longCardsData = cardsData.get("longDestinations");
+        for (Map<String, Object> cardData : shortCardsData) {
+            City start = getOrCreateCity((String) cardData.get("start"));
+            City end = getOrCreateCity((String) cardData.get("end"));
+            int points = (Integer) cardData.get("points");
 
-            for (Map<String, Object> cardData : shortCardsData) {
-                City start = getOrCreateCity((String) cardData.get("start"));
-                City end = getOrCreateCity((String) cardData.get("end"));
-                int points = (Integer) cardData.get("points");
+            allCards.add(new ShortDestinationCard(start, end, points));
+        }
 
-                allCards.add(new ShortDestinationCard(start, end, points));
-            }
+        for (Map<String, Object> cardData : longCardsData) {
+            City start = getOrCreateCity((String) cardData.get("start"));
+            City end = getOrCreateCity((String) cardData.get("end"));
+            int points = (Integer) cardData.get("points");
 
-            for (Map<String, Object> cardData : longCardsData) {
-                City start = getOrCreateCity((String) cardData.get("start"));
-                City end = getOrCreateCity((String) cardData.get("end"));
-                int points = (Integer) cardData.get("points");
-
-                allCards.add(new LongDestinationCard(start, end, points));
-            }
-
-        } catch (IOException | IllegalArgumentException e) {
-            throw new JsonParseException("Erreur lors du parsing des cartes de destination.", e);
+            allCards.add(new LongDestinationCard(start, end, points));
         }
 
         return allCards;
@@ -80,28 +52,17 @@ public class DestinationCardsParser {
      * @return A list of short destination cards.
      */
     public List<ShortDestinationCard> parseShortDestinationCards(String filePath) throws JsonParseException {
+        Map<String, List<Map<String, Object>>> cardsData = parseJsonFile(filePath, new TypeReference<>() {});
         List<ShortDestinationCard> shortCards = new ArrayList<>();
 
-        try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
-            if (inputStream == null) {
-                throw new JsonParseException("Le fichier JSON est introuvable.");
-            }
+        List<Map<String, Object>> shortCardsData = cardsData.get("shortDestinations");
 
-            Map<String, List<Map<String, Object>>> cardsData = objectMapper.readValue(inputStream, new TypeReference<>() {});
+        for (Map<String, Object> cardData : shortCardsData) {
+            City start = getOrCreateCity((String) cardData.get("start"));
+            City end = getOrCreateCity((String) cardData.get("end"));
+            int points = (Integer) cardData.get("points");
 
-            List<Map<String, Object>> shortCardsData = cardsData.get("shortDestinations");
-
-            for (Map<String, Object> cardData : shortCardsData) {
-                City start = getOrCreateCity((String) cardData.get("start"));
-                City end = getOrCreateCity((String) cardData.get("end"));
-                int points = (Integer) cardData.get("points");
-
-                shortCards.add(new ShortDestinationCard(start, end, points));
-            }
-
-        } catch (IOException | IllegalArgumentException e) {
-            throw new JsonParseException("Error while parsing short destination cards.", e);
+            shortCards.add(new ShortDestinationCard(start, end, points));
         }
 
         return shortCards;
@@ -114,40 +75,21 @@ public class DestinationCardsParser {
      * @return A list of long destination cards.
      */
     public List<LongDestinationCard> parseLongDestinationCards(String filePath) throws JsonParseException {
+        Map<String, List<Map<String, Object>>> cardsData = parseJsonFile(filePath, new TypeReference<>() {});
         List<LongDestinationCard> longCards = new ArrayList<>();
 
-        try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
-            if (inputStream == null) {
-                throw new JsonParseException("File not found.");
-            }
+        List<Map<String, Object>> longCardsData = cardsData.get("longDestinations");
 
-            Map<String, List<Map<String, Object>>> cardsData = objectMapper.readValue(inputStream, new TypeReference<>() {});
-            List<Map<String, Object>> longCardsData = cardsData.get("longDestinations");
+        for (Map<String, Object> cardData : longCardsData) {
+            City start = getOrCreateCity((String) cardData.get("start"));
+            City end = getOrCreateCity((String) cardData.get("end"));
+            int points = (Integer) cardData.get("points");
 
-            for (Map<String, Object> cardData : longCardsData) {
-                City start = getOrCreateCity((String) cardData.get("start"));
-                City end = getOrCreateCity((String) cardData.get("end"));
-                int points = (Integer) cardData.get("points");
-
-                longCards.add(new LongDestinationCard(start, end, points));
-            }
-
-        } catch (IOException | IllegalArgumentException e) {
-            throw new JsonParseException("Error while parsing long destination cards.", e);
+            longCards.add(new LongDestinationCard(start, end, points));
         }
 
         return longCards;
     }
 
-    /**
-     * Get the city with the given name or create it if it does not exist.
-     * Uses a map to ensure that cities are created only once.
-     *
-     * @param cityName The name of the city.
-     * @return The city.
-     */
-    private City getOrCreateCity(String cityName) {
-        return cityMap.computeIfAbsent(cityName, City::new);
-    }
 }
+
