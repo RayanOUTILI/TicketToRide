@@ -144,4 +144,26 @@ class ScoreControllerTest {
         assertEquals(5, playerWithDestinations.getScore());
     }
 
+    @Test
+    void testCyclicDestinationsScores() {
+        ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
+
+        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK);
+        playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));
+
+        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, RouteColor.BLACK , 5);
+        routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
+
+        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, RouteColor.BLACK, 5);
+        routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
+
+        Route routeBerlinToParis = new Route(new City("Berlin"), new City("Paris"), 0, RouteType.TRAIN, RouteColor.BLACK, 5);
+        routeBerlinToParis.setClaimerPlayer(PlayerIdentification.BLACK);
+
+
+        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid));
+        when(gameModel.getPlayers()).thenReturn(List.of(playerWithDestinations));
+        scoreController.calculateFinalScores();
+        assertEquals(10, playerWithDestinations.getScore());
+    }
 }
