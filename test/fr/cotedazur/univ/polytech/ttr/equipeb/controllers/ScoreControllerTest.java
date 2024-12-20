@@ -8,7 +8,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ScoreControllerTest {
+class ScoreControllerTest {
     ScoreController scoreController;
     IScoreControllerGameModel gameModel;
     IPlayerModelControllable player;
@@ -106,7 +106,6 @@ public class ScoreControllerTest {
     @Test
     void testCalculateDestinationsScores() {
         ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
-
 
         IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK);
         playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));

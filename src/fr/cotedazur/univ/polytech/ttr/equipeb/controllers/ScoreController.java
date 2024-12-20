@@ -32,7 +32,7 @@ public class ScoreController {
         player.setScore(score);
     }
 
-    private void calculateDestinationCardScore(IPlayerModelControllable player) {
+    private void calculateDestinationCardsScore(IPlayerModelControllable player) {
         List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification());
         List<DestinationCard> destinationCards = player.getDestinationCardsHand();
 
@@ -65,9 +65,6 @@ public class ScoreController {
                 })
                 .sum();
 
-        System.out.println("All city pairs: " + allCityPairs);
-        System.out.println("Max lenght route: " + allCityPairs.stream().max(Comparator.comparingInt(CityPair::getLength)));
-
         player.setScore(player.getScore() + score);
     }
 
@@ -96,6 +93,6 @@ public class ScoreController {
 
     public void calculateFinalScores(){
         gameModel.getPlayers().forEach(this::updateScore);
-        gameModel.getPlayers().forEach(this::calculateDestinationCardScore);
+        gameModel.getPlayers().forEach(this::calculateDestinationCardsScore);
     }
 }
