@@ -8,6 +8,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +34,7 @@ class ScoreControllerTest {
     void setUp() {
         gameModel = mock(IScoreControllerGameModel.class);
         scoreController = new ScoreController(gameModel);
-        player = new PlayerModel(PlayerIdentification.BLACK);
+        player = new PlayerModel(PlayerIdentification.BLACK, new PlayerConsoleView(PlayerIdentification.BLACK));
 
         routeLength1 = mock(RouteReadOnly.class);
             when(routeLength1.getLength()).thenReturn(1);
@@ -107,7 +108,7 @@ class ScoreControllerTest {
     void testCalculateDestinationsScores() {
         ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
 
-        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK);
+        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, new PlayerConsoleView(PlayerIdentification.BLACK));
         playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));
 
         Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, RouteColor.BLACK , 5);
@@ -128,7 +129,7 @@ class ScoreControllerTest {
         ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Berlin"), new City("Paris"), 10);
         ShortDestinationCard parisToDakarDestination = new ShortDestinationCard(new City("Paris"), new City("Dakar"), 5);
 
-        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK);
+        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, new PlayerConsoleView(PlayerIdentification.BLACK));
         playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination, parisToDakarDestination));
 
         Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, RouteColor.BLACK , 5);
@@ -148,7 +149,7 @@ class ScoreControllerTest {
     void testCyclicDestinationsScores() {
         ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
 
-        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK);
+        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, new PlayerConsoleView(PlayerIdentification.BLACK));
         playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));
 
         Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, RouteColor.BLACK , 5);
