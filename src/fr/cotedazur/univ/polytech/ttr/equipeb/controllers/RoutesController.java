@@ -9,7 +9,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import java.util.List;
 
 public class RoutesController extends Controller {
-    private static final int MINIMUM_PLAYERS_TO_KEEP_DOUBLE_ROUTES = 3;
+    private static final int THRESHOLD_PLAYERS_TO_KEEP_DOUBLE_ROUTES = 4;
     private final IRoutesControllerGameModel gameModel;
 
     public RoutesController(IRoutesControllerGameModel gameModel) {
@@ -46,7 +46,7 @@ public class RoutesController extends Controller {
 
         route.setClaimerPlayer(player.getIdentification());
 
-        if(gameModel.getNbOfPlayers() >= MINIMUM_PLAYERS_TO_KEEP_DOUBLE_ROUTES) {
+        if(gameModel.getNbOfPlayers() < THRESHOLD_PLAYERS_TO_KEEP_DOUBLE_ROUTES) {
             Route doubleRoute = gameModel.getDoubleRouteOf(route.getId());
             if(doubleRoute != null) {
                 gameModel.deleteRoute(doubleRoute.getId());
