@@ -1,7 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.factories;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.CardColor;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,17 +11,17 @@ public class WagonCardsFactory {
         List<WagonCard> wagonCards = new ArrayList<>();
 
         // 12 cards of each color
-        addWagonCardsByColor(wagonCards, CardColor.VIOLET, 12);
-        addWagonCardsByColor(wagonCards, CardColor.WHITE, 12);
-        addWagonCardsByColor(wagonCards, CardColor.BLUE, 12);
-        addWagonCardsByColor(wagonCards, CardColor.YELLOW, 12);
-        addWagonCardsByColor(wagonCards, CardColor.ORANGE, 12);
-        addWagonCardsByColor(wagonCards, CardColor.BLACK, 12);
-        addWagonCardsByColor(wagonCards, CardColor.RED, 12);
-        addWagonCardsByColor(wagonCards, CardColor.GREEN, 12);
+        addWagonCardsByColor(wagonCards, Color.PINK, 12);
+        addWagonCardsByColor(wagonCards, Color.WHITE, 12);
+        addWagonCardsByColor(wagonCards, Color.BLUE, 12);
+        addWagonCardsByColor(wagonCards, Color.YELLOW, 12);
+        addWagonCardsByColor(wagonCards, Color.ORANGE, 12);
+        addWagonCardsByColor(wagonCards, Color.BLACK, 12);
+        addWagonCardsByColor(wagonCards, Color.RED, 12);
+        addWagonCardsByColor(wagonCards, Color.GREEN, 12);
 
         // 14 Locomotive cards
-        addWagonCardsByColor(wagonCards, CardColor.MULTICOLOR, 14);
+        addWagonCardsByColor(wagonCards, Color.ANY, 14);
 
         return wagonCards;
     }
@@ -33,7 +33,7 @@ public class WagonCardsFactory {
      * @param color The color of the WagonCards.
      * @param number The number of cards to add.
      */
-    private void addWagonCardsByColor(List<WagonCard> wagonCards, CardColor color, int number) {
+    private void addWagonCardsByColor(List<WagonCard> wagonCards, Color color, int number) {
         for (int i = 0; i < number; i++) {
             wagonCards.add(new WagonCard(color));
         }

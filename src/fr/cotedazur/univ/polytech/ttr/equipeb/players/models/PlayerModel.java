@@ -2,6 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
@@ -104,5 +105,24 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
             cards.add(wagonCards.get(i));
         }
         return cards;
+    }
+
+    @Override
+    public List<WagonCard> getWagonCardsIncludingAnyColor(Color color, int numberOfCards) {
+        List<WagonCard> cards = new ArrayList<>();
+        for (WagonCard card : wagonCards) {
+            if (card.getColor().equals(color) || card.getColor().equals(Color.ANY)) {
+                cards.add(card);
+                if (cards.size() == numberOfCards) {
+                    break;
+                }
+            }
+        }
+        return cards;
+    }
+
+    @Override
+    public int getNumberOfWagonCardsIncludingAnyColor(Color color) {
+        return (int) wagonCards.stream().filter(c -> c.getColor().equals(color) || c.getColor().equals(Color.ANY)).count();
     }
 }

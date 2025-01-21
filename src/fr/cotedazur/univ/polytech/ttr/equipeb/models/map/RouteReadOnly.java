@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.map;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 
 /**
@@ -23,6 +24,10 @@ public interface RouteReadOnly {
      */
     City getSecondCity();
 
+    /**
+     * @return the color of the route
+     */
+    Color getColor();
 
     /**
      * @return the length of the route

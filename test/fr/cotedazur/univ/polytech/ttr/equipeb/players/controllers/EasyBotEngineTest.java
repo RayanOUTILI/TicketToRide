@@ -3,6 +3,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
@@ -49,8 +50,16 @@ class EasyBotEngineTest {
     void testAskActionClaimRoute() {
         when(random.nextInt(2)).thenReturn(1);
         when(playerModel.getNumberOfWagonCards()).thenReturn(1);
-        List<RouteReadOnly> routes = new ArrayList<>(List.of(mock(RouteReadOnly.class)));
-        when(gameModel.getNonControllableAvailableRoutes(anyInt())).thenReturn(routes);
+        Route route = mock(Route.class);
+        when(route.isClaimed()).thenReturn(false);
+        when(route.getColor()).thenReturn(Color.BLUE);
+        when(route.getLength()).thenReturn(1);
+        List<RouteReadOnly> routes = new ArrayList<>(List.of(route));
+        WagonCard card = mock(WagonCard.class);
+        when(card.getColor()).thenReturn(Color.BLUE);
+        when(playerModel.getWagonCards(anyInt())).thenReturn(List.of(card));
+        when(playerModel.getNumberOfWagonCardsIncludingAnyColor(Color.BLUE)).thenReturn(1);
+        when(gameModel.getNonControllableAvailableRoutes()).thenReturn(routes);
 
         assertEquals(Action.CLAIM_ROUTE, easyBotEngine.askAction());
     }
@@ -66,11 +75,18 @@ class EasyBotEngineTest {
     @Test
     void testAskClaimRoute() {
         Route route = mock(Route.class);
+        when(route.isClaimed()).thenReturn(false);
+        when(route.getColor()).thenReturn(Color.BLUE);
         when(route.getLength()).thenReturn(1);
+        WagonCard card = mock(WagonCard.class);
+        when(card.getColor()).thenReturn(Color.BLUE);
+        when(playerModel.getWagonCards(anyInt())).thenReturn(List.of(card));
+        when(playerModel.getNumberOfWagonCardsIncludingAnyColor(Color.BLUE)).thenReturn(1);
         List<RouteReadOnly> routes = new ArrayList<>(List.of(route));
-        when(gameModel.getNonControllableAvailableRoutes(anyInt())).thenReturn(routes);
+        when(gameModel.getNonControllableAvailableRoutes()).thenReturn(routes);
         when(random.nextInt(anyInt())).thenReturn(0);
-        when(playerModel.getWagonCards(anyInt())).thenReturn(new ArrayList<>(List.of(mock(WagonCard.class))));
+        when(gameModel.getNonControllableRoutes()).thenReturn(routes);
+        when(playerModel.getNumberOfWagonCardsIncludingAnyColor(Color.BLUE)).thenReturn(1);
 
         assertNotNull(easyBotEngine.askClaimRoute());
     }

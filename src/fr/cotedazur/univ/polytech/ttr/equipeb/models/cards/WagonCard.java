@@ -1,12 +1,14 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.cards;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
+
 public class WagonCard extends Card {
-    private final CardColor color;
-    public WagonCard(CardColor color) {
+    private final Color color;
+    public WagonCard(Color color) {
         this.color = color;
     }
 
-    public CardColor getColor() {
+    public Color getColor() {
         return color;
     }
 

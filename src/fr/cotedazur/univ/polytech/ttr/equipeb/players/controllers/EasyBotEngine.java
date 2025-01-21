@@ -4,7 +4,9 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
@@ -40,7 +42,7 @@ public class EasyBotEngine implements IPlayerActionsControllable {
         int action = random.nextInt(2);
         if (action == 0 && !gameModel.isDestinationCardDeckEmpty()) {
             return Action.PICK_DESTINATION_CARDS;
-        } else if (!gameModel.getNonControllableAvailableRoutes(playerModel.getNumberOfWagonCards()).isEmpty()) {
+        } else if (canTakeARoute()) {
             return Action.CLAIM_ROUTE;
         } else {
             return Action.PICK_WAGON_CARD;
@@ -49,12 +51,11 @@ public class EasyBotEngine implements IPlayerActionsControllable {
 
     @Override
     public ClaimRoute askClaimRoute() {
-        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes(playerModel.getNumberOfWagonCards());
+        RouteReadOnly route = chooseRoute();
 
-        int routeIndex = random.nextInt(availableRoutes.size());
-        RouteReadOnly route = availableRoutes.get(routeIndex);
+        if(route == null) return null;
 
-        return new ClaimRoute(route, playerModel.getWagonCards(route.getLength()));
+        return new ClaimRoute(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength()));
     }
 
     @Override
@@ -88,4 +89,20 @@ public class EasyBotEngine implements IPlayerActionsControllable {
             view.displayActionCompleted(action);
         }
     }
+
+    private RouteReadOnly chooseRoute() {
+        return gameModel.getNonControllableAvailableRoutes().stream().filter(this::canTakeRoute).findAny().orElse(null);
+    }
+
+    private boolean canTakeARoute() {
+        return chooseRoute() != null;
+    }
+
+    private boolean canTakeRoute(RouteReadOnly route) {
+        if(route.isClaimed()) return false;
+
+        return playerModel.getNumberOfWagonCardsIncludingAnyColor(route.getColor()) >= route.getLength();
+    }
+
+
 }
