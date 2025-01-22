@@ -32,7 +32,8 @@ public class GameEngine {
         this.controllers = Map.of(
             Action.PICK_WAGON_CARD, new WagonCardsController(gameModel),
             Action.CLAIM_ROUTE, new RoutesController(gameModel),
-            Action.PICK_DESTINATION_CARDS, new DestinationCardsController(gameModel)
+            Action.PICK_DESTINATION_CARDS, new DestinationCardsController(gameModel),
+            Action.PLACE_STATION, new StationController(gameModel)
         );
         this.scoreController = new ScoreController(gameModel);
         this.playerIterator = players.iterator();
