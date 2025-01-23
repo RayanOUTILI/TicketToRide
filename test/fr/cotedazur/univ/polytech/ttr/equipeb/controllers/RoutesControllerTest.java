@@ -2,11 +2,9 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IRoutesControllerGameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteColor;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +33,7 @@ class RoutesControllerTest {
         when(route.getId()).thenReturn(1);
         when(route.isClaimed()).thenReturn(false);
         when(route.getLength()).thenReturn(2);
+        when(route.getColor()).thenReturn(Color.BLUE);
         when(gameModel.getRoute(1)).thenReturn(route);
         when(claimRoute.route()).thenReturn(route);
 
@@ -84,7 +83,11 @@ class RoutesControllerTest {
 
     @org.junit.jupiter.api.Test
     void testRouteClaimed() {
-        wagonCards = List.of(mock(WagonCard.class), mock(WagonCard.class));
+        WagonCard wagonCardBlue = mock(WagonCard.class);
+        WagonCard wagonCardAny = mock(WagonCard.class);
+        when(wagonCardBlue.getColor()).thenReturn(Color.BLUE);
+        when(wagonCardAny.getColor()).thenReturn(Color.ANY);
+        wagonCards = List.of(wagonCardBlue, wagonCardAny);
         when(player.askClaimRoute()).thenReturn(claimRoute);
         when(claimRoute.wagonCards()).thenReturn(wagonCards);
         when(player.removeWagonCards(wagonCards)).thenReturn(wagonCards);
@@ -101,7 +104,7 @@ class RoutesControllerTest {
         Route doubleRoute = mock(Route.class);
         when(doubleRoute.getId()).thenReturn(2);
         wagonCards = List.of(mock(WagonCard.class), mock(WagonCard.class));
-
+        wagonCards.forEach(card -> when(card.getColor()).thenReturn(Color.BLUE));
         when(player.askClaimRoute()).thenReturn(claimRoute);
         when(claimRoute.wagonCards()).thenReturn(wagonCards);
         when(player.removeWagonCards(wagonCards)).thenReturn(wagonCards);
@@ -121,13 +124,50 @@ class RoutesControllerTest {
 
     @Test
     void testDifferentRemovedCardSize() {
-        wagonCards = List.of(mock(WagonCard.class), mock(WagonCard.class));
-        List<WagonCard> removedCards = List.of(mock(WagonCard.class));
+        WagonCard cardBlue1 = mock(WagonCard.class);
+        WagonCard cardBlue2 = mock(WagonCard.class);
+        when(cardBlue1.getColor()).thenReturn(Color.BLUE);
+        when(cardBlue2.getColor()).thenReturn(Color.BLUE);
+        wagonCards = List.of(cardBlue1, cardBlue2);
+        List<WagonCard> removedCards = List.of(cardBlue2);
         when(player.askClaimRoute()).thenReturn(claimRoute);
         when(claimRoute.wagonCards()).thenReturn(wagonCards);
         when(player.removeWagonCards(wagonCards)).thenReturn(removedCards);
         assertFalse(routesController.doAction(player));
         verify(player).replaceRemovedWagonCards(removedCards);
+        verify(player).askClaimRoute();
+        verify(player).removeWagonCards(wagonCards);
+    }
+
+    @Test
+    void testDifferentCardColors() {
+        WagonCard cardBlue1 = mock(WagonCard.class);
+        WagonCard cardRed = mock(WagonCard.class);
+        when(cardBlue1.getColor()).thenReturn(Color.BLUE);
+        when(cardRed.getColor()).thenReturn(Color.RED);
+        wagonCards = List.of(cardBlue1, cardRed);
+        List<WagonCard> removedCards = List.of(cardRed);
+        when(player.askClaimRoute()).thenReturn(claimRoute);
+        when(claimRoute.wagonCards()).thenReturn(wagonCards);
+        when(player.removeWagonCards(wagonCards)).thenReturn(removedCards);
+        assertFalse(routesController.doAction(player));
+        verify(player).replaceRemovedWagonCards(removedCards);
+        verify(player).askClaimRoute();
+        verify(player).removeWagonCards(wagonCards);
+    }
+
+    @Test
+    void testDifferentCardColorsWithJoker() {
+        WagonCard cardBlue1 = mock(WagonCard.class);
+        WagonCard cardJoker = mock(WagonCard.class);
+        when(cardBlue1.getColor()).thenReturn(Color.BLUE);
+        when(cardJoker.getColor()).thenReturn(Color.ANY);
+        wagonCards = List.of(cardBlue1, cardJoker);
+        List<WagonCard> removedCards = List.of(cardBlue1, cardJoker);
+        when(player.askClaimRoute()).thenReturn(claimRoute);
+        when(claimRoute.wagonCards()).thenReturn(wagonCards);
+        when(player.removeWagonCards(wagonCards)).thenReturn(removedCards);
+        assertTrue(routesController.doAction(player));
         verify(player).askClaimRoute();
         verify(player).removeWagonCards(wagonCards);
     }

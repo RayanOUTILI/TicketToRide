@@ -1,14 +1,17 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 
 import java.util.List;
 
 /**
- * Interface to control the player model outside the player engine (GameEngine)
+ * THIS INTERFACE IS USED BY THE GAME ENGINE TO CONTROL THE PLAYER ACTIONS
+ * AND BY THE CONTROLLERS TO CONTROL THE PLAYER MODEL
  */
 public interface IPlayerModelControllable {
     PlayerIdentification getIdentification();
@@ -26,4 +29,9 @@ public interface IPlayerModelControllable {
     void receivedDestinationCards(List<ShortDestinationCard> destinationCards);
 
     List<DestinationCard> getDestinationCardsHand();
+
+    void defineStartingStationsNumber(int size);
+    int getStationsLeft();
+    void decrementStationsLeft();
+    void notifyClaimedStation(CityReadOnly city, List<WagonCard> wagonCards);
 }

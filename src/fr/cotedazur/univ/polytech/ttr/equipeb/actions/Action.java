@@ -7,4 +7,5 @@ public enum Action {
     PICK_WAGON_CARD,
     CLAIM_ROUTE,
     PICK_DESTINATION_CARDS,
+    PLACE_STATION
 }

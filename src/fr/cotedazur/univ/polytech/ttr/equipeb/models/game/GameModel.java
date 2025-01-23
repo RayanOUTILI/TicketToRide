@@ -2,7 +2,10 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
@@ -12,8 +15,17 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, IVictoryControllerGameModel, IWagonCardsControllerGameModel, IDestinationCardsControllerGameModel, IScoreControllerGameModel{
+public class GameModel implements
+        IPlayerGameModel,
+        IRoutesControllerGameModel,
+        IVictoryControllerGameModel,
+        IWagonCardsControllerGameModel,
+        IDestinationCardsControllerGameModel,
+        IScoreControllerGameModel,
+        IStationControllerGameModel
+{
 
     private List<PlayerModel> playerModels;
     // Its needed to change how the WagonCardDeck works
@@ -83,6 +95,15 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
     public List<RouteReadOnly> getNonControllableAvailableRoutes(int maxLength) {
         return routes.stream()
                 .filter(r -> !r.isClaimed() && r.getLength() < maxLength)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CityReadOnly> getNonControllableAvailableCities() {
+        return routes.stream()
+                .filter(r -> !r.isClaimed())
+                .flatMap(r -> Stream.of(r.getFirstCity(), r.getSecondCity()))
+                .distinct()
                 .collect(Collectors.toList());
     }
 
@@ -178,5 +199,23 @@ public class GameModel implements IPlayerGameModel, IRoutesControllerGameModel, 
             }
         }
         return winner;
+    }
+
+
+    @Override
+    public List<City> getAllCities() {
+        return routes.stream()
+                .flatMap(r -> Stream.of(r.getFirstCity(), r.getSecondCity()))
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public City getCity(int id) {
+        return routes.stream()
+                .filter(r -> r.getFirstCity().getId() == id || r.getSecondCity().getId() == id)
+                .map(Route::getFirstCity)
+                .findFirst()
+                .orElse(null);
     }
 }

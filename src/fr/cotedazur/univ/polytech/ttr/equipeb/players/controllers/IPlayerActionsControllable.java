@@ -2,6 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 
@@ -14,6 +15,8 @@ public interface IPlayerActionsControllable {
     Action askAction();
 
     ClaimRoute askClaimRoute();
+
+    ClaimStation askClaimStation();
 
     List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards);
 

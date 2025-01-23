@@ -2,9 +2,9 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.jsonparsers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteColor;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class RouteParser extends BaseParser<List<Map<String, Object>>> {
             City city1 = getOrCreateCity(start);
             City city2 = getOrCreateCity(end);
             RouteType routeType = RouteType.valueOf(type.toUpperCase());
-            RouteColor routeColor = RouteColor.valueOf(color.toUpperCase());
+            Color routeColor = Color.valueOf(color.toUpperCase());
 
             routes.add(new Route(city1, city2, size, routeType, routeColor, nbLocomotives));
         }

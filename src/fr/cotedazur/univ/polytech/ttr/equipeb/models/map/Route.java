@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.map;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 
 /**
@@ -18,13 +19,13 @@ public class Route implements RouteReadOnly {
 
     private final RouteType type;
 
-    private final RouteColor color;
+    private final Color color;
 
     private PlayerIdentification claimerPlayer;
 
     private final int nbLocomotives;
 
-    public Route(City firstCity, City secondCity, int length, RouteType type, RouteColor color, int nbLocomotives) {
+    public Route(City firstCity, City secondCity, int length, RouteType type, Color color, int nbLocomotives) {
         id = idCounter++;
         this.firstCity = firstCity;
         this.secondCity = secondCity;
@@ -59,7 +60,7 @@ public class Route implements RouteReadOnly {
         return type;
     }
 
-    public RouteColor getColor() {
+    public Color getColor() {
         return color;
     }
 

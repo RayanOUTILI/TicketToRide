@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IScoreControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IVictoryControllerGameModel;
@@ -111,10 +112,10 @@ class ScoreControllerTest {
         IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, null);
         playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));
 
-        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, RouteColor.BLACK , 5);
+        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, Color.BLACK , 5);
         routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
 
-        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, RouteColor.BLACK, 5);
+        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, Color.BLACK, 5);
         routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
 
 
@@ -132,10 +133,10 @@ class ScoreControllerTest {
         IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, null);
         playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination, parisToDakarDestination));
 
-        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, RouteColor.BLACK , 5);
+        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, Color.BLACK , 5);
         routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
 
-        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, RouteColor.BLACK, 5);
+        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, Color.BLACK, 5);
         routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
 
 
@@ -152,13 +153,13 @@ class ScoreControllerTest {
         IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, null);
         playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));
 
-        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, RouteColor.BLACK , 5);
+        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, Color.BLACK , 5);
         routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
 
-        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, RouteColor.BLACK, 5);
+        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, Color.BLACK, 5);
         routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
 
-        Route routeBerlinToParis = new Route(new City("Berlin"), new City("Paris"), 0, RouteType.TRAIN, RouteColor.BLACK, 5);
+        Route routeBerlinToParis = new Route(new City("Berlin"), new City("Paris"), 0, RouteType.TRAIN, Color.BLACK, 5);
         routeBerlinToParis.setClaimerPlayer(PlayerIdentification.BLACK);
 
 

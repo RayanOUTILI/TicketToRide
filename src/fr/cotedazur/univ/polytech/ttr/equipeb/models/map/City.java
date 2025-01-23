@@ -1,16 +1,37 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.map;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
+
 import java.util.Objects;
 
-public class City {
+public class City implements CityReadOnly {
+    private static int idCounter = 0;
+
+    private final int id;
+
     private final String name;
+    private PlayerIdentification owner = null;
 
     public City(String name) {
+        this.id = idCounter++;
         this.name = name;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public boolean isClaimed() {
+        return owner != null;
+    }
+
+    public void setOwner(PlayerIdentification owner) {
+        this.owner = owner;
     }
 
     @Override

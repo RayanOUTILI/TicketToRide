@@ -2,6 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IRoutesControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
@@ -31,15 +32,28 @@ public class RoutesController extends Controller {
     public boolean doAction(Player player) {
         ClaimRoute claimRoute = player.askClaimRoute();
         Route route = getRoute(claimRoute);
-        if (route == null) return false;
+        if (route == null) {
+            return false;
+        }
 
         List<WagonCard> wagonCards = claimRoute.wagonCards();
 
         List<WagonCard> removedCards = player.removeWagonCards(wagonCards);
 
-        if (removedCards.size() != wagonCards.size()) {
+        if (removedCards.size() != route.getLength()) {
             player.replaceRemovedWagonCards(removedCards);
             return false;
+        }
+
+        Color routeColor = route.getColor();
+
+        if(routeColor != Color.ANY) {
+            for(WagonCard card : removedCards) {
+                if(card.getColor() != routeColor && card.getColor() != Color.ANY) {
+                    player.replaceRemovedWagonCards(removedCards);
+                    return false;
+                }
+            }
         }
 
         gameModel.discardWagonCards(removedCards);

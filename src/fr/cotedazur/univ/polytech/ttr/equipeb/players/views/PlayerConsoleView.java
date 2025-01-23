@@ -3,6 +3,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.views;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
@@ -60,6 +61,17 @@ public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineV
     @Override
     public void displayNewScore(int score) {
         print("New score: " + score);
+    }
+
+    @Override
+    public void displayClaimedStation(CityReadOnly city, List<WagonCard> wagonCards, int stationsLeft) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Claimed station: ").append(city).append(" with wagon cards: ");
+        for (WagonCard wagonCard : wagonCards) {
+            sb.append(wagonCard).append(" ");
+        }
+        sb.append("Stations left: ").append(stationsLeft);
+        print(sb.toString());
     }
 
     @Override

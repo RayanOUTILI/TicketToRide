@@ -2,9 +2,11 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.IPlayerActionsControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
@@ -36,6 +38,11 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
+    public ClaimStation askClaimStation() {
+        return actionsController.askClaimStation();
+    }
+
+    @Override
     public List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards) {
         return actionsController.askDestinationCards(cards);
     }
@@ -43,7 +50,6 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     @Override
     public void actionRefused(Action action) {
         actionsController.actionRefused(action);
-
     }
 
     @Override
@@ -79,7 +85,11 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     @Override
     public void notifyClaimedRoute(RouteReadOnly route) {
         modelController.notifyClaimedRoute(route);
+    }
 
+    @Override
+    public void notifyClaimedStation(CityReadOnly city, List<WagonCard> wagonCards) {
+        modelController.notifyClaimedStation(city, wagonCards);
     }
 
     @Override
@@ -90,6 +100,21 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     @Override
     public List<DestinationCard> getDestinationCardsHand() {
         return modelController.getDestinationCardsHand();
+    }
+
+    @Override
+    public void defineStartingStationsNumber(int size) {
+        modelController.defineStartingStationsNumber(size);
+    }
+
+    @Override
+    public int getStationsLeft() {
+        return modelController.getStationsLeft();
+    }
+
+    @Override
+    public void decrementStationsLeft() {
+        modelController.decrementStationsLeft();
     }
 
     @Override

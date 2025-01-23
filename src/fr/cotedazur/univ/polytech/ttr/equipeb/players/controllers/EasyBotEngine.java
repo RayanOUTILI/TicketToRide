@@ -2,9 +2,14 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
@@ -15,6 +20,8 @@ import javax.swing.text.View;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static java.lang.System.exit;
 
 public class EasyBotEngine implements IPlayerActionsControllable {
     private final IPlayerGameModel gameModel;
@@ -38,10 +45,18 @@ public class EasyBotEngine implements IPlayerActionsControllable {
     @Override
     public Action askAction() {
         int action = random.nextInt(2);
-        if (action == 0 && !gameModel.isDestinationCardDeckEmpty()) {
+
+        // The bot will always try to pick destination cards if it can and has less than 3 cards
+        if (action == 0 && !gameModel.isDestinationCardDeckEmpty() && playerModel.getDestinationCards().size() < 3) {
             return Action.PICK_DESTINATION_CARDS;
-        } else if (!gameModel.getNonControllableAvailableRoutes(playerModel.getNumberOfWagonCards()).isEmpty()) {
+        // Else The bot will try to claim a route if it can
+        } else if (canTakeARoute()) {
             return Action.CLAIM_ROUTE;
+        // Else The bot will try to place a station if it can
+        // TODO: change the condition to check if the player has enough cards to place a station
+        } else if (playerModel.getStationsLeft() > 0 && playerModel.getWagonCardsIncludingAnyColor(3- (playerModel.getStationsLeft()-1)).size() == 3- (playerModel.getStationsLeft()-1)) {
+            return Action.PLACE_STATION;
+        // Else, the bot will pick a wagon card
         } else {
             return Action.PICK_WAGON_CARD;
         }
@@ -49,12 +64,22 @@ public class EasyBotEngine implements IPlayerActionsControllable {
 
     @Override
     public ClaimRoute askClaimRoute() {
-        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes(playerModel.getNumberOfWagonCards());
+        RouteReadOnly route = chooseRoute();
 
-        int routeIndex = random.nextInt(availableRoutes.size());
-        RouteReadOnly route = availableRoutes.get(routeIndex);
+        if(route == null) return null;
 
-        return new ClaimRoute(route, playerModel.getWagonCards(route.getLength()));
+        return new ClaimRoute(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength()));
+    }
+
+    @Override
+    public ClaimStation askClaimStation() {
+        List<CityReadOnly> availableCities = gameModel.getNonControllableAvailableCities();
+
+        int cityIndex = random.nextInt(availableCities.size());
+        CityReadOnly city = availableCities.get(cityIndex);
+
+        // TODO: find a proper way to get the right amount of cards
+        return new ClaimStation(city, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft()-1)));
     }
 
     @Override
@@ -88,4 +113,20 @@ public class EasyBotEngine implements IPlayerActionsControllable {
             view.displayActionCompleted(action);
         }
     }
+
+    private RouteReadOnly chooseRoute() {
+        return gameModel.getNonControllableAvailableRoutes().stream().filter(this::canTakeRoute).findAny().orElse(null);
+    }
+
+    private boolean canTakeARoute() {
+        return chooseRoute() != null;
+    }
+
+    private boolean canTakeRoute(RouteReadOnly route) {
+        if(route.isClaimed()) return false;
+
+        return playerModel.getNumberOfWagonCardsIncludingAnyColor(route.getColor()) >= route.getLength();
+    }
+
+
 }
