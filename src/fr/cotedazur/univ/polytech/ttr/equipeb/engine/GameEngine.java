@@ -84,7 +84,6 @@ public class GameEngine {
 
     protected boolean handlePlayerAction(Player player) {
         Action action = player.askAction();
-
         if(action == null || !controllers.containsKey(action)) {
             player.actionRefused(action);
             return false;

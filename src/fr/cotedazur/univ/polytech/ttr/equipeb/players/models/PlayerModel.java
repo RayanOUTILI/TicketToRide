@@ -185,4 +185,8 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     public int getNumberOfWagonCardsIncludingAnyColor(Color color) {
         return (int) wagonCards.stream().filter(c -> c.getColor().equals(color) || c.getColor().equals(Color.ANY)).count();
     }
+
+    public PlayerIdentification getPlayerIdentification(){
+        return this.playerIdentification;
+    }
 }

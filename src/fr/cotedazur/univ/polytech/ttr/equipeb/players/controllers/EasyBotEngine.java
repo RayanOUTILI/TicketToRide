@@ -3,60 +3,44 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
 
-import javax.swing.text.View;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import static java.lang.System.exit;
 
-public class EasyBotEngine implements IPlayerActionsControllable {
-    private final IPlayerGameModel gameModel;
-    private final IPlayerModel playerModel;
-    private final IPlayerEngineViewable view;
-
-    private final RandomGenerator random;
+public class EasyBotEngine extends BotEngine {
 
     public EasyBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view) {
-        this(playerModel, gameModel, view, new RandomGenerator());
+        super(playerModel, gameModel, view, new RandomGenerator());
     }
 
     protected EasyBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view, RandomGenerator random) {
-        this.gameModel = gameModel;
-        this.playerModel = playerModel;
-        this.view = view;
-        this.random = random;
+        super(playerModel, gameModel, view, random);
     }
 
 
+    /**
+     * Determines the next action for the bot to take.
+     *
+     * @return the next action for the bot to take
+     */
     @Override
     public Action askAction() {
         int action = random.nextInt(2);
 
-        // The bot will always try to pick destination cards if it can and has less than 3 cards
         if (action == 0 && !gameModel.isDestinationCardDeckEmpty() && playerModel.getDestinationCards().size() < 3) {
             return Action.PICK_DESTINATION_CARDS;
-        // Else The bot will try to claim a route if it can
         } else if (canTakeARoute()) {
             return Action.CLAIM_ROUTE;
-        // Else The bot will try to place a station if it can
-        // TODO: change the condition to check if the player has enough cards to place a station
-        } else if (playerModel.getStationsLeft() > 0 && playerModel.getWagonCardsIncludingAnyColor(3- (playerModel.getStationsLeft()-1)).size() == 3- (playerModel.getStationsLeft()-1)) {
+        } else if (playerModel.getStationsLeft() > 0 && playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft() - 1)).size() == 3 - (playerModel.getStationsLeft() - 1)) {
             return Action.PLACE_STATION;
-        // Else, the bot will pick a wagon card
         } else {
             return Action.PICK_WAGON_CARD;
         }
@@ -98,20 +82,6 @@ public class EasyBotEngine implements IPlayerActionsControllable {
         }
 
         return cardsToKeep;
-    }
-
-    @Override
-    public void actionRefused(Action action) {
-        if(view != null) {
-            view.displayActionRefused(action);
-        }
-    }
-
-    @Override
-    public void actionCompleted(Action action) {
-        if(view != null) {
-            view.displayActionCompleted(action);
-        }
     }
 
     private RouteReadOnly chooseRoute() {

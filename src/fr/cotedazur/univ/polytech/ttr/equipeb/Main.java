@@ -33,7 +33,7 @@ public class Main {
             );
 
             GameModel gameModel = new GameModel(playerModels, wagonCardDeck, destinationCardDeck, routes);
-            List<Player> players = playerFactory.createThreeEasyBots(playerModels, gameModel);
+            List<Player> players = playerFactory.createTwoEasyOneMediumBots(playerModels, gameModel);
 
             GameEngine gameEngine = new GameEngine(gameModel, players);
             gameEngine.startGame();
