@@ -5,6 +5,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IWagonCardsControllerG
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 public class WagonCardsController extends Controller {
     private static final int STARTING_WAGON_CARDS = 4;
@@ -32,11 +33,11 @@ public class WagonCardsController extends Controller {
     }
 
     @Override
-    public boolean doAction(Player player) {
-        if (gameModel.isWagonCardDeckEmpty()) return false;
+    public Optional<ReasonActionRefused> doAction(Player player) {
+        if (gameModel.isWagonCardDeckEmpty()) return Optional.of(ReasonActionRefused.WAGON_CARDS_DECK_EMPTY);
 
         player.receivedWagonCard(gameModel.drawCardFromWagonCardDeck());
 
-        return true;
+        return Optional.empty();
     }
 }

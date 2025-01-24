@@ -5,9 +5,12 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IRoutesControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class RoutesController extends Controller {
     private static final int THRESHOLD_PLAYERS_TO_KEEP_DOUBLE_ROUTES = 4;
@@ -17,24 +20,26 @@ public class RoutesController extends Controller {
         this.gameModel = gameModel;
     }
 
-    private Route getRoute(ClaimRoute wantedRoute) {
-        if(wantedRoute == null || wantedRoute.route() == null) return null;
-        Route route = gameModel.getRoute(wantedRoute.route().getId());
-        return route != null && !route.isClaimed() && route.getLength() == wantedRoute.wagonCards().size() ? route : null;
-    }
-
     @Override
     public boolean init(Player player) {
         return gameModel.setAllRoutesNotClaimed();
     }
 
     @Override
-    public boolean doAction(Player player) {
+    public Optional<ReasonActionRefused> doAction(Player player) {
         ClaimRoute claimRoute = player.askClaimRoute();
-        Route route = getRoute(claimRoute);
-        if (route == null) {
-            return false;
+
+        if(claimRoute == null || claimRoute.route() == null) {
+            return Optional.of(ReasonActionRefused.ROUTE_INVALID);
         }
+
+        Route route = gameModel.getRoute(claimRoute.route().getId());
+
+        if(route == null) return Optional.of(ReasonActionRefused.ROUTE_WANTED_ROUTE_NOT_FOUND);
+
+        if(route.isClaimed()) return Optional.of(ReasonActionRefused.ROUTE_WANTED_ROUTE_ALREADY_CLAIMED);
+
+        if(route.getLength() != claimRoute.wagonCards().size()) return Optional.of(ReasonActionRefused.ROUTE_WRONG_GIVEN_WAGON_CARDS_SIZE);
 
         List<WagonCard> wagonCards = claimRoute.wagonCards();
 
@@ -42,17 +47,95 @@ public class RoutesController extends Controller {
 
         if (removedCards.size() != route.getLength()) {
             player.replaceRemovedWagonCards(removedCards);
-            return false;
+            return Optional.of(ReasonActionRefused.ROUTE_NOT_ENOUGH_WAGON_CARDS);
         }
 
         Color routeColor = route.getColor();
 
-        if(routeColor != Color.ANY) {
-            for(WagonCard card : removedCards) {
-                if(card.getColor() != routeColor && card.getColor() != Color.ANY) {
-                    player.replaceRemovedWagonCards(removedCards);
-                    return false;
+        switch (route.getType()) {
+            case RouteType.FERRY: {
+                ArrayList<WagonCard> locomotives = new ArrayList<>();
+
+                for(int i = 0; i < removedCards.size() && locomotives.size() < route.getNbLocomotives(); i++) {
+                    if(removedCards.get(i).getColor() == Color.ANY) {
+                        locomotives.add(removedCards.get(i));
+                    }
                 }
+
+                if(locomotives.size() < route.getNbLocomotives()) {
+                    player.replaceRemovedWagonCards(removedCards);
+                    return Optional.of(ReasonActionRefused.ROUTE_FERRY_NOT_ENOUGH_LOCOMOTIVES);
+                }
+
+                removedCards.removeAll(locomotives);
+
+                for(WagonCard card : removedCards) {
+                    if(routeColor == Color.ANY) routeColor = card.getColor();
+                    if(card.getColor() != routeColor && card.getColor() != Color.ANY) {
+                        removedCards.addAll(locomotives);
+                        player.replaceRemovedWagonCards(removedCards);
+                        return Optional.of(ReasonActionRefused.ROUTE_FERRY_WRONG_WAGON_CARDS_COLOR);
+                    }
+                }
+
+                break;
+            }
+            case RouteType.TRAIN: {
+                for(WagonCard card : removedCards) {
+                    if(routeColor == Color.ANY) routeColor = card.getColor();
+                    if(card.getColor() != routeColor && card.getColor() != Color.ANY) {
+                        player.replaceRemovedWagonCards(removedCards);
+                        return Optional.of(ReasonActionRefused.ROUTE_TRAIN_WRONG_WAGON_CARDS_COLOR);
+                    }
+                }
+                break;
+            }
+            case RouteType.TUNNEL: {
+                for(WagonCard card : removedCards) {
+                    if(routeColor == Color.ANY) routeColor = card.getColor();
+                    if(card.getColor() != routeColor || card.getColor() != Color.ANY) {
+                        player.replaceRemovedWagonCards(removedCards);
+                        return Optional.of(ReasonActionRefused.ROUTE_TUNNEL_WRONG_WAGON_CARDS_COLOR);
+                    }
+                }
+                List<WagonCard> drawnCards = gameModel.drawCardsFromWagonCardDeck(3);
+                if(!drawnCards.isEmpty()) {
+                    Color finalRouteColor = routeColor;
+
+                    int nbCardsAnyColor = drawnCards.stream().filter(card -> card.getColor() == Color.ANY).toArray().length;
+                    int nbCardsRouteColor = drawnCards.stream().filter(card -> card.getColor() == finalRouteColor).toArray().length;
+                    int nbCardsToAdd = nbCardsAnyColor + nbCardsRouteColor;
+
+                    List<WagonCard> wagonCardsForTunnel = player.askWagonCardsForTunnel(nbCardsToAdd, finalRouteColor);
+                    List<WagonCard> removedCardsForTunnel = player.removeWagonCards(wagonCardsForTunnel);
+
+                    removedCards.addAll(removedCardsForTunnel);
+
+                    if(removedCardsForTunnel.size() != nbCardsToAdd) {
+                        player.replaceRemovedWagonCards(removedCards);
+                        gameModel.discardWagonCards(drawnCards);
+                        return Optional.of(ReasonActionRefused.ROUTE_TUNNEL_NOT_ENOUGH_WAGON_CARDS);
+                    }
+
+                    int nbOfCardsAnyColorToRemove = nbCardsAnyColor;
+                    int nbOfCardsRouteColorToRemove = nbCardsRouteColor;
+
+                    for(WagonCard wagonCard : removedCardsForTunnel) {
+                        if(wagonCard.getColor() == finalRouteColor) nbOfCardsRouteColorToRemove--;
+                        else if (wagonCard.getColor() == Color.ANY) nbOfCardsAnyColorToRemove--;
+                    }
+
+                    if(nbOfCardsAnyColorToRemove != 0 || nbOfCardsRouteColorToRemove != 0) {
+                        player.replaceRemovedWagonCards(removedCards);
+                        gameModel.discardWagonCards(drawnCards);
+                        return Optional.of(ReasonActionRefused.ROUTE_TUNNEL_NOT_ENOUGH_REMOVED_WAGON_CARDS);
+                    }
+                }
+                break;
+            }
+            default: {
+                player.replaceRemovedWagonCards(removedCards);
+                return Optional.of(ReasonActionRefused.ROUTE_UNKNOW_TYPE);
             }
         }
 
@@ -69,6 +152,6 @@ public class RoutesController extends Controller {
 
         player.notifyClaimedRoute(route);
 
-        return true;
+        return Optional.empty();
     }
 }

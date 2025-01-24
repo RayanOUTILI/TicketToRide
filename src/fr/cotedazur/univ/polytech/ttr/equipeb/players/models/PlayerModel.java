@@ -167,11 +167,63 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         return selectedCards;
     }
 
+    private Color getMostFrequentColor() {
+        Map<Color, Long> colorCount = wagonCards.stream()
+                .filter(card -> !card.getColor().equals(Color.ANY))
+                .collect(Collectors.groupingBy(WagonCard::getColor, Collectors.counting()));
+
+        return colorCount.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+    }
+
     @Override
     public List<WagonCard> getWagonCardsIncludingAnyColor(Color color, int numberOfCards) {
         List<WagonCard> cards = new ArrayList<>();
+        if(color == Color.ANY) {
+            cards.addAll(getWagonCardsOfColor(color, numberOfCards));
+            if(cards.size() < numberOfCards) {
+                cards.addAll(getWagonCardsOfColor(getMostFrequentColor(), numberOfCards - cards.size()));
+            }
+        }
+        else {
+            cards.addAll(getWagonCardsOfColor(color, numberOfCards));
+            if(cards.size() < numberOfCards) {
+                cards.addAll(getWagonCardsOfColor(Color.ANY, numberOfCards - cards.size()));
+            }
+        }
+
+        return cards;
+    }
+
+    @Override
+    public List<WagonCard> getWagonCardsIncludingAnyColor(Color color, int numberOfCards, int numberLocomotives) {
+        List<WagonCard> cards = new ArrayList<>();
+        if(color == Color.ANY) color = getMostFrequentColor();
+        for(WagonCard card : wagonCards) {
+            if(card.getColor() == color && numberOfCards > 0) {
+                cards.add(card);
+                numberOfCards--;
+            }
+            else if(card.getColor() == Color.ANY && numberLocomotives > 0) {
+                cards.add(card);
+                numberLocomotives--;
+            }
+            else if(card.getColor() == Color.ANY && numberOfCards > 0) {
+                cards.add(card);
+                numberOfCards--;
+            }
+        }
+
+        return cards;
+    }
+
+    @Override
+    public List<WagonCard> getWagonCardsOfColor(Color color, int numberOfCards) {
+        List<WagonCard> cards = new ArrayList<>();
         for (WagonCard card : wagonCards) {
-            if (card.getColor().equals(color) || card.getColor().equals(Color.ANY)) {
+            if (card.getColor().equals(color)) {
                 cards.add(card);
                 if (cards.size() == numberOfCards) {
                     break;
@@ -183,6 +235,11 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
 
     @Override
     public int getNumberOfWagonCardsIncludingAnyColor(Color color) {
-        return (int) wagonCards.stream().filter(c -> c.getColor().equals(color) || c.getColor().equals(Color.ANY)).count();
+        return getWagonCardsIncludingAnyColor(color, Integer.MAX_VALUE).size();
+    }
+
+    @Override
+    public int getNumberOfWagonCardsOfColor(Color color) {
+        return (int) wagonCards.stream().filter(c -> c.getColor().equals(color)).count();
     }
 }

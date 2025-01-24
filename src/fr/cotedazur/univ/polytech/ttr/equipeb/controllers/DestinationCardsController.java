@@ -6,6 +6,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IDestinationCardsContr
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DestinationCardsController extends Controller {
     private static final int STARTING_DESTINATION_CARDS = 3;
@@ -34,19 +35,19 @@ public class DestinationCardsController extends Controller {
     }
 
     @Override
-    public boolean doAction(Player player) {
-        if(gameModel.isDestinationCardDeckEmpty()) return false;
+    public Optional<ReasonActionRefused> doAction(Player player) {
+        if(gameModel.isDestinationCardDeckEmpty()) return Optional.of(ReasonActionRefused.DESTINATION_CARDS_DECK_EMPTY);
 
         List<ShortDestinationCard> cards = gameModel.drawDestinationCards(MAX_DESTINATION_CARDS);
         List<ShortDestinationCard> chosenCards = player.askDestinationCards(cards);
 
         if (chosenCards == null || chosenCards.isEmpty()) {
             gameModel.returnDestinationCardsToTheBottom(cards);
-            return false;
+            return Optional.of(ReasonActionRefused.DESTINATION_CARDS_CHOSEN_CARDS_EMPTY);
         }
 
         player.receivedDestinationCards(chosenCards);
 
-        return true;
+        return Optional.empty();
     }
 }

@@ -12,6 +12,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class GameEngine {
     private final VictoryController victoryController;
@@ -86,16 +87,18 @@ public class GameEngine {
         Action action = player.askAction();
 
         if(action == null || !controllers.containsKey(action)) {
-            player.actionRefused(action);
+            player.actionRefused(action, ReasonActionRefused.ACTION_INVALID);
             return false;
         }
 
         Controller controller = controllers.get(action);
-        boolean success = controller.doAction(player);
+        Optional<ReasonActionRefused> actionRefused = controller.doAction(player);
 
-        if (!success) player.actionRefused(action);
+        if (actionRefused.isPresent()) {
+            player.actionRefused(action, actionRefused.get());
+        }
         else  player.actionCompleted(action);
-        return success;
+        return actionRefused.isEmpty();
     }
 
     private boolean nextPlayer() {

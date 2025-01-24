@@ -10,6 +10,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.System.exit;
 
@@ -37,15 +38,15 @@ public class StationController extends Controller{
     }
 
     @Override
-    public boolean doAction(Player player) {
+    public Optional<ReasonActionRefused> doAction(Player player) {
 
         int stationsLeft = player.getStationsLeft();
-        if (stationsLeft <= 0) return false;
+        if (stationsLeft <= 0) return Optional.of(ReasonActionRefused.STATION_NOT_ENOUGH_STATIONS_LEFT);
 
         ClaimStation claimStation = player.askClaimStation();
         City city = checkCityAvailable(claimStation);
 
-        if (city == null) return false;
+        if (city == null) return Optional.of(ReasonActionRefused.STATION_CITY_NOT_VALID);
 
         List<WagonCard> wagonCards = claimStation.wagonCards();
 
@@ -57,7 +58,7 @@ public class StationController extends Controller{
         // The cards has to be the same color
         if (removedCards.size() != (STARTING_STATIONS - (stationsLeft-1))) {
             player.replaceRemovedWagonCards(removedCards);
-            return false;
+            return Optional.of(ReasonActionRefused.STATION_NOT_ENOUGH_WAGON_CARDS);
         }
 
         // Check if the cards are the same color
@@ -69,7 +70,7 @@ public class StationController extends Controller{
 
         if (!allCardsHaveSameColor) {
             player.replaceRemovedWagonCards(removedCards);
-            return false;
+            return Optional.of(ReasonActionRefused.STATION_WRONG_WAGON_CARDS_COLOR);
         }
 
         gameModel.discardWagonCards(removedCards);
@@ -79,6 +80,6 @@ public class StationController extends Controller{
 
         player.notifyClaimedStation(city, removedCards);
 
-        return true;
+        return Optional.empty();
     }
 }

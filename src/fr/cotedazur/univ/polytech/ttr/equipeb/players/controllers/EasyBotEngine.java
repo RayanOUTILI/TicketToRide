@@ -3,6 +3,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
+import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
@@ -11,6 +12,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static java.lang.System.console;
 import static java.lang.System.exit;
 
 public class EasyBotEngine implements IPlayerActionsControllable {
@@ -68,7 +71,7 @@ public class EasyBotEngine implements IPlayerActionsControllable {
 
         if(route == null) return null;
 
-        return new ClaimRoute(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength()));
+        return new ClaimRoute(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getNbLocomotives()));
     }
 
     @Override
@@ -101,9 +104,9 @@ public class EasyBotEngine implements IPlayerActionsControllable {
     }
 
     @Override
-    public void actionRefused(Action action) {
+    public void actionRefused(Action action, ReasonActionRefused reason) {
         if(view != null) {
-            view.displayActionRefused(action);
+            view.displayActionRefused(action, reason);
         }
     }
 
@@ -112,6 +115,11 @@ public class EasyBotEngine implements IPlayerActionsControllable {
         if(view != null) {
             view.displayActionCompleted(action);
         }
+    }
+
+    @Override
+    public List<WagonCard> askWagonCardsForTunnel(int numberOfCards, Color acceptedColor) {
+        return playerModel.getWagonCardsOfColor(acceptedColor, numberOfCards);
     }
 
     private RouteReadOnly chooseRoute() {
@@ -125,7 +133,17 @@ public class EasyBotEngine implements IPlayerActionsControllable {
     private boolean canTakeRoute(RouteReadOnly route) {
         if(route.isClaimed()) return false;
 
-        return playerModel.getNumberOfWagonCardsIncludingAnyColor(route.getColor()) >= route.getLength();
+        if(route.getType() == RouteType.FERRY) {
+            return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getNbLocomotives()).size() == route.getLength();
+        }
+        else if (route.getType() == RouteType.TRAIN) {
+            return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0).size() >= route.getLength();
+        }
+        else if (route.getType() == RouteType.TUNNEL) {
+            return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0).size() >= route.getLength()+3;
+        }
+
+        return false;
     }
 
 

@@ -3,9 +3,11 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
+import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.IPlayerActionsControllable;
@@ -48,13 +50,18 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
-    public void actionRefused(Action action) {
-        actionsController.actionRefused(action);
+    public void actionRefused(Action action, ReasonActionRefused reason) {
+        actionsController.actionRefused(action, reason);
     }
 
     @Override
     public void actionCompleted(Action action) {
         actionsController.actionCompleted(action);
+    }
+
+    @Override
+    public List<WagonCard> askWagonCardsForTunnel(int numberOfCards, Color acceptedColor) {
+        return actionsController.askWagonCardsForTunnel(numberOfCards, acceptedColor);
     }
 
     @Override

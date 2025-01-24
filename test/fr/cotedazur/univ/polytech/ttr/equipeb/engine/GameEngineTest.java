@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
@@ -47,7 +48,7 @@ class GameEngineTest {
     void testEndGame() {
         when(victoryController.endGame()).thenReturn(null, EndGameReasons.EMPTY_WAGON_CARDS_DECK);
         when(controller.init(any())).thenReturn(true);
-        when(controller.doAction(any())).thenReturn(true);
+        when(controller.doAction(any())).thenReturn(Optional.empty());
         players.forEach(player -> when(player.askAction()).thenReturn(Action.PICK_WAGON_CARD));
 
         assertDoesNotThrow(() -> gameEngine.startGame());
@@ -62,7 +63,7 @@ class GameEngineTest {
         when(player2.askAction()).thenReturn(Action.PICK_WAGON_CARD);
         when(victoryController.endGame()).thenReturn(null, null, EndGameReasons.EMPTY_WAGON_CARDS_DECK);
         when(controller.init(any())).thenReturn(true);
-        when(controller.doAction(any())).thenReturn(true);
+        when(controller.doAction(any())).thenReturn(Optional.empty());
 
         assertDoesNotThrow(() -> gameEngine.startGame());
 

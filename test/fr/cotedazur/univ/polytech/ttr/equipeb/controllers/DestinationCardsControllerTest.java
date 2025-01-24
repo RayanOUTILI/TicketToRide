@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -37,7 +38,8 @@ class DestinationCardsControllerTest {
     @org.junit.jupiter.api.Test
     void testWithEmptyDeck() {
         when(gameModel.isDestinationCardDeckEmpty()).thenReturn(true);
-        assertFalse(destinationCardsController.doAction(player));
+        Optional<ReasonActionRefused> reason = Optional.of(ReasonActionRefused.DESTINATION_CARDS_DECK_EMPTY);
+        assertEquals(destinationCardsController.doAction(player), reason);
     }
 
     @org.junit.jupiter.api.Test
@@ -46,7 +48,9 @@ class DestinationCardsControllerTest {
         when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
         when(gameModel.drawDestinationCards(3)).thenReturn(cards);
         when(player.askDestinationCards(cards)).thenReturn(null);
-        assertFalse(destinationCardsController.doAction(player));
+        Optional<ReasonActionRefused> action = destinationCardsController.doAction(player);
+        assertTrue(action.isPresent());
+        assertEquals(ReasonActionRefused.DESTINATION_CARDS_CHOSEN_CARDS_EMPTY, action.get());
         verify(gameModel).returnDestinationCardsToTheBottom(cards);
     }
 
@@ -57,7 +61,9 @@ class DestinationCardsControllerTest {
         when(gameModel.drawDestinationCards(3)).thenReturn(cards);
         List<ShortDestinationCard> emptyList = new ArrayList<>();
         when(player.askDestinationCards(cards)).thenReturn(emptyList);
-        assertFalse(destinationCardsController.doAction(player));
+        Optional<ReasonActionRefused> action = destinationCardsController.doAction(player);
+        assertTrue(action.isPresent());
+        assertEquals(ReasonActionRefused.DESTINATION_CARDS_CHOSEN_CARDS_EMPTY, action.get());
         verify(gameModel).returnDestinationCardsToTheBottom(cards);
     }
 
@@ -67,7 +73,8 @@ class DestinationCardsControllerTest {
         when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
         when(gameModel.drawDestinationCards(3)).thenReturn(cards);
         when(player.askDestinationCards(cards)).thenReturn(cards);
-        assertTrue(destinationCardsController.doAction(player));
+        Optional<ReasonActionRefused> action = destinationCardsController.doAction(player);
+        assertTrue(action.isEmpty());
         verify(player).receivedDestinationCards(cards);
     }
 

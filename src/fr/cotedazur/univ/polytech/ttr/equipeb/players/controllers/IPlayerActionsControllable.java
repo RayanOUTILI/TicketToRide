@@ -3,8 +3,11 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
+import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 
 import java.util.List;
 
@@ -20,8 +23,9 @@ public interface IPlayerActionsControllable {
 
     List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards);
 
-    void actionRefused(Action action);
+    void actionRefused(Action action, ReasonActionRefused reason);
 
     void actionCompleted(Action action);
 
+    List<WagonCard> askWagonCardsForTunnel(int numberOfCards, Color acceptedColor);
 }

@@ -5,15 +5,17 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IRoutesControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class RoutesControllerTest {
+class RoutesControllerTrainTest {
 
     private RoutesController routesController;
     private IRoutesControllerGameModel gameModel;
@@ -49,7 +51,9 @@ class RoutesControllerTest {
     void testNullRoute() {
         when(claimRoute.route()).thenReturn(null);
         when(player.askClaimRoute()).thenReturn(claimRoute);
-        assertFalse(routesController.doAction(player));
+        Optional<ReasonActionRefused> actionRefused = routesController.doAction(player);
+        assertTrue(actionRefused.isPresent());
+        assertEquals(ReasonActionRefused.ROUTE_INVALID, actionRefused.get());
         verify(claimRoute).route();
         verify(player).askClaimRoute();
     }
@@ -57,7 +61,9 @@ class RoutesControllerTest {
     @org.junit.jupiter.api.Test
     void testNullClaimRoute() {
         when(player.askClaimRoute()).thenReturn(null);
-        assertFalse(routesController.doAction(player));
+        Optional<ReasonActionRefused> actionRefused = routesController.doAction(player);
+        assertTrue(actionRefused.isPresent());
+        assertEquals(ReasonActionRefused.ROUTE_INVALID, actionRefused.get());
         verify(player).askClaimRoute();
     }
 
@@ -66,7 +72,9 @@ class RoutesControllerTest {
         wagonCards = List.of(mock(WagonCard.class));
         when(player.askClaimRoute()).thenReturn(claimRoute);
         when(claimRoute.wagonCards()).thenReturn(wagonCards);
-        assertFalse(routesController.doAction(player));
+        Optional<ReasonActionRefused> actionRefused = routesController.doAction(player);
+        assertTrue(actionRefused.isPresent());
+        assertEquals(ReasonActionRefused.ROUTE_WRONG_GIVEN_WAGON_CARDS_SIZE, actionRefused.get());
         verify(claimRoute).wagonCards();
         verify(player).askClaimRoute();
     }
@@ -77,7 +85,9 @@ class RoutesControllerTest {
         when(player.askClaimRoute()).thenReturn(claimRoute);
         when(claimRoute.wagonCards()).thenReturn(wagonCards);
         when(route.isClaimed()).thenReturn(true);
-        assertFalse(routesController.doAction(player));
+        Optional<ReasonActionRefused> actionRefused = routesController.doAction(player);
+        assertTrue(actionRefused.isPresent());
+        assertEquals(ReasonActionRefused.ROUTE_WANTED_ROUTE_ALREADY_CLAIMED, actionRefused.get());
         verify(player).askClaimRoute();
     }
 
@@ -85,13 +95,15 @@ class RoutesControllerTest {
     void testRouteClaimed() {
         WagonCard wagonCardBlue = mock(WagonCard.class);
         WagonCard wagonCardAny = mock(WagonCard.class);
+        when(route.getType()).thenReturn(RouteType.TRAIN);
         when(wagonCardBlue.getColor()).thenReturn(Color.BLUE);
         when(wagonCardAny.getColor()).thenReturn(Color.ANY);
         wagonCards = List.of(wagonCardBlue, wagonCardAny);
         when(player.askClaimRoute()).thenReturn(claimRoute);
         when(claimRoute.wagonCards()).thenReturn(wagonCards);
         when(player.removeWagonCards(wagonCards)).thenReturn(wagonCards);
-        assertTrue(routesController.doAction(player));
+        Optional<ReasonActionRefused> actionRefused = routesController.doAction(player);
+        assertTrue(actionRefused.isEmpty());
         verify(gameModel).discardWagonCards(wagonCards);
         verify(player).askClaimRoute();
         verify(player).removeWagonCards(wagonCards);
@@ -103,6 +115,7 @@ class RoutesControllerTest {
     void testDoubleRoute() {
         Route doubleRoute = mock(Route.class);
         when(doubleRoute.getId()).thenReturn(2);
+        when(route.getType()).thenReturn(RouteType.TRAIN);
         wagonCards = List.of(mock(WagonCard.class), mock(WagonCard.class));
         wagonCards.forEach(card -> when(card.getColor()).thenReturn(Color.BLUE));
         when(player.askClaimRoute()).thenReturn(claimRoute);
@@ -111,7 +124,8 @@ class RoutesControllerTest {
         when(gameModel.getDoubleRouteOf(1)).thenReturn(doubleRoute);
         when(gameModel.deleteRoute(2)).thenReturn(true);
 
-        assertTrue(routesController.doAction(player));
+        Optional<ReasonActionRefused> actionRefused = routesController.doAction(player);
+        assertTrue(actionRefused.isEmpty());
 
         verify(player).askClaimRoute();
         verify(player).removeWagonCards(wagonCards);
@@ -133,7 +147,9 @@ class RoutesControllerTest {
         when(player.askClaimRoute()).thenReturn(claimRoute);
         when(claimRoute.wagonCards()).thenReturn(wagonCards);
         when(player.removeWagonCards(wagonCards)).thenReturn(removedCards);
-        assertFalse(routesController.doAction(player));
+        Optional<ReasonActionRefused> actionRefused = routesController.doAction(player);
+        assertTrue(actionRefused.isPresent());
+        assertEquals(ReasonActionRefused.ROUTE_NOT_ENOUGH_WAGON_CARDS, actionRefused.get());
         verify(player).replaceRemovedWagonCards(removedCards);
         verify(player).askClaimRoute();
         verify(player).removeWagonCards(wagonCards);
@@ -145,12 +161,15 @@ class RoutesControllerTest {
         WagonCard cardRed = mock(WagonCard.class);
         when(cardBlue1.getColor()).thenReturn(Color.BLUE);
         when(cardRed.getColor()).thenReturn(Color.RED);
+        when(route.getType()).thenReturn(RouteType.TRAIN);
         wagonCards = List.of(cardBlue1, cardRed);
-        List<WagonCard> removedCards = List.of(cardRed);
+        List<WagonCard> removedCards = List.of(cardRed, cardBlue1);
         when(player.askClaimRoute()).thenReturn(claimRoute);
         when(claimRoute.wagonCards()).thenReturn(wagonCards);
         when(player.removeWagonCards(wagonCards)).thenReturn(removedCards);
-        assertFalse(routesController.doAction(player));
+        Optional<ReasonActionRefused> actionRefused = routesController.doAction(player);
+        assertTrue(actionRefused.isPresent());
+        assertEquals(ReasonActionRefused.ROUTE_TRAIN_WRONG_WAGON_CARDS_COLOR, actionRefused.get());
         verify(player).replaceRemovedWagonCards(removedCards);
         verify(player).askClaimRoute();
         verify(player).removeWagonCards(wagonCards);
@@ -160,6 +179,7 @@ class RoutesControllerTest {
     void testDifferentCardColorsWithJoker() {
         WagonCard cardBlue1 = mock(WagonCard.class);
         WagonCard cardJoker = mock(WagonCard.class);
+        when(route.getType()).thenReturn(RouteType.TRAIN);
         when(cardBlue1.getColor()).thenReturn(Color.BLUE);
         when(cardJoker.getColor()).thenReturn(Color.ANY);
         wagonCards = List.of(cardBlue1, cardJoker);
@@ -167,7 +187,8 @@ class RoutesControllerTest {
         when(player.askClaimRoute()).thenReturn(claimRoute);
         when(claimRoute.wagonCards()).thenReturn(wagonCards);
         when(player.removeWagonCards(wagonCards)).thenReturn(removedCards);
-        assertTrue(routesController.doAction(player));
+        Optional<ReasonActionRefused> actionRefused = routesController.doAction(player);
+        assertTrue(actionRefused.isEmpty());
         verify(player).askClaimRoute();
         verify(player).removeWagonCards(wagonCards);
     }
