@@ -93,7 +93,7 @@ public class RoutesController extends Controller {
             case RouteType.TUNNEL: {
                 for(WagonCard card : removedCards) {
                     if(routeColor == Color.ANY) routeColor = card.getColor();
-                    if(card.getColor() != routeColor || card.getColor() != Color.ANY) {
+                    if(card.getColor() != routeColor && card.getColor() != Color.ANY) {
                         player.replaceRemovedWagonCards(removedCards);
                         return Optional.of(ReasonActionRefused.ROUTE_TUNNEL_WRONG_WAGON_CARDS_COLOR);
                     }
@@ -102,30 +102,26 @@ public class RoutesController extends Controller {
                 if(!drawnCards.isEmpty()) {
                     Color finalRouteColor = routeColor;
 
-                    int nbCardsAnyColor = drawnCards.stream().filter(card -> card.getColor() == Color.ANY).toArray().length;
-                    int nbCardsRouteColor = drawnCards.stream().filter(card -> card.getColor() == finalRouteColor).toArray().length;
-                    int nbCardsToAdd = nbCardsAnyColor + nbCardsRouteColor;
+                    int nbCardsToAdd = drawnCards.stream().filter(card -> card.getColor() == finalRouteColor).toArray().length;
 
                     List<WagonCard> wagonCardsForTunnel = player.askWagonCardsForTunnel(nbCardsToAdd, finalRouteColor);
                     List<WagonCard> removedCardsForTunnel = player.removeWagonCards(wagonCardsForTunnel);
 
                     removedCards.addAll(removedCardsForTunnel);
 
-                    if(removedCardsForTunnel.size() != nbCardsToAdd) {
+                    if(removedCardsForTunnel.size() < nbCardsToAdd) {
                         player.replaceRemovedWagonCards(removedCards);
                         gameModel.discardWagonCards(drawnCards);
                         return Optional.of(ReasonActionRefused.ROUTE_TUNNEL_NOT_ENOUGH_WAGON_CARDS);
                     }
 
-                    int nbOfCardsAnyColorToRemove = nbCardsAnyColor;
-                    int nbOfCardsRouteColorToRemove = nbCardsRouteColor;
+                    int nbOfCardsToRemove = nbCardsToAdd;
 
                     for(WagonCard wagonCard : removedCardsForTunnel) {
-                        if(wagonCard.getColor() == finalRouteColor) nbOfCardsRouteColorToRemove--;
-                        else if (wagonCard.getColor() == Color.ANY) nbOfCardsAnyColorToRemove--;
+                        if(wagonCard.getColor() == finalRouteColor) nbOfCardsToRemove--;
                     }
 
-                    if(nbOfCardsAnyColorToRemove != 0 || nbOfCardsRouteColorToRemove != 0) {
+                    if(nbOfCardsToRemove != 0) {
                         player.replaceRemovedWagonCards(removedCards);
                         gameModel.discardWagonCards(drawnCards);
                         return Optional.of(ReasonActionRefused.ROUTE_TUNNEL_NOT_ENOUGH_REMOVED_WAGON_CARDS);
