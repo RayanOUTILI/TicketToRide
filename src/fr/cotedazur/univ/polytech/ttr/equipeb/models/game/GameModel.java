@@ -74,7 +74,7 @@ public class GameModel implements
         List<WagonCard> cards = new ArrayList<>();
 
         for (int i = 0; i < numberOfCards; i++) {
-            cards.add(wagonCardDeck.drawCard());
+            if(!wagonCardDeck.isEmpty()) cards.add(wagonCardDeck.drawCard());
         }
 
         return cards;
