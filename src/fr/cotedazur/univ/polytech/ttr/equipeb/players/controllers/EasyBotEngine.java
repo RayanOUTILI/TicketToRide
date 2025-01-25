@@ -71,7 +71,7 @@ public class EasyBotEngine implements IPlayerActionsControllable {
 
         if(route == null) return null;
 
-        return new ClaimRoute(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getNbLocomotives()));
+        return new ClaimRoute(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getType() == RouteType.FERRY ? route.getNbLocomotives() : 0));
     }
 
     @Override
@@ -123,7 +123,10 @@ public class EasyBotEngine implements IPlayerActionsControllable {
     }
 
     private RouteReadOnly chooseRoute() {
-        return gameModel.getNonControllableAvailableRoutes().stream().filter(this::canTakeRoute).findAny().orElse(null);
+        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes().stream().filter(this::canTakeRoute).toList();
+        if(availableRoutes.isEmpty()) return null;
+        int randomIndex = random.nextInt(availableRoutes.size());
+        return availableRoutes.get(randomIndex);
     }
 
     private boolean canTakeARoute() {
@@ -137,10 +140,10 @@ public class EasyBotEngine implements IPlayerActionsControllable {
             return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getNbLocomotives()).size() == route.getLength();
         }
         else if (route.getType() == RouteType.TRAIN) {
-            return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0).size() >= route.getLength();
+            return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0).size() == route.getLength();
         }
         else if (route.getType() == RouteType.TUNNEL) {
-            return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0).size() >= route.getLength()+3;
+            return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength()+1, 0).size() >= route.getLength();
         }
 
         return false;
