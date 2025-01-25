@@ -16,9 +16,6 @@ public interface IPlayerModel {
     int getStationsLeft();
     List<WagonCard> getWagonCards(int numberOfCards);
     List<WagonCard> getWagonCardsIncludingAnyColor(int numberOfCards);
-    List<WagonCard> getWagonCardsIncludingAnyColor(Color color, int numberOfCards);
     List<WagonCard> getWagonCardsIncludingAnyColor(Color color, int numberOfCards, int numberLocomotives);
     List<WagonCard> getWagonCardsOfColor(Color color, int numberOfCards);
-    int getNumberOfWagonCardsIncludingAnyColor(Color color);
-    int getNumberOfWagonCardsOfColor(Color color);
 }
