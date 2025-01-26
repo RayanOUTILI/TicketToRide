@@ -2,7 +2,6 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.engine;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.*;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.endgame.EndGameReasons;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;

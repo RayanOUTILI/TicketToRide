@@ -59,8 +59,11 @@ public class EasyBotEngine implements IPlayerActionsControllable {
         } else if (playerModel.getStationsLeft() > 0 && playerModel.getWagonCardsIncludingAnyColor(3- (playerModel.getStationsLeft()-1)).size() == 3- (playerModel.getStationsLeft()-1)) {
             return Action.PLACE_STATION;
         // Else, the bot will pick a wagon card
-        } else {
+        } else if(!gameModel.isWagonCardDeckEmpty()) {
             return Action.PICK_WAGON_CARD;
+        }
+        else {
+            return Action.PICK_DESTINATION_CARDS;
         }
     }
 
