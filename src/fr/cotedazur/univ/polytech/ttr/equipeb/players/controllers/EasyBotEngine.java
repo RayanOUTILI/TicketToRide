@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ReasonActionRefused;
@@ -19,9 +20,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewabl
 import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
 
 import javax.swing.text.View;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static java.lang.System.console;
 import static java.lang.System.exit;
@@ -122,6 +121,17 @@ public class EasyBotEngine implements IPlayerActionsControllable {
         return playerModel.getWagonCardsOfColor(acceptedColor, numberOfCards);
     }
 
+    @Override
+    public Optional<ActionDrawWagonCard> askDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
+        return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
+    }
+
+    @Override
+    public WagonCard askWagonCardFromShownCards() {
+        List<WagonCard> shownCards = gameModel.getListOfShownWagonCards();
+        return shownCards.get(random.nextInt(shownCards.size()));
+    }
+
     private RouteReadOnly chooseRoute() {
         List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes().stream().filter(this::canTakeRoute).toList();
         if(availableRoutes.isEmpty()) return null;
@@ -135,6 +145,8 @@ public class EasyBotEngine implements IPlayerActionsControllable {
 
     private boolean canTakeRoute(RouteReadOnly route) {
         if(route.isClaimed()) return false;
+
+        if(playerModel.getNumberOfWagons() < route.getLength()) return false;
 
         if(route.getType() == RouteType.FERRY) {
             return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getNbLocomotives()).size() == route.getLength();

@@ -18,7 +18,12 @@ public class DestinationCardsController extends Controller {
     }
 
     @Override
-    public boolean init(Player player) {
+    public boolean initGame() {
+        return false;
+    }
+
+    @Override
+    public boolean initPlayer(Player player) {
         if(gameModel.isDestinationCardDeckEmpty()) return false;
 
         boolean shuffled = gameModel.shuffleDestinationCardDeck();

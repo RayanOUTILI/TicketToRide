@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IWagonCardsControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
@@ -27,36 +28,35 @@ class WagonCardsControllerTest {
     }
 
     @Test
-    void testInitErrorShuffle() {
+    void testInitPlayerErrorShuffle() {
         when(gameModel.isWagonCardDeckEmpty()).thenReturn(false);
         when(gameModel.shuffleWagonCardDeck()).thenReturn(false);
-        assertFalse(wagonCardsController.init(player));
+        assertFalse(wagonCardsController.initPlayer(player));
     }
 
     @Test
-    void testInitErrorDraw() {
+    void testInitPlayerErrorDraw() {
         when(gameModel.isWagonCardDeckEmpty()).thenReturn(false);
         when(gameModel.shuffleWagonCardDeck()).thenReturn(true);
         when(gameModel.drawCardsFromWagonCardDeck(4)).thenReturn(null);
-        assertFalse(wagonCardsController.init(player));
+        assertFalse(wagonCardsController.initPlayer(player));
     }
 
     @Test
-    void testInitErrorDrawSize() {
+    void testInitPlayerErrorDrawSize() {
         when(gameModel.isWagonCardDeckEmpty()).thenReturn(false);
         when(gameModel.shuffleWagonCardDeck()).thenReturn(true);
         when(gameModel.drawCardsFromWagonCardDeck(4)).thenReturn(List.of(wagonCard, wagonCard, wagonCard));
-        assertFalse(wagonCardsController.init(player));
+        assertFalse(wagonCardsController.initPlayer(player));
     }
 
     @Test
-    void testInit() {
+    void testInitPlayer() {
         when(gameModel.isWagonCardDeckEmpty()).thenReturn(false);
         when(gameModel.shuffleWagonCardDeck()).thenReturn(true);
         when(gameModel.drawCardsFromWagonCardDeck(4)).thenReturn(List.of(wagonCard, wagonCard, wagonCard, wagonCard));
-        assertTrue(wagonCardsController.init(player));
+        assertTrue(wagonCardsController.initPlayer(player));
         verify(gameModel).isWagonCardDeckEmpty();
-        verify(gameModel).shuffleWagonCardDeck();
         verify(gameModel).drawCardsFromWagonCardDeck(4);
         verify(player).receivedWagonCards(List.of(wagonCard, wagonCard, wagonCard, wagonCard));
     }
@@ -73,12 +73,12 @@ class WagonCardsControllerTest {
     @org.junit.jupiter.api.Test
     void testDoActionWithNonCardDeckEmpty() {
         when(gameModel.isWagonCardDeckEmpty()).thenReturn(false);
+        when(player.askDrawWagonCard(anyList())).thenReturn(Optional.of(ActionDrawWagonCard.DRAW_FROM_DECK), Optional.empty());
         when(gameModel.drawCardFromWagonCardDeck()).thenReturn(wagonCard);
         Optional<ReasonActionRefused> actionRefused = wagonCardsController.doAction(player);
         assertTrue(actionRefused.isEmpty());
-        verify(gameModel).isWagonCardDeckEmpty();
-        verify(gameModel).drawCardFromWagonCardDeck();
-        verify(player).receivedWagonCard(wagonCard);
+        verify(gameModel, times(1)).drawCardFromWagonCardDeck();
+        verify(player, times(1)).receivedWagonCard(wagonCard);
     }
 
 }

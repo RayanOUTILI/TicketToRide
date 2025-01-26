@@ -12,4 +12,14 @@ public interface IWagonCardsControllerGameModel {
     WagonCard drawCardFromWagonCardDeck();
 
     List<WagonCard> drawCardsFromWagonCardDeck(int numberOfCards);
+
+    List<WagonCard> getListOfShownWagonCards();
+
+    boolean fillWagonCardDeck();
+
+    boolean removeCardFromShownCards(WagonCard card);
+
+    boolean placeNewWagonCardOnShownCards(WagonCard card);
+
+    boolean replaceShownWagonCards(List<WagonCard> wagonCards);
 }

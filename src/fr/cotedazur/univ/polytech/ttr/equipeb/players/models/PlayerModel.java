@@ -25,6 +25,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     private final IPlayerViewable view;
     private int stationsLeft;
     private int score;
+    private int numberOfWagons;
 
     public PlayerModel(PlayerIdentification playerIdentification, IPlayerViewable view) {
         this.playerIdentification = playerIdentification;
@@ -33,6 +34,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         this.view = view;
         this.score = 0;
         this.stationsLeft = 0;
+        this.numberOfWagons = 0;
     }
 
     public PlayerIdentification getIdentification() {
@@ -115,6 +117,22 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     @Override
     public void notifyClaimedStation(CityReadOnly city, List<WagonCard> wagonCards) {
         if(view != null) this.view.displayClaimedStation(city, wagonCards, stationsLeft);
+    }
+
+    @Override
+    public boolean setNumberOfWagons(int startingWagonCards) {
+        this.numberOfWagons = startingWagonCards;
+        return true;
+    }
+
+    @Override
+    public int getNumberOfWagons() {
+        return numberOfWagons;
+    }
+
+    @Override
+    public void removeWagons(int numberOfWagons) {
+        this.numberOfWagons -= numberOfWagons;
     }
 
     @Override

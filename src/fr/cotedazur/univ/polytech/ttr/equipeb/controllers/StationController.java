@@ -32,7 +32,12 @@ public class StationController extends Controller{
     }
 
     @Override
-    public boolean init(Player player) {
+    public boolean initGame() {
+        return true;
+    }
+
+    @Override
+    public boolean initPlayer(Player player) {
         player.defineStartingStationsNumber(STARTING_STATIONS);
         return true;
     }

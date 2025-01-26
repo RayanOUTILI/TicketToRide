@@ -14,6 +14,7 @@ import java.util.Optional;
 
 public class RoutesController extends Controller {
     private static final int THRESHOLD_PLAYERS_TO_KEEP_DOUBLE_ROUTES = 4;
+    private static final int STARTING_WAGON_CARDS = 45;
     private final IRoutesControllerGameModel gameModel;
 
     public RoutesController(IRoutesControllerGameModel gameModel) {
@@ -21,8 +22,13 @@ public class RoutesController extends Controller {
     }
 
     @Override
-    public boolean init(Player player) {
+    public boolean initGame() {
         return gameModel.setAllRoutesNotClaimed();
+    }
+
+    @Override
+    public boolean initPlayer(Player player) {
+        return player.setNumberOfWagons(STARTING_WAGON_CARDS);
     }
 
     @Override
@@ -38,6 +44,8 @@ public class RoutesController extends Controller {
         if(route == null) return Optional.of(ReasonActionRefused.ROUTE_WANTED_ROUTE_NOT_FOUND);
 
         if(route.isClaimed()) return Optional.of(ReasonActionRefused.ROUTE_WANTED_ROUTE_ALREADY_CLAIMED);
+
+        if(player.getNumberOfWagons() < route.getLength()) return Optional.of(ReasonActionRefused.ROUTE_NOT_ENOUGH_WAGONS);
 
         if(route.getLength() != claimRoute.wagonCards().size()) return Optional.of(ReasonActionRefused.ROUTE_WRONG_GIVEN_WAGON_CARDS_SIZE);
 
@@ -136,6 +144,8 @@ public class RoutesController extends Controller {
         }
 
         gameModel.discardWagonCards(removedCards);
+
+        player.removeWagons(route.getLength());
 
         route.setClaimerPlayer(player.getIdentification());
 

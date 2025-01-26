@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ReasonActionRefused;
@@ -15,6 +16,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControl
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A record that encapsulates both the controllable actions and the controllable
@@ -65,6 +67,16 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
+    public Optional<ActionDrawWagonCard> askDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
+        return actionsController.askDrawWagonCard(possibleActions);
+    }
+
+    @Override
+    public WagonCard askWagonCardFromShownCards() {
+        return actionsController.askWagonCardFromShownCards();
+    }
+
+    @Override
     public PlayerIdentification getIdentification() {
         return modelController.getIdentification();
     }
@@ -97,6 +109,21 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     @Override
     public void notifyClaimedStation(CityReadOnly city, List<WagonCard> wagonCards) {
         modelController.notifyClaimedStation(city, wagonCards);
+    }
+
+    @Override
+    public boolean setNumberOfWagons(int startingWagonCards) {
+        return modelController.setNumberOfWagons(startingWagonCards);
+    }
+
+    @Override
+    public int getNumberOfWagons() {
+        return modelController.getNumberOfWagons();
+    }
+
+    @Override
+    public void removeWagons(int numberOfWagons) {
+        modelController.removeWagons(numberOfWagons);
     }
 
     @Override

@@ -34,4 +34,10 @@ public interface IPlayerModelControllable {
     int getStationsLeft();
     void decrementStationsLeft();
     void notifyClaimedStation(CityReadOnly city, List<WagonCard> wagonCards);
+
+    boolean setNumberOfWagons(int startingWagonCards);
+
+    int getNumberOfWagons();
+
+    void removeWagons(int numberOfWagons);
 }

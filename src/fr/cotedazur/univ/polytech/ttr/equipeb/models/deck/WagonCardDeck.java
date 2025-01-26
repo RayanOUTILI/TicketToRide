@@ -9,6 +9,7 @@ import java.util.*;
  */
 public class WagonCardDeck {
     private final Deque<WagonCard> stack;
+    private final List<WagonCard> shownCards = new ArrayList<>();
     private final Deque<WagonCard> discardPile = new ArrayDeque<>();
 
 
@@ -52,5 +53,26 @@ public class WagonCardDeck {
         stack.clear();
         stack.addAll(cards);
         return true;
+    }
+
+    public boolean removeCardFromShownCards(WagonCard card) {
+        return shownCards.remove(card);
+    }
+
+    public boolean addCardToShownCards(WagonCard card) {
+        if (shownCards.size() >= 5) {
+            return false;
+        }
+        shownCards.add(card);
+        return true;
+    }
+
+    public List<WagonCard> shownCards() {
+        return new ArrayList<>(shownCards);
+    }
+
+    public boolean replaceShownCards(List<WagonCard> cards) {
+        shownCards.clear();
+        return shownCards.addAll(cards);
     }
 }

@@ -5,6 +5,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import java.util.Optional;
 
 public abstract class Controller {
-    public abstract boolean init(Player player);
+    public abstract boolean initGame();
+    public abstract boolean initPlayer(Player player);
     public abstract Optional<ReasonActionRefused> doAction(Player player);
 }

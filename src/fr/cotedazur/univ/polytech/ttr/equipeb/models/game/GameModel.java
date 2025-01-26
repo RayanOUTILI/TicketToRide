@@ -65,6 +65,21 @@ public class GameModel implements
     }
 
     @Override
+    public boolean removeCardFromShownCards(WagonCard card) {
+        return wagonCardDeck.removeCardFromShownCards(card);
+    }
+
+    @Override
+    public boolean placeNewWagonCardOnShownCards(WagonCard card) {
+        return wagonCardDeck.addCardToShownCards(card);
+    }
+
+    @Override
+    public boolean replaceShownWagonCards(List<WagonCard> wagonCards) {
+        return wagonCardDeck.replaceShownCards(wagonCards);
+    }
+
+    @Override
     public WagonCard drawCardFromWagonCardDeck() {
         return wagonCardDeck.drawCard();
     }
@@ -78,6 +93,11 @@ public class GameModel implements
         }
 
         return cards;
+    }
+
+    @Override
+    public List<WagonCard> getListOfShownWagonCards() {
+        return wagonCardDeck.shownCards();
     }
 
     @Override

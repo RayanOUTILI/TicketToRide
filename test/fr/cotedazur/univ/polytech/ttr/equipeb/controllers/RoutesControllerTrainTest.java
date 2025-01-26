@@ -38,13 +38,7 @@ class RoutesControllerTrainTest {
         when(route.getColor()).thenReturn(Color.BLUE);
         when(gameModel.getRoute(1)).thenReturn(route);
         when(claimRoute.route()).thenReturn(route);
-
-    }
-
-    @Test
-    void testInit() {
-        when(gameModel.setAllRoutesNotClaimed()).thenReturn(true);
-        assertTrue(routesController.init(player));
+        when(player.getNumberOfWagons()).thenReturn(2);
     }
 
     @org.junit.jupiter.api.Test

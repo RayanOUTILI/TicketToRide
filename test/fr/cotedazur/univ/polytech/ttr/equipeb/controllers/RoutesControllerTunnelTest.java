@@ -43,6 +43,7 @@ public class RoutesControllerTunnelTest {
         player = mock(Player.class);
         when(player.getIdentification()).thenReturn(PlayerIdentification.RED);
         when(player.askClaimRoute()).thenReturn(claimRoute);
+        when(player.getNumberOfWagons()).thenReturn(3);
     }
 
     @Test

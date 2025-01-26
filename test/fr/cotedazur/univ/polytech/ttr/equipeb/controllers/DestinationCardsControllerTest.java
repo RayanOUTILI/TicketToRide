@@ -1,6 +1,5 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IDestinationCardsControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
@@ -26,12 +25,12 @@ class DestinationCardsControllerTest {
     }
 
     @Test
-    void testInit() {
+    void testInitPlayer() {
         when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
         when(gameModel.shuffleDestinationCardDeck()).thenReturn(true);
         List<ShortDestinationCard> cards = List.of(mock(ShortDestinationCard.class), mock(ShortDestinationCard.class), mock(ShortDestinationCard.class));
         when(gameModel.drawDestinationCards(3)).thenReturn(cards);
-        assertTrue(destinationCardsController.init(player));
+        assertTrue(destinationCardsController.initPlayer(player));
         verify(player).receivedDestinationCards(cards);
     }
 

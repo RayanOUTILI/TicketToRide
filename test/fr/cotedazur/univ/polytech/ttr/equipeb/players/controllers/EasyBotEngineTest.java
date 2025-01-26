@@ -60,6 +60,7 @@ class EasyBotEngineTest {
         List<RouteReadOnly> routes = new ArrayList<>(List.of(route));
         WagonCard card = mock(WagonCard.class);
         when(card.getColor()).thenReturn(Color.BLUE);
+        when(playerModel.getNumberOfWagons()).thenReturn(1);
         when(playerModel.getWagonCards(anyInt())).thenReturn(List.of(card));
         when(playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0)).thenReturn(List.of(card));
         when(gameModel.getNonControllableAvailableRoutes()).thenReturn(routes);
@@ -83,6 +84,7 @@ class EasyBotEngineTest {
         when(route.getLength()).thenReturn(1);
         WagonCard card = mock(WagonCard.class);
         when(card.getColor()).thenReturn(Color.BLUE);
+        when(playerModel.getNumberOfWagons()).thenReturn(1);
         when(playerModel.getWagonCards(anyInt())).thenReturn(List.of(card));
         when(playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0)).thenReturn(List.of(card));
         when(route.getType()).thenReturn(RouteType.TRAIN);

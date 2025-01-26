@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
@@ -35,5 +36,7 @@ public interface IPlayerGameModel {
      * @return if the destination card deck is empty
      */
     boolean isDestinationCardDeckEmpty();
+
+    List<WagonCard> getListOfShownWagonCards();
 }
 
