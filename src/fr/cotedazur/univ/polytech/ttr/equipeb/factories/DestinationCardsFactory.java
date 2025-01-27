@@ -6,7 +6,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

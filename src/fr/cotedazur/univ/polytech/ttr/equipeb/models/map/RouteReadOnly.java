@@ -39,6 +39,15 @@ public interface RouteReadOnly {
      */
     boolean isClaimed();
 
+    /**
+     * @return the type of the route
+     */
+    RouteType getType();
+
+    /**
+     * @return the number of locomotives needed to claim the route
+     */
+    int getNbLocomotives();
 
     /**
      * @return the player who claimed the route

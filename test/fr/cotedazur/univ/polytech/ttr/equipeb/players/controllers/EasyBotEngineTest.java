@@ -1,12 +1,14 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
@@ -51,14 +53,16 @@ class EasyBotEngineTest {
         when(random.nextInt(2)).thenReturn(1);
         when(playerModel.getNumberOfWagonCards()).thenReturn(1);
         Route route = mock(Route.class);
+        when(route.getType()).thenReturn(RouteType.TRAIN);
         when(route.isClaimed()).thenReturn(false);
         when(route.getColor()).thenReturn(Color.BLUE);
         when(route.getLength()).thenReturn(1);
         List<RouteReadOnly> routes = new ArrayList<>(List.of(route));
         WagonCard card = mock(WagonCard.class);
         when(card.getColor()).thenReturn(Color.BLUE);
+        when(playerModel.getNumberOfWagons()).thenReturn(1);
         when(playerModel.getWagonCards(anyInt())).thenReturn(List.of(card));
-        when(playerModel.getNumberOfWagonCardsIncludingAnyColor(Color.BLUE)).thenReturn(1);
+        when(playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0)).thenReturn(List.of(card));
         when(gameModel.getNonControllableAvailableRoutes()).thenReturn(routes);
 
         assertEquals(Action.CLAIM_ROUTE, easyBotEngine.askAction());
@@ -80,13 +84,14 @@ class EasyBotEngineTest {
         when(route.getLength()).thenReturn(1);
         WagonCard card = mock(WagonCard.class);
         when(card.getColor()).thenReturn(Color.BLUE);
+        when(playerModel.getNumberOfWagons()).thenReturn(1);
         when(playerModel.getWagonCards(anyInt())).thenReturn(List.of(card));
-        when(playerModel.getNumberOfWagonCardsIncludingAnyColor(Color.BLUE)).thenReturn(1);
+        when(playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0)).thenReturn(List.of(card));
+        when(route.getType()).thenReturn(RouteType.TRAIN);
         List<RouteReadOnly> routes = new ArrayList<>(List.of(route));
         when(gameModel.getNonControllableAvailableRoutes()).thenReturn(routes);
         when(random.nextInt(anyInt())).thenReturn(0);
         when(gameModel.getNonControllableRoutes()).thenReturn(routes);
-        when(playerModel.getNumberOfWagonCardsIncludingAnyColor(Color.BLUE)).thenReturn(1);
 
         assertNotNull(easyBotEngine.askClaimRoute());
     }
@@ -110,8 +115,8 @@ class EasyBotEngineTest {
 
     @Test
     void testActionRefused() {
-        easyBotEngine.actionRefused(Action.PICK_DESTINATION_CARDS);
-        verify(view).displayActionRefused(Action.PICK_DESTINATION_CARDS);
+        easyBotEngine.actionRefused(Action.PICK_DESTINATION_CARDS, ReasonActionRefused.DESTINATION_CARDS_DECK_EMPTY);
+        verify(view).displayActionRefused(Action.PICK_DESTINATION_CARDS, ReasonActionRefused.DESTINATION_CARDS_DECK_EMPTY);
     }
 
     @Test
