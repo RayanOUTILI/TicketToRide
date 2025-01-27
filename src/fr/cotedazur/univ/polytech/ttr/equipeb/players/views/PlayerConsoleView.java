@@ -7,7 +7,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 
 import java.util.List;

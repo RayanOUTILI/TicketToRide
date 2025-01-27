@@ -5,25 +5,20 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ReasonActionRefused;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
 
-import javax.swing.text.View;
-import java.util.*;
-
-import static java.lang.System.console;
-import static java.lang.System.exit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class EasyBotEngine implements IPlayerActionsControllable {
     private final IPlayerGameModel gameModel;

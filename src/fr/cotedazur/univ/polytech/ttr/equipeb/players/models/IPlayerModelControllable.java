@@ -1,6 +1,5 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
