@@ -56,14 +56,17 @@ public class Route implements RouteReadOnly {
         return length;
     }
 
+    @Override
     public RouteType getType() {
         return type;
     }
 
+    @Override
     public Color getColor() {
         return color;
     }
 
+    @Override
     public int getNbLocomotives() {
         return nbLocomotives;
     }

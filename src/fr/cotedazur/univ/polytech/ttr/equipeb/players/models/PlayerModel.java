@@ -2,13 +2,11 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +23,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     private final IPlayerViewable view;
     private int stationsLeft;
     private int score;
+    private int numberOfWagons;
 
     public PlayerModel(PlayerIdentification playerIdentification, IPlayerViewable view) {
         this.playerIdentification = playerIdentification;
@@ -33,6 +32,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         this.view = view;
         this.score = 0;
         this.stationsLeft = 0;
+        this.numberOfWagons = 0;
     }
 
     public PlayerIdentification getIdentification() {
@@ -118,6 +118,22 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     }
 
     @Override
+    public boolean setNumberOfWagons(int startingWagonCards) {
+        this.numberOfWagons = startingWagonCards;
+        return true;
+    }
+
+    @Override
+    public int getNumberOfWagons() {
+        return numberOfWagons;
+    }
+
+    @Override
+    public void removeWagons(int numberOfWagons) {
+        this.numberOfWagons -= numberOfWagons;
+    }
+
+    @Override
     public int getNumberOfWagonCards() {
         return wagonCards.size();
     }
@@ -167,11 +183,53 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         return selectedCards;
     }
 
+    private Color getMostFrequentColor() {
+        Map<Color, Long> colorCount = wagonCards.stream()
+                .filter(card -> !card.getColor().equals(Color.ANY))
+                .collect(Collectors.groupingBy(WagonCard::getColor, Collectors.counting()));
+
+        return colorCount.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+    }
+
+
     @Override
-    public List<WagonCard> getWagonCardsIncludingAnyColor(Color color, int numberOfCards) {
+    public List<WagonCard> getWagonCardsIncludingAnyColor(Color color, int numberOfCards, int numberLocomotives) {
+        List<WagonCard> cards = new ArrayList<>();
+        if(color == Color.ANY) color = getMostFrequentColor();
+        for(WagonCard card : wagonCards) {
+            if(card.getColor() == color && numberOfCards > 0) {
+                cards.add(card);
+                numberOfCards--;
+            }
+            else if(card.getColor() == Color.ANY && numberLocomotives > 0) {
+                cards.add(card);
+                numberLocomotives--;
+            }
+        }
+
+        if(numberOfCards > 0 ) {
+            for(WagonCard card : wagonCards) {
+                if(card.getColor() == Color.ANY && numberOfCards > 0 && !cards.contains(card)) {
+                    cards.add(card);
+                    numberOfCards--;
+                }
+            }
+        }
+
+        if(numberLocomotives > 0 || numberOfCards > 0) {
+            return new ArrayList<>();
+        }
+        return cards;
+    }
+
+    @Override
+    public List<WagonCard> getWagonCardsOfColor(Color color, int numberOfCards) {
         List<WagonCard> cards = new ArrayList<>();
         for (WagonCard card : wagonCards) {
-            if (card.getColor().equals(color) || card.getColor().equals(Color.ANY)) {
+            if (card.getColor() == color) {
                 cards.add(card);
                 if (cards.size() == numberOfCards) {
                     break;

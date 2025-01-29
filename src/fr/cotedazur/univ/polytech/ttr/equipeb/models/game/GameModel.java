@@ -2,7 +2,6 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
@@ -65,6 +64,21 @@ public class GameModel implements
     }
 
     @Override
+    public boolean removeCardFromShownCards(WagonCard card) {
+        return wagonCardDeck.removeCardFromShownCards(card);
+    }
+
+    @Override
+    public boolean placeNewWagonCardOnShownCards(WagonCard card) {
+        return wagonCardDeck.addCardToShownCards(card);
+    }
+
+    @Override
+    public boolean replaceShownWagonCards(List<WagonCard> wagonCards) {
+        return wagonCardDeck.replaceShownCards(wagonCards);
+    }
+
+    @Override
     public WagonCard drawCardFromWagonCardDeck() {
         return wagonCardDeck.drawCard();
     }
@@ -74,10 +88,15 @@ public class GameModel implements
         List<WagonCard> cards = new ArrayList<>();
 
         for (int i = 0; i < numberOfCards; i++) {
-            cards.add(wagonCardDeck.drawCard());
+            if(!wagonCardDeck.isEmpty()) cards.add(wagonCardDeck.drawCard());
         }
 
         return cards;
+    }
+
+    @Override
+    public List<WagonCard> getListOfShownWagonCards() {
+        return wagonCardDeck.shownCards();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
@@ -34,4 +33,10 @@ public interface IPlayerModelControllable {
     int getStationsLeft();
     void decrementStationsLeft();
     void notifyClaimedStation(CityReadOnly city, List<WagonCard> wagonCards);
+
+    boolean setNumberOfWagons(int startingWagonCards);
+
+    int getNumberOfWagons();
+
+    void removeWagons(int numberOfWagons);
 }

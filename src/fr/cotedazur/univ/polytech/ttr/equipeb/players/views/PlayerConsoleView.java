@@ -1,12 +1,12 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.views;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 
 import java.util.List;
@@ -75,8 +75,8 @@ public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineV
     }
 
     @Override
-    public void displayActionRefused(Action action) {
-        System.out.println("Player {" + this.getPlayerIdentification() + "} Action refused: " + action);
+    public void displayActionRefused(Action action, ReasonActionRefused reason) {
+        System.out.println("Player {" + this.getPlayerIdentification() + "} Action refused: " + action + " -> " + reason);
     }
 
     @Override
