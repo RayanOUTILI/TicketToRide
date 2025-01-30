@@ -18,16 +18,12 @@ public class DestinationCardsController extends Controller {
 
     @Override
     public boolean initGame() {
-        return false;
+        return gameModel.shuffleDestinationCardDeck();
     }
 
     @Override
     public boolean initPlayer(Player player) {
         if(gameModel.isDestinationCardDeckEmpty()) return false;
-
-        boolean shuffled = gameModel.shuffleDestinationCardDeck();
-
-        if (!shuffled) return false;
 
         List<ShortDestinationCard> cards = gameModel.drawDestinationCards(STARTING_DESTINATION_CARDS);
 
