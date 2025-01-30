@@ -52,11 +52,11 @@ public class WagonCardsController extends Controller {
             if(!gameModel.getListOfShownWagonCards().isEmpty()) possibleActions.add(ActionDrawWagonCard.DRAW_FROM_SHOWN_CARDS);
             Optional<ActionDrawWagonCard> action = player.askDrawWagonCard(possibleActions);
 
-            if(action.isPresent() && action.get() == ActionDrawWagonCard.DRAW_FROM_DECK) {
+            if(action.isPresent() && action.get() == ActionDrawWagonCard.DRAW_FROM_DECK && possibleActions.contains(action.get())) {
                 WagonCard card = gameModel.drawCardFromWagonCardDeck();
                 player.receivedWagonCard(card);
             }
-            else if (action.isPresent() && action.get() == ActionDrawWagonCard.DRAW_FROM_SHOWN_CARDS) {
+            else if (action.isPresent() && action.get() == ActionDrawWagonCard.DRAW_FROM_SHOWN_CARDS && possibleActions.contains(action.get())) {
                 List<WagonCard> shownCards = gameModel.getListOfShownWagonCards();
                 WagonCard chosenCard;
                 do {
