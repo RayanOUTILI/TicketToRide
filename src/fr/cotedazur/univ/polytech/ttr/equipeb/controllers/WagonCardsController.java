@@ -44,7 +44,8 @@ public class WagonCardsController extends Controller {
     public Optional<ReasonActionRefused> doAction(Player player) {
         if (gameModel.isWagonCardDeckEmpty()) return Optional.of(ReasonActionRefused.WAGON_CARDS_DECK_EMPTY);
 
-        for(int round = 1; round <= 2; round++) {
+        boolean hasChosenLocomotive = false;
+        for(int round = 1; round <= 2 && !hasChosenLocomotive; round++) {
             List<ActionDrawWagonCard> possibleActions = new ArrayList<>();
             if(!gameModel.isWagonCardDeckEmpty()) possibleActions.add(ActionDrawWagonCard.DRAW_FROM_DECK);
             if(!gameModel.getListOfShownWagonCards().isEmpty()) possibleActions.add(ActionDrawWagonCard.DRAW_FROM_SHOWN_CARDS);
@@ -63,7 +64,7 @@ public class WagonCardsController extends Controller {
 
                 player.receivedWagonCard(chosenCard);
 
-                if(chosenCard.getColor() == Color.ANY) round = 3;
+                if(chosenCard.getColor() == Color.ANY) hasChosenLocomotive = true;
 
                 if(gameModel.isWagonCardDeckEmpty()) gameModel.fillWagonCardDeck();
 
