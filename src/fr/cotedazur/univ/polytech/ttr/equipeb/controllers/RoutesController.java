@@ -137,10 +137,6 @@ public class RoutesController extends Controller {
                 }
                 break;
             }
-            default: {
-                player.replaceRemovedWagonCards(removedCards);
-                return Optional.of(ReasonActionRefused.ROUTE_UNKNOW_TYPE);
-            }
         }
 
         gameModel.discardWagonCards(removedCards);
