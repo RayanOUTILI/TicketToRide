@@ -37,7 +37,7 @@ public class WagonCardDeck {
             added = stack.addAll(discardPile);
             discardPile.clear();
         }
-        return added;
+        return added && !stack.isEmpty();
     }
 
     /**

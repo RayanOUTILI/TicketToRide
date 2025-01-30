@@ -96,15 +96,18 @@ public class WagonCardsController extends Controller {
     }
 
     private void addNewCardToShown() {
-        if(gameModel.isWagonCardDeckEmpty()) gameModel.fillWagonCardDeck();
+        boolean filledDeck = true;
+        if(gameModel.isWagonCardDeckEmpty()) filledDeck = gameModel.fillWagonCardDeck();
 
-        WagonCard card = gameModel.drawCardFromWagonCardDeck();
+        if(filledDeck) {
+            WagonCard card = gameModel.drawCardFromWagonCardDeck();
 
-        gameModel.placeNewWagonCardOnShownCards(card);
+            gameModel.placeNewWagonCardOnShownCards(card);
 
-        while (gameModel.getListOfShownWagonCards().stream().filter(c -> c.getColor() == Color.ANY).count() >= MIN_LOCOMOTIVES_FOR_REPLACE) {
-            List<WagonCard> newShownCards = gameModel.drawCardsFromWagonCardDeck(5);
-            gameModel.replaceShownWagonCards(newShownCards);
+            while (gameModel.getListOfShownWagonCards().stream().filter(c -> c.getColor() == Color.ANY).count() >= MIN_LOCOMOTIVES_FOR_REPLACE) {
+                List<WagonCard> newShownCards = gameModel.drawCardsFromWagonCardDeck(5);
+                gameModel.replaceShownWagonCards(newShownCards);
+        }
         }
     }
 }
