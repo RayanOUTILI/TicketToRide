@@ -32,12 +32,12 @@ public class WagonCardDeck {
     }
 
     public boolean fillDeck() {
+        boolean added = false;
         if (stack.isEmpty()) {
-            stack.addAll(discardPile);
+            added = stack.addAll(discardPile);
             discardPile.clear();
-            return true;
         }
-        return false;
+        return added;
     }
 
     /**
@@ -51,8 +51,7 @@ public class WagonCardDeck {
         List<WagonCard> cards = new ArrayList<>(stack);
         Collections.shuffle(cards);
         stack.clear();
-        stack.addAll(cards);
-        return true;
+        return stack.addAll(cards);
     }
 
     public boolean removeCardFromShownCards(WagonCard card) {
@@ -63,8 +62,7 @@ public class WagonCardDeck {
         if (shownCards.size() >= 5) {
             return false;
         }
-        shownCards.add(card);
-        return true;
+        return shownCards.add(card);
     }
 
     public List<WagonCard> shownCards() {
