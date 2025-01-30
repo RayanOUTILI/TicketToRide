@@ -19,7 +19,7 @@ public class GameResult {
     //private final int numberOfRoutes;
 
     public GameResult(PlayerIdentification winner, PlayerType winnerType, int totalTurns,
-                      int numberOfBotsint numberOfRoutes) {
+                      int numberOfBots) {
         this.winner = winner;
         this.winnerType = winnerType;
         this.totalTurns = totalTurns;

@@ -2,6 +2,8 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.models.cards;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 
+import java.util.List;
+
 public class DestinationCard {
     private final City startCity;
     private final City endCity;
