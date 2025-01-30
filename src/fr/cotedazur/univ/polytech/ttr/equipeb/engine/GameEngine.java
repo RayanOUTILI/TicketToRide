@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.engine;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
@@ -9,10 +10,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class GameEngine {
     private final ScoreController scoreController;
@@ -50,16 +48,44 @@ public class GameEngine {
 
         this.playerIterator = players.iterator();
         this.currentPlayer = playerIterator.next();
-        this.scoreController = new ScoreController(gameModel);
+        this.scoreController = scoreController;
 
+        this.lastTurnPlayer = Optional.empty();
+
+    }
+
+    public boolean initGame() {
+        boolean success;
+
+        Set<Map.Entry<Action, Controller>> entries = controllers.entrySet();
+        Iterator<Map.Entry<Action, Controller>> iterator = entries.iterator();
+        for(success = true; success && iterator.hasNext();) {
+            Map.Entry<Action, Controller> entry = iterator.next();
+            success = entry.getValue().initGame();
+        }
+
+        return success;
+    }
+
+    public boolean initPlayers() {
+        boolean success = true;
+
+        Iterator<Player> playersIterator = this.players.iterator();
+        while(playersIterator.hasNext() && success) {
+            Player player = playersIterator.next();
+
+            Iterator<Map.Entry<Action, Controller>> entries = controllers.entrySet().iterator();
+            while (entries.hasNext() && success) {
+                Map.Entry<Action, Controller> entry = entries.next();
+                success = entry.getValue().initPlayer(player);
+            }
+        }
+
+        return success;
     }
 
     public int startGame() {
         int nbTurn = 0;
-
-        controllers.forEach((action, controller) -> controller.initGame());
-
-        players.forEach(player -> controllers.values().forEach(controller -> controller.initPlayer(player)));
 
         while(lastTurnPlayer.isEmpty() || currentPlayer.getIdentification() != lastTurnPlayer.get()) {
             boolean success;
