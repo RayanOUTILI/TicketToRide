@@ -9,7 +9,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.factories.WagonCardsFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameResult;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
@@ -21,33 +20,49 @@ import java.util.List;
 
 public class GameSimulator {
 
-    private final GameResultPersistence gameResultPersistence;
+    private final GameResultDataWriter gameResultPersistence;
     private final PlayerFactory playerFactory;
-    private final List<Route> routes;
-    private final WagonCardDeck wagonCardDeck;
-    private final DestinationCardDeck destinationCardDeck;
-    private List<PlayerModel> playerModels;
+    List<PlayerModel> playerModels;
 
-    public GameSimulator() throws JsonParseException {
-        this.gameResultPersistence = new GameResultPersistence();
+    public GameSimulator() {
+        this.gameResultPersistence = new GameResultDataWriter();
         this.playerFactory = new PlayerFactory();
+    }
 
-        this.routes = (new MapFactory()).getMapFromJson();
-        this.wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
-        this.destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getShortDestinationCards());
+    public GameSimulator(GameResultDataWriter gameResultWrapper, PlayerFactory playerFactory) {
+        this.gameResultPersistence = gameResultWrapper;
+        this.playerFactory = playerFactory;
+    }
+
+    public GameSimulator(PlayerFactory mockPlayerFactory, GameResultDataWriter mockGameResultDataWriter) {
+        this.gameResultPersistence = mockGameResultDataWriter;
+        this.playerFactory = mockPlayerFactory;
     }
 
     /**
-     * Simule une partie avec une liste de joueurs donnée.
+     * Initialize a new game model with the given players.
      */
-    public void simulateGame(List<Player> players) {
-        GameModel gameModel = new GameModel(this.playerModels, wagonCardDeck, destinationCardDeck, routes);
+    private GameModel createNewGameModel(List<PlayerModel> playerModels) throws JsonParseException {
+        List<Route> routes = (new MapFactory()).getMapFromJson();
+        WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
+        DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getShortDestinationCards());
+        return new GameModel(playerModels, wagonCardDeck, destinationCardDeck, routes);
+    }
+
+    /**
+     * Simulate a game with the given players.
+     */
+    public void simulateGame(List<Player> players) throws JsonParseException {
+        GameModel gameModel = createNewGameModel(playerModels);
+        players = playerFactory.createThreeEasyBots(playerModels, gameModel);
         GameEngine gameEngine = new GameEngine(gameModel, players);
+        gameEngine.initGame();
+        gameEngine.initPlayers();
         int nbTurn = gameEngine.startGame();
 
         PlayerModel winner = gameModel.getWinner();
         if (winner != null) {
-            GameResult gameResult = new GameResult(
+            GameResultWrapper gameResult = new GameResultWrapper(
                     winner.getIdentification(),
                     winner.getPlayerType(),
                     nbTurn,
@@ -59,41 +74,41 @@ public class GameSimulator {
         }
     }
 
-    public void simulateMultipleGames(int numSimulations, List<Player> players ) {
+    public void simulateMultipleGames(int numSimulations) throws JsonParseException {
         for (int i = 0; i < numSimulations; i++) {
             System.out.println("Simulating game " + (i + 1) + " of " + numSimulations);
-            simulateGame(players);
+            simulateGame(createEasyMediumConfig1());
         }
     }
 
     /**
      * Configuration 1 : 2 bots EASY + 1 bot MEDIUM
      */
-    private List<Player> createEasyMediumConfig1() {
+    List<Player> createEasyMediumConfig1() throws JsonParseException {
         this.playerModels = List.of(
                 new PlayerModel(PlayerIdentification.BLUE, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.BLUE)),
                 new PlayerModel(PlayerIdentification.RED, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
                 new PlayerModel(PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.GREEN))
         );
-        return playerFactory.createTwoEasyOneMediumBots(playerModels, new GameModel(playerModels, wagonCardDeck, destinationCardDeck, routes));
+        return playerFactory.createTwoEasyOneMediumBots(playerModels, createNewGameModel(playerModels));
     }
 
     /**
      * Configuration 2 : 2 bots MEDIUM + 1 bot EASY
      */
-    private List<Player> createEasyMediumConfig2() {
-        this.playerModels = List.of(
+    List<Player> createEasyMediumConfig2() throws JsonParseException {
+        List<PlayerModel> playerModels = List.of(
                 new PlayerModel(PlayerIdentification.BLUE, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.BLUE)),
                 new PlayerModel(PlayerIdentification.RED, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
                 new PlayerModel(PlayerIdentification.GREEN, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.GREEN))
         );
-        return playerFactory.createTwoMediumOneEasyBots(playerModels, new GameModel(playerModels, wagonCardDeck, destinationCardDeck, routes));
+        return playerFactory.createTwoMediumOneEasyBots(playerModels, createNewGameModel(playerModels));
     }
 
     public static void main(String[] args) {
         try {
             GameSimulator simulator = new GameSimulator();
-            simulator.simulateMultipleGames(5, simulator.createEasyMediumConfig1());
+            simulator.simulateMultipleGames(1000);
         } catch (JsonParseException e) {
             e.printStackTrace();
         }

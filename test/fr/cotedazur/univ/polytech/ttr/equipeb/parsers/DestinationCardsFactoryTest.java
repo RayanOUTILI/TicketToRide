@@ -65,7 +65,7 @@ class DestinationCardsFactoryTest {
             List<LongDestinationCard> cards = destinationCardsFactory.getLongDestinationCards();
             assertNotNull(cards);
             assertEquals(6, cards.size());
-            assertInstanceOf(LongDestinationCard.class, cards.getFirst());
+            assertInstanceOf(LongDestinationCard.class, cards.get(0));
 
         } catch (JsonParseException e) {
             fail("A parsing exception was thrown: " + e.getMessage());

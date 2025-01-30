@@ -1,0 +1,62 @@
+[
+    {
+        "winner": "BLUE",
+        "winnerType": "EASY_BOT",
+        "totalTurns": 121,
+        "numberOfBots": 3
+    },
+    {
+        "winner": "GREEN",
+        "winnerType": "MEDIUM_BOT",
+        "totalTurns": 92,
+        "numberOfBots": 3
+    },
+    {
+        "winner": "RED",
+        "winnerType": "EASY_BOT",
+        "totalTurns": 93,
+        "numberOfBots": 3
+    },
+    {
+        "winner": "BLUE",
+        "winnerType": "EASY_BOT",
+        "totalTurns": 92,
+        "numberOfBots": 3
+    },
+    {
+        "winner": "RED",
+        "winnerType": "EASY_BOT",
+        "totalTurns": 118,
+        "numberOfBots": 3
+    },
+    {
+        "winner": "GREEN",
+        "winnerType": "MEDIUM_BOT",
+        "totalTurns": 120,
+        "numberOfBots": 3
+    },
+    {
+        "winner": "GREEN",
+        "winnerType": "MEDIUM_BOT",
+        "totalTurns": 92,
+        "numberOfBots": 3
+    },
+    {
+        "winner": "RED",
+        "winnerType": "EASY_BOT",
+        "totalTurns": 95,
+        "numberOfBots": 3
+    },
+    {
+        "winner": "GREEN",
+        "winnerType": "MEDIUM_BOT",
+        "totalTurns": 118,
+        "numberOfBots": 3
+    },
+    {
+        "winner": "GREEN",
+        "winnerType": "MEDIUM_BOT",
+        "totalTurns": 118,
+        "numberOfBots": 3
+    }
+]
