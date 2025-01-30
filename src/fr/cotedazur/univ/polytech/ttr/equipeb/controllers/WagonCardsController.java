@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IWagonCardsControllerGameModel;
@@ -24,7 +25,7 @@ public class WagonCardsController extends Controller {
     public boolean initGame() {
         List<WagonCard> newShownCards = gameModel.drawCardsFromWagonCardDeck(MAX_SHOWN_WAGON_CARDS);
         gameModel.replaceShownWagonCards(newShownCards);
-        return gameModel.shuffleWagonCardDeck();
+        return gameModel.shuffleWagonCardDeck() && gameModel.getListOfShownWagonCards().size() == MAX_SHOWN_WAGON_CARDS;
     }
 
     @Override
@@ -44,42 +45,69 @@ public class WagonCardsController extends Controller {
     public Optional<ReasonActionRefused> doAction(Player player) {
         if (gameModel.isWagonCardDeckEmpty()) return Optional.of(ReasonActionRefused.WAGON_CARDS_DECK_EMPTY);
 
-        for(int round = 1; round <= 2; round++) {
-            List<ActionDrawWagonCard> possibleActions = new ArrayList<>();
-            if(!gameModel.isWagonCardDeckEmpty()) possibleActions.add(ActionDrawWagonCard.DRAW_FROM_DECK);
-            if(!gameModel.getListOfShownWagonCards().isEmpty()) possibleActions.add(ActionDrawWagonCard.DRAW_FROM_SHOWN_CARDS);
+        boolean hasChosenLocomotive = false;
+        for(int round = 1; round <= 2 && !hasChosenLocomotive; round++) {
+            List<ActionDrawWagonCard> possibleActions = getPossibleActions();
+
             Optional<ActionDrawWagonCard> action = player.askDrawWagonCard(possibleActions);
 
-            if(action.isPresent() && action.get() == ActionDrawWagonCard.DRAW_FROM_DECK) {
+            if(isActionDrawFromDeckAllowed(action, possibleActions)) {
                 WagonCard card = gameModel.drawCardFromWagonCardDeck();
                 player.receivedWagonCard(card);
             }
-            else if (action.isPresent() && action.get() == ActionDrawWagonCard.DRAW_FROM_SHOWN_CARDS) {
+            else if (isActionDrawFromShownCardsAllowed(action, possibleActions)) {
                 List<WagonCard> shownCards = gameModel.getListOfShownWagonCards();
                 WagonCard chosenCard;
                 do {
                      chosenCard = player.askWagonCardFromShownCards();
-                } while (chosenCard == null || !shownCards.contains(chosenCard) || !gameModel.removeCardFromShownCards(chosenCard));
+                } while (!isChosenCardAcceptable(chosenCard, shownCards));
 
                 player.receivedWagonCard(chosenCard);
 
-                if(chosenCard.getColor() == Color.ANY) round = 3;
+                if(chosenCard.getColor() == Color.ANY) hasChosenLocomotive = true;
 
-                if(gameModel.isWagonCardDeckEmpty()) gameModel.fillWagonCardDeck();
-
-                WagonCard card = gameModel.drawCardFromWagonCardDeck();
-
-                gameModel.placeNewWagonCardOnShownCards(card);
-
-                while (gameModel.getListOfShownWagonCards().stream().filter(c -> c.getColor() == Color.ANY).count() >= MIN_LOCOMOTIVES_FOR_REPLACE) {
-                    List<WagonCard> newShownCards = gameModel.drawCardsFromWagonCardDeck(MAX_SHOWN_WAGON_CARDS);
-                    gameModel.replaceShownWagonCards(newShownCards);
-                }
-
+                addNewCardToShown();
             }
             else if(round == 1) return Optional.of(ReasonActionRefused.WAGON_CARDS_ACTION_INVALID);
         }
 
         return Optional.empty();
+    }
+
+    private boolean isActionDrawFromDeckAllowed(Optional<ActionDrawWagonCard> action, List<ActionDrawWagonCard> possibleActions) {
+        return action.isPresent() && action.get() == ActionDrawWagonCard.DRAW_FROM_DECK && possibleActions.contains(ActionDrawWagonCard.DRAW_FROM_DECK);
+    }
+
+    private boolean isActionDrawFromShownCardsAllowed(Optional<ActionDrawWagonCard> action, List<ActionDrawWagonCard> possibleActions) {
+        return action.isPresent() && action.get() == ActionDrawWagonCard.DRAW_FROM_SHOWN_CARDS && possibleActions.contains(ActionDrawWagonCard.DRAW_FROM_SHOWN_CARDS);
+    }
+
+    private boolean isChosenCardAcceptable(WagonCard chosenCard, List<WagonCard> shownCards) {
+        return chosenCard != null && shownCards.contains(chosenCard) && gameModel.removeCardFromShownCards(chosenCard);
+    }
+
+    private List<ActionDrawWagonCard> getPossibleActions() {
+        List<ActionDrawWagonCard> possibleActions = new ArrayList<>();
+
+        if(!gameModel.isWagonCardDeckEmpty()) possibleActions.add(ActionDrawWagonCard.DRAW_FROM_DECK);
+        if(!gameModel.getListOfShownWagonCards().isEmpty()) possibleActions.add(ActionDrawWagonCard.DRAW_FROM_SHOWN_CARDS);
+
+        return possibleActions;
+    }
+
+    private void addNewCardToShown() {
+        boolean filledDeck = true;
+        if(gameModel.isWagonCardDeckEmpty()) filledDeck = gameModel.fillWagonCardDeck();
+
+        if(filledDeck) {
+            WagonCard card = gameModel.drawCardFromWagonCardDeck();
+
+            gameModel.placeNewWagonCardOnShownCards(card);
+
+            while (gameModel.getListOfShownWagonCards().stream().filter(c -> c.getColor() == Color.ANY).count() >= MIN_LOCOMOTIVES_FOR_REPLACE) {
+                List<WagonCard> newShownCards = gameModel.drawCardsFromWagonCardDeck(5);
+                gameModel.replaceShownWagonCards(newShownCards);
+        }
+        }
     }
 }

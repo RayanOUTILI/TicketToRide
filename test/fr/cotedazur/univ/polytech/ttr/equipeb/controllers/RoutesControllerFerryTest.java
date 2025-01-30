@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IRoutesControllerGameModel;
@@ -18,7 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class RoutesControllerFerryTest {
+class RoutesControllerFerryTest {
     private RoutesController routesController;
     private IRoutesControllerGameModel gameModel;
     private Player player;

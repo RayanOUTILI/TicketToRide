@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
 import java.util.Optional;

@@ -1,11 +1,14 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IWagonCardsControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +28,21 @@ class WagonCardsControllerTest {
         wagonCardsController = new WagonCardsController(gameModel);
         player = mock(Player.class);
         wagonCard = mock(WagonCard.class);
+    }
+
+    @Test
+    void initGame() {
+        WagonCard locomotive = mock(WagonCard.class);
+        when(locomotive.getColor()).thenReturn(Color.ANY);
+        List<WagonCard> shownCards = new ArrayList<>(List.of(mock(WagonCard.class), mock(WagonCard.class), mock(WagonCard.class), mock(WagonCard.class)));
+        shownCards.forEach(card -> when(card.getColor()).thenReturn(Color.BLUE));
+        shownCards.add(locomotive);
+
+        when(gameModel.drawCardsFromWagonCardDeck(5)).thenReturn(shownCards);
+        when(gameModel.shuffleWagonCardDeck()).thenReturn(true);
+        when(gameModel.getListOfShownWagonCards()).thenReturn(shownCards);
+
+        assertTrue(wagonCardsController.initGame());
     }
 
     @Test
@@ -79,6 +97,40 @@ class WagonCardsControllerTest {
         assertTrue(actionRefused.isEmpty());
         verify(gameModel, times(1)).drawCardFromWagonCardDeck();
         verify(player, times(1)).receivedWagonCard(wagonCard);
+    }
+
+    @Test
+    void actionDrawFromShownCardsLocomotive() {
+        when(gameModel.isWagonCardDeckEmpty()).thenReturn(false);
+        when(player.askDrawWagonCard(any())).thenReturn(Optional.of(ActionDrawWagonCard.DRAW_FROM_SHOWN_CARDS));
+        WagonCard locomotive = mock(WagonCard.class);
+        when(locomotive.getColor()).thenReturn(Color.ANY);
+        List<WagonCard> shownCards = new ArrayList<>(List.of(mock(WagonCard.class), mock(WagonCard.class), mock(WagonCard.class), mock(WagonCard.class)));
+        shownCards.forEach(card -> when(card.getColor()).thenReturn(Color.BLUE));
+        shownCards.add(locomotive);
+        when(gameModel.getListOfShownWagonCards()).thenReturn(shownCards);
+        when(gameModel.removeCardFromShownCards(locomotive)).thenReturn(true);
+
+        when(player.askWagonCardFromShownCards()).thenReturn(locomotive);
+
+        Optional<ReasonActionRefused> actionRefused = wagonCardsController.doAction(player);
+        assertTrue(actionRefused.isEmpty());
+
+        verify(player, times(1)).askDrawWagonCard(any());
+
+        verify(gameModel, times(1)).removeCardFromShownCards(locomotive);
+
+        verify(player, times(1)).askWagonCardFromShownCards();
+        verify(player, times(1)).receivedWagonCard(locomotive);
+    }
+
+    @Test
+    void testChooseNonePossibleAction() {
+        when(gameModel.isWagonCardDeckEmpty()).thenReturn(false, true);
+        when(player.askDrawWagonCard(any())).thenReturn(Optional.of(ActionDrawWagonCard.DRAW_FROM_DECK));
+        Optional<ReasonActionRefused> actionRefused = wagonCardsController.doAction(player);
+        assertTrue(actionRefused.isPresent());
+        assertEquals(ReasonActionRefused.WAGON_CARDS_ACTION_INVALID, actionRefused.get());
     }
 
 }

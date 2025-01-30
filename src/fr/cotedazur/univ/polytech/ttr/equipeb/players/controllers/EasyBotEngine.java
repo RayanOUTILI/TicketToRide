@@ -4,6 +4,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
@@ -49,8 +50,12 @@ public class EasyBotEngine extends BotEngine {
         } else if(!gameModel.isWagonCardDeckEmpty()) {
             return Action.PICK_WAGON_CARD;
         }
-        else {
+        else if(!gameModel.isDestinationCardDeckEmpty()) {
             return Action.PICK_DESTINATION_CARDS;
+        }
+        else {
+            List<Action> actions = List.of(Action.CLAIM_ROUTE, Action.PLACE_STATION);
+            return actions.get(random.nextInt(actions.size()));
         }
     }
 
@@ -99,9 +104,7 @@ public class EasyBotEngine extends BotEngine {
 
     @Override
     public Optional<ActionDrawWagonCard> askDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
-        if (possibleActions.isEmpty()) {
-            return Optional.empty();
-        }
+        if(possibleActions.isEmpty()) return Optional.empty();
         return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
     }
 
@@ -134,7 +137,7 @@ public class EasyBotEngine extends BotEngine {
             return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0).size() == route.getLength();
         }
         else if (route.getType() == RouteType.TUNNEL) {
-            return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength()+1, 0).size() >= route.getLength();
+            return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0).size() >= route.getLength();
         }
 
         return false;

@@ -38,6 +38,8 @@ public class Main {
             List<Player> players = playerFactory.createTwoEasyOneMediumBots(playerModels, gameModel);
 
             GameEngine gameEngine = new GameEngine(gameModel, players);
+            gameEngine.initGame();
+            gameEngine.initPlayers();
             gameEngine.startGame();
 
         } catch (JsonParseException e) {

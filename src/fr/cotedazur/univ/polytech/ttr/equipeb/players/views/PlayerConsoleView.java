@@ -1,7 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.views;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
-import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ReasonActionRefused;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
