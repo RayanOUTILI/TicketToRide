@@ -47,4 +47,12 @@ public class PlayerFactory {
         );
     }
 
+    public List<Player> createTwoMediumOneEasyBots(List<PlayerModel> playerModels, GameModel gameModel) {
+        return List.of(
+                createMediumBot(playerModels.get(0), gameModel),
+                createMediumBot(playerModels.get(1), gameModel),
+                createEasyBot(playerModels.get(2), gameModel)
+        );
+    }
+
 }

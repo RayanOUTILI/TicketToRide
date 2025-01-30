@@ -5,7 +5,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IRoutesControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ public class RoutesController extends Controller {
         Color routeColor = route.getColor();
 
         switch (route.getType()) {
-            case RouteType.FERRY: {
+            case FERRY: {
                 ArrayList<WagonCard> locomotives = new ArrayList<>();
 
                 for(int i = 0; i < removedCards.size() && locomotives.size() < route.getNbLocomotives(); i++) {
@@ -88,7 +87,7 @@ public class RoutesController extends Controller {
 
                 break;
             }
-            case RouteType.TRAIN: {
+            case TRAIN: {
                 for(WagonCard card : removedCards) {
                     if(routeColor == Color.ANY) routeColor = card.getColor();
                     if(card.getColor() != routeColor && card.getColor() != Color.ANY) {
@@ -98,7 +97,7 @@ public class RoutesController extends Controller {
                 }
                 break;
             }
-            case RouteType.TUNNEL: {
+            case TUNNEL: {
                 for(WagonCard card : removedCards) {
                     if(routeColor == Color.ANY) routeColor = card.getColor();
                     if(card.getColor() != routeColor && card.getColor() != Color.ANY) {

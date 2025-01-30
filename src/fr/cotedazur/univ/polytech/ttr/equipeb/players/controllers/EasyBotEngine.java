@@ -4,8 +4,9 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
-import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
@@ -92,26 +93,15 @@ public class EasyBotEngine extends BotEngine {
     }
 
     @Override
-    public void actionRefused(Action action, ReasonActionRefused reason) {
-        if(view != null) {
-            view.displayActionRefused(action, reason);
-        }
-    }
-
-    @Override
-    public void actionCompleted(Action action) {
-        if(view != null) {
-            view.displayActionCompleted(action);
-        }
-    }
-
-    @Override
     public List<WagonCard> askWagonCardsForTunnel(int numberOfCards, Color acceptedColor) {
         return playerModel.getWagonCardsOfColor(acceptedColor, numberOfCards);
     }
 
     @Override
     public Optional<ActionDrawWagonCard> askDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
+        if (possibleActions.isEmpty()) {
+            return Optional.empty();
+        }
         return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
     }
 

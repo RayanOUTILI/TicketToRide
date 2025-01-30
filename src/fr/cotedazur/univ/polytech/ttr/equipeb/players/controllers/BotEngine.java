@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
@@ -21,9 +22,9 @@ public abstract class BotEngine implements IPlayerActionsControllable {
     }
 
     @Override
-    public void actionRefused(Action action) {
+    public void actionRefused(Action action, ReasonActionRefused reason) {
         if(view != null) {
-            view.displayActionRefused(action);
+            view.displayActionRefused(action, reason);
         }
     }
 

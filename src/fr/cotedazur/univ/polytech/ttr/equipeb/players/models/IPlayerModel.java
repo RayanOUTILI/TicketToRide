@@ -21,4 +21,6 @@ public interface IPlayerModel {
 
     int getNumberOfWagons();
     PlayerIdentification getPlayerIdentification();
+
+    int getNumberOfWagonCardsIncludingAnyColor(Color color);
 }

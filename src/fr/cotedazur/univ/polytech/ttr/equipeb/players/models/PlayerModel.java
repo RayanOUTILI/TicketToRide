@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  */
 public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     private final PlayerIdentification playerIdentification;
+    private final PlayerType playerType;
     private final List<WagonCard> wagonCards;
     private final List<DestinationCard> destinationCards;
     private final IPlayerViewable view;
@@ -25,14 +26,19 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     private int score;
     private int numberOfWagons;
 
-    public PlayerModel(PlayerIdentification playerIdentification, IPlayerViewable view) {
+    public PlayerModel(PlayerIdentification playerIdentification, PlayerType playerType, IPlayerViewable view) {
         this.playerIdentification = playerIdentification;
+        this.playerType = playerType;
         this.wagonCards = new ArrayList<>();
         this.destinationCards = new ArrayList<>();
         this.view = view;
         this.score = 0;
         this.stationsLeft = 0;
         this.numberOfWagons = 0;
+    }
+
+    public PlayerModel(PlayerIdentification playerIdentification, IPlayerViewable view) {
+        this(playerIdentification, PlayerType.EASY_BOT, view);
     }
 
     public PlayerIdentification getIdentification() {
@@ -246,5 +252,9 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
 
     public PlayerIdentification getPlayerIdentification(){
         return this.playerIdentification;
+    }
+
+    public PlayerType getPlayerType(){
+        return this.playerType;
     }
 }

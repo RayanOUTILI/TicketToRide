@@ -1,18 +1,24 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -59,6 +65,9 @@ public class MediumBotEngine extends BotEngine {
         } else if (shouldPickDestinationCards()) {
             return Action.PICK_DESTINATION_CARDS;
         } else {
+            if (gameModel.isWagonCardDeckEmpty() && !gameModel.isDestinationCardDeckEmpty()) {
+                return Action.PICK_DESTINATION_CARDS;
+            }
             return Action.PICK_WAGON_CARD;
         }
     }
@@ -74,7 +83,7 @@ public class MediumBotEngine extends BotEngine {
         if (bestRoute == null) {
             return null;
         }
-        return new ClaimRoute(bestRoute, playerModel.getWagonCardsIncludingAnyColor(bestRoute.getColor(), bestRoute.getLength()));
+        return new ClaimRoute(bestRoute, playerModel.getWagonCardsIncludingAnyColor(bestRoute.getColor(), bestRoute.getLength(), 0));
     }
 
     /**
@@ -101,6 +110,22 @@ public class MediumBotEngine extends BotEngine {
     @Override
     public List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards) {
         return prioritizeDestinationCards(cards);
+    }
+
+    @Override
+    public List<WagonCard> askWagonCardsForTunnel(int numberOfCards, Color acceptedColor) {
+        return playerModel.getWagonCardsOfColor(acceptedColor, numberOfCards);
+    }
+
+    @Override
+    public Optional<ActionDrawWagonCard> askDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
+        return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
+    }
+
+    @Override
+    public WagonCard askWagonCardFromShownCards() {
+        List<WagonCard> shownCards = gameModel.getListOfShownWagonCards();
+        return shownCards.get(random.nextInt(shownCards.size()));
     }
 
     /**
@@ -140,6 +165,7 @@ public class MediumBotEngine extends BotEngine {
 
         return availableRoutes.stream()
                 .filter(this::canTakeRoute)
+                .filter(route -> route.getType() == RouteType.TRAIN)
                 .max(Comparator.comparingInt(this::evaluateRoutePriority))
                 .orElse(null);
     }
@@ -152,7 +178,7 @@ public class MediumBotEngine extends BotEngine {
      */
     private boolean canTakeRoute(RouteReadOnly route) {
         return !route.isClaimed() &&
-                playerModel.getNumberOfWagonCardsIncludingAnyColor(route.getColor()) >= route.getLength();
+                playerModel.getNumberOfWagonCardsIncludingAnyColor(route.getColor()) >= route.getLength() && playerModel.getNumberOfWagons() >= route.getLength();
     }
 
     /**
