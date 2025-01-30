@@ -18,7 +18,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class RoutesControllerTunnelTest {
+class RoutesControllerTunnelTest {
     private RoutesController routesController;
     private IRoutesControllerGameModel gameModel;
     private Player player;
