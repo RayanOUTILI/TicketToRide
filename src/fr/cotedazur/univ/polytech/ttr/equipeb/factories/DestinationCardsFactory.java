@@ -12,6 +12,7 @@ import java.util.List;
  * Factory class for creating destination cards using a JSON parser.
  */
 public class DestinationCardsFactory {
+    private static final String DESTINATION_CARDS_FILE = "data-europe/destination-cards.json";
     private final DestinationCardsParser parser;
 
     /**
@@ -27,7 +28,7 @@ public class DestinationCardsFactory {
      * @return A list of all destination cards.
      */
     public List<DestinationCard> getAllDestinationCards() throws JsonParseException {
-        return parser.parseAllDestinationCards("data-europe/destination-cards.json");
+        return parser.parseAllDestinationCards(DESTINATION_CARDS_FILE);
     }
 
     /**
@@ -36,7 +37,7 @@ public class DestinationCardsFactory {
      * @return A list of short destination cards.
      */
     public List<ShortDestinationCard> getShortDestinationCards() throws JsonParseException {
-        return parser.parseShortDestinationCards("data-europe/destination-cards.json");
+        return parser.parseShortDestinationCards(DESTINATION_CARDS_FILE);
     }
 
     /**
@@ -45,6 +46,6 @@ public class DestinationCardsFactory {
      * @return A list of long destination cards.
      */
     public List<LongDestinationCard> getLongDestinationCards() throws JsonParseException {
-        return parser.parseLongDestinationCards("data-europe/destination-cards.json");
+        return parser.parseLongDestinationCards(DESTINATION_CARDS_FILE);
     }
 }
