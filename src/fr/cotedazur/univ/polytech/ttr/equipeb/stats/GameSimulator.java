@@ -42,7 +42,7 @@ public class GameSimulator {
     /**
      * Initialize a new game model with the given players.
      */
-    private GameModel createNewGameModel(List<PlayerModel> playerModels) throws JsonParseException {
+    protected GameModel createNewGameModel(List<PlayerModel> playerModels) throws JsonParseException {
         List<Route> routes = (new MapFactory()).getMapFromJson();
         WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
         DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getShortDestinationCards());
@@ -52,7 +52,7 @@ public class GameSimulator {
     /**
      * Simulate a game with the given players.
      */
-    public void simulateGame(List<Player> players) throws JsonParseException {
+    protected void simulateGame(List<Player> players) throws JsonParseException {
         GameModel gameModel = createNewGameModel(playerModels);
         players = playerFactory.createThreeEasyBots(playerModels, gameModel);
         GameEngine gameEngine = new GameEngine(gameModel, players);
@@ -61,17 +61,13 @@ public class GameSimulator {
         int nbTurn = gameEngine.startGame();
 
         PlayerModel winner = gameModel.getWinner();
-        if (winner != null) {
-            GameResultWrapper gameResult = new GameResultWrapper(
+        GameResultWrapper gameResult = new GameResultWrapper(
                     winner.getIdentification(),
                     winner.getPlayerType(),
                     nbTurn,
                     gameModel.getNbOfPlayers()
-            );
-            gameResultPersistence.saveGameResult(gameResult);
-        } else {
-            System.out.println("No winner found.");
-        }
+        );
+        gameResultPersistence.saveGameResult(gameResult);
     }
 
     public void simulateMultipleGames(int numSimulations) throws JsonParseException {
@@ -84,7 +80,7 @@ public class GameSimulator {
     /**
      * Configuration 1 : 2 bots EASY + 1 bot MEDIUM
      */
-    List<Player> createEasyMediumConfig1() throws JsonParseException {
+    public List<Player> createEasyMediumConfig1() throws JsonParseException {
         this.playerModels = List.of(
                 new PlayerModel(PlayerIdentification.BLUE, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.BLUE)),
                 new PlayerModel(PlayerIdentification.RED, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
@@ -96,7 +92,7 @@ public class GameSimulator {
     /**
      * Configuration 2 : 2 bots MEDIUM + 1 bot EASY
      */
-    List<Player> createEasyMediumConfig2() throws JsonParseException {
+    public List<Player> createEasyMediumConfig2() throws JsonParseException {
         List<PlayerModel> playerModels = List.of(
                 new PlayerModel(PlayerIdentification.BLUE, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.BLUE)),
                 new PlayerModel(PlayerIdentification.RED, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
