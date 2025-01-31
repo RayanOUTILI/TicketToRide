@@ -215,8 +215,8 @@ class GameModelTest {
     void testGetCity() {
         City city = mock(City.class);
         when(city.getId()).thenReturn(1);
-        Route route = mock(Route.class);
-        when(route.getFirstCity()).thenReturn(city);
+        Route routeMocked = mock(Route.class);
+        when(routeMocked.getFirstCity()).thenReturn(city);
         routes = List.of(route);
         gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
 

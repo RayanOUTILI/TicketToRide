@@ -30,7 +30,7 @@ class RouteParserTest {
     void parseRoutesSuccessfullyParsesValidJson() throws JsonParseException {
         String filePath = "data-europe/routes.json";
         List<Route> routes = routeParser.parseRoutes(filePath);
-        assertEquals(routes.size(), 101);
+        assertEquals(101, routes.size());
     }
 
     @Test
@@ -42,9 +42,8 @@ class RouteParserTest {
     }
 
     @Test
-    void parseRoutesHandlesEmptyJsonFile() throws JsonParseException {
+    void parseRoutesHandlesEmptyJsonFile() {
         String filePath = "emptyRoutes.json";
-        List<Route> routes;
         assertThrows(JsonParseException.class, () -> routeParser.parseRoutes(filePath));
     }
 

@@ -11,6 +11,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -20,8 +22,13 @@ import java.util.stream.Collectors;
 public class GameStatistics {
 
     private static final String FILE_PATH = "resources/stats/gameResult.json";
+    private final Logger logger = Logger.getLogger(GameStatistics.class.getName());
 
     private ObjectMapper objectMapper = new ObjectMapper();
+
+    public GameStatistics() {
+        this.logger.setLevel(Level.ALL);
+    }
 
     /**
      * Reads and loads the game results from a JSON file.
@@ -70,7 +77,7 @@ public class GameStatistics {
             List<GameResultWrapper> gameResults = stats.readGameResults();
             stats.calculateWinRates(gameResults);
         } catch (IOException e) {
-            System.err.println("Error reading game results: " + e.getMessage());
+            stats.logger.log(Level.SEVERE, "Error reading game results from JSON file", e);
             e.printStackTrace();
         }
     }
