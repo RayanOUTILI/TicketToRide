@@ -8,6 +8,10 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.CityPair;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.findLengthBetweenAllCityInGraph;
+import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.getGraphFromRoutes;
 
 public class ScoreController {
     IScoreControllerGameModel gameModel;
@@ -33,66 +37,70 @@ public class ScoreController {
     }
 
     private void calculateDestinationCardsScore(IPlayerModelControllable player) {
-        List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification());
+        // TODO: Here for the station implementation
+        // Its necessary to remove the length of routes that is "claimed" with stations
+        // Please note that the station implementation is not yet implemented here
         List<DestinationCard> destinationCards = player.getDestinationCardsHand();
-
-        // Create a graph of cities and their connected cities
-        // This will allow us to find all pairs of cities with continuous routes
-        // At first, we will consider all routes as bidirectional
-        Map<City, Map<City, Integer>> graph = new HashMap<>();
-        claimedRoutes.forEach(route -> {
-            City firstCity = route.getFirstCity();
-            City secondCity = route.getSecondCity();
-            graph.putIfAbsent(firstCity, new HashMap<>());
-            graph.putIfAbsent(secondCity, new HashMap<>());
-            graph.get(firstCity).put(secondCity, route.getLength());
-            graph.get(secondCity).put(firstCity, route.getLength());
-        });
+        List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification());
 
         // Find all pairs of cities with continuous routes
-        Set<CityPair> allCityPairs = new HashSet<>();
-        Set<CityPair> visitedPairs = new HashSet<>();
-        graph.keySet().forEach(
-                city -> findAllCityPairs(city, city, 0, new HashSet<>(), graph, allCityPairs, visitedPairs)
-        );
+        Map<City, Map<City, Integer>> claimedPlayerRouteGraph = getGraphFromRoutes(claimedRoutes);
+        Set<CityPair> allCityPairs = findLengthBetweenAllCityInGraph(claimedPlayerRouteGraph);
 
         // Calculate the score based on destination cards
         int score = destinationCards.stream()
                 .mapToInt(card -> {
                     CityPair pair = new CityPair(card.getStartCity(), card.getEndCity());
-                    return allCityPairs.contains(pair) ?
-                            card.getPoints() : -card.getPoints();
+                    if (allCityPairs.contains(pair)) {
+                        //TODO: View
+                        System.out.println("Player {" + player.getIdentification() + "} has a destination between " + card.getStartCity() + " and " + card.getEndCity() + " (" + card.getPoints() + " points)");
+                        return card.getPoints();
+                    } else {
+                        System.out.println("Player {" + player.getIdentification() + "} does not have a destination between " + card.getStartCity() + " and " + card.getEndCity() + " (" + -card.getPoints() + " points)");
+                        return -card.getPoints();
+                    }
                 })
                 .sum();
 
         player.setScore(player.getScore() + score);
     }
 
-    private void findAllCityPairs(
-            City start,
-            City current,
-            int currentPathLength,
-            Set<City> visited,
-            Map<City, Map<City, Integer>> graph,
-            Set<CityPair> allCityPairs,
-            Set<CityPair> visitedPairs
-    ) {
-        visited.add(current);
-        for (City neighbor : graph.getOrDefault(current, new HashMap<>()).keySet()) {
-            int length = currentPathLength + graph.get(current).get(neighbor);
-            CityPair pair = new CityPair(start, neighbor, length);
-            if (!visitedPairs.contains(pair)) {
-                allCityPairs.add(pair);
-                visitedPairs.add(pair);
-                if (!visited.contains(neighbor)) {
-                    findAllCityPairs(start, neighbor, length, visited, graph, allCityPairs, visitedPairs);
-                }
-            }
-        }
+    private void calculateRemainingStationsScore(IPlayerModelControllable player) {
+        player.setScore(player.getScore() - player.getStationsLeft() * 4);
+    }
+
+    private void calculatePlayerWithTheLongestContinuousRoute() {
+        Map<IPlayerModelControllable, Integer> playerLongestPaths = gameModel.getPlayers().stream()
+                .map(player -> {
+                    List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification());
+                    Set<CityPair> allCityPairs = findLengthBetweenAllCityInGraph(getGraphFromRoutes(claimedRoutes));
+                    int longestPath = allCityPairs.stream()
+                            .mapToInt(CityPair::getMaxLength)
+                            .max()
+                            .orElse(0);
+                    return new AbstractMap.SimpleEntry<>(player, longestPath);
+                })
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        int maxLongestPath = Collections.max(playerLongestPaths.values());
+
+        List<IPlayerModelControllable> playersWithLongestPath = playerLongestPaths.entrySet().stream()
+                .filter(entry -> entry.getValue() == maxLongestPath)
+                .map(Map.Entry::getKey)
+                .toList();
+
+        //TODO: View
+        playersWithLongestPath.forEach(
+                player -> System.out.println("Player {" + player.getIdentification() + "} has the longest path of " + maxLongestPath)
+        );
+
+        playersWithLongestPath.forEach(player -> player.setScore(player.getScore() + 10));
     }
 
     public void calculateFinalScores(){
         gameModel.getPlayers().forEach(this::updateScore);
         gameModel.getPlayers().forEach(this::calculateDestinationCardsScore);
+        gameModel.getPlayers().forEach(this::calculateRemainingStationsScore);
+        calculatePlayerWithTheLongestContinuousRoute();
     }
 }
