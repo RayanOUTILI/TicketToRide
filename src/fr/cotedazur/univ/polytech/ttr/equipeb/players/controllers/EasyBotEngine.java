@@ -60,8 +60,7 @@ public class EasyBotEngine implements IPlayerActionsControllable {
             return Action.PICK_DESTINATION_CARDS;
         }
         else {
-            List<Action> actions = List.of(Action.CLAIM_ROUTE, Action.PLACE_STATION);
-            return actions.get(random.nextInt(actions.size()));
+            return Action.STOP;
         }
     }
 

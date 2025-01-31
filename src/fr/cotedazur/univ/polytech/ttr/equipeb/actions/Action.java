@@ -8,4 +8,5 @@ public enum Action {
     CLAIM_ROUTE,
     PICK_DESTINATION_CARDS,
     PLACE_STATION,
+    STOP
 }
