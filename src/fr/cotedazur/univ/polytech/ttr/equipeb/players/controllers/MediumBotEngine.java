@@ -45,7 +45,7 @@ public class MediumBotEngine extends BotEngine {
      * @param view the view interface used for displaying game actions.
      * @param random the random number generator.
      */
-    public MediumBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view, RandomGenerator random) {
+    protected MediumBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view, RandomGenerator random) {
         super(playerModel, gameModel, view, random);
     }
 
@@ -125,6 +125,14 @@ public class MediumBotEngine extends BotEngine {
     public WagonCard askWagonCardFromShownCards() {
         List<WagonCard> shownCards = gameModel.getListOfShownWagonCards();
         return shownCards.get(random.nextInt(shownCards.size()));
+    }
+
+    @Override
+    public RouteReadOnly askChooseRouteStation(CityReadOnly city) {
+        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAdjacentRoutes(city);
+        if(availableRoutes.isEmpty()) return null;
+        int randomIndex = random.nextInt(availableRoutes.size());
+        return availableRoutes.get(randomIndex);
     }
 
     /**
