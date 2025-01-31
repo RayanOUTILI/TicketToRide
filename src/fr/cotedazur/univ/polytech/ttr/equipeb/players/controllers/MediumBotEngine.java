@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
@@ -69,7 +70,7 @@ public class MediumBotEngine implements IPlayerActionsControllable {
     }
 
     private boolean shouldPickCards() {
-        return playerModel.getNumberOfWagonCards() < 15 && !gameModel.isWagonCardDeckEmpty();
+        return playerModel.getNumberOfWagonCards() < 10 && !gameModel.isWagonCardDeckEmpty();
     }
 
     /**
@@ -209,9 +210,8 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @return the priority score for the route.
      */
     private int evaluateRoutePriority(RouteReadOnly route) {
-        int routeScore =
-            switch (route.getLength()) {
-            case(1) -> 1;
+        return switch (route.getLength()) {
+            case 1 -> 1;
             case 2 -> 2;
             case 3 -> 4;
             case 4 -> 7;
@@ -219,7 +219,6 @@ public class MediumBotEngine implements IPlayerActionsControllable {
             case 8 -> 21;
             default -> 0;
         };
-        return routeScore;
     }
 
     /**

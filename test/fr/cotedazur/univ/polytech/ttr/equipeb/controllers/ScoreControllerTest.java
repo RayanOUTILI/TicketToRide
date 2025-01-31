@@ -9,7 +9,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.views.ScoreConsoleView;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
