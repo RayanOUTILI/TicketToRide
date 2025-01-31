@@ -25,8 +25,7 @@ public class ScoreController {
     }
 
     public int calculatePlacedRoutesScore(IPlayerModelControllable player) {
-        List<RouteReadOnly> routes = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification());
-        int score = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())
+        return gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())
                             .stream()
                             .mapToInt(route -> switch (route.getLength()) {
                                 case 1 -> 1;
@@ -38,7 +37,6 @@ public class ScoreController {
                                 default -> 0;
                             })
                             .sum();
-        return score;
     }
 
     private int calculateDestinationCardsScore(IPlayerModelControllable player) {
@@ -46,13 +44,19 @@ public class ScoreController {
         // Please note that the station implementation is not yet implemented here
         List<DestinationCard> destinationCards = player.getDestinationCardsHand();
         List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification());
+        List<RouteReadOnly> claimedRoutesWithStations = player.getSelectedStationRoutes();
+
+        // Combine all routes
+        List<RouteReadOnly> allRoutes = new ArrayList<>();
+        allRoutes.addAll(claimedRoutes);
+        allRoutes.addAll(claimedRoutesWithStations);
 
         // Find all pairs of cities with continuous routes
-        Map<City, Map<City, Integer>> claimedPlayerRouteGraph = getGraphFromRoutes(claimedRoutes);
+        Map<City, Map<City, Integer>> claimedPlayerRouteGraph = getGraphFromRoutes(allRoutes);
         Set<CityPair> allCityPairs = findLengthBetweenAllCityInGraph(claimedPlayerRouteGraph);
 
         // Calculate the score based on destination cards
-        int score = destinationCards.stream()
+        return destinationCards.stream()
                 .mapToInt(card -> {
                     CityPair pair = new CityPair(card.getStartCity(), card.getEndCity());
                     if (allCityPairs.contains(pair)) {
@@ -64,8 +68,6 @@ public class ScoreController {
                     }
                 })
                 .sum();
-
-        return score;
     }
 
     private int calculateRemainingStationsScore(IPlayerModelControllable player) {
@@ -114,6 +116,6 @@ public class ScoreController {
         HashMap<IPlayerModelControllable, Integer> finalScores = new HashMap<>();
         gameModel.getPlayers().forEach(player -> finalScores.put(player, getFinalScore(player)));
         calculatePlayerWithTheLongestContinuousRoute().forEach(player -> finalScores.put(player, finalScores.get(player) + 10));
-        finalScores.forEach((player, score) -> player.setScore(score));
+        finalScores.forEach(IPlayerModelControllable::setScore);
     }
 }

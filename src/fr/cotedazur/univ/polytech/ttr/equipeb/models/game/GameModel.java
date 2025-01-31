@@ -239,7 +239,7 @@ public class GameModel implements
         return routes.stream()
                 .flatMap(r -> Stream.of(r.getFirstCity(), r.getSecondCity()))
                 .distinct()
-                .filter(c -> c.getOwner().equals(player)).toList();
+                .filter(c -> player.equals(c.getOwner())).toList();
     }
 
     @Override

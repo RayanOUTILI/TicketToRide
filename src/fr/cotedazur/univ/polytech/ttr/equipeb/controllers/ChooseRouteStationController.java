@@ -32,6 +32,10 @@ public class ChooseRouteStationController extends Controller{
     public Optional<ReasonActionRefused> doAction(Player player) {
         List<City> claimedCities = gameModel.getCitiesClaimedByPlayer(player.getIdentification());
 
+        if (claimedCities.isEmpty()) {
+            return Optional.empty();
+        }
+
         List<RouteReadOnly> chosenRoutes = new ArrayList<>();
 
         for (City city : claimedCities) {

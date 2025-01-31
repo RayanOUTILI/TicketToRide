@@ -137,6 +137,11 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
+    public List<RouteReadOnly> getSelectedStationRoutes() {
+        return modelController.getSelectedStationRoutes();
+    }
+
+    @Override
     public void receivedDestinationCards(List<ShortDestinationCard> destinationCards) {
         modelController.receivedDestinationCards(destinationCards);
     }

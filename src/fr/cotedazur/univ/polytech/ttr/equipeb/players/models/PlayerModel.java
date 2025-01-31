@@ -141,6 +141,11 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     }
 
     @Override
+    public List<RouteReadOnly> getSelectedStationRoutes() {
+        return new ArrayList<>(this.chosenRouteStations);
+    }
+
+    @Override
     public int getNumberOfWagonCards() {
         return wagonCards.size();
     }
