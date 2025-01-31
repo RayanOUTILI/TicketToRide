@@ -95,14 +95,14 @@ public class GameEngine {
             boolean newTurn = nextPlayer();
 
             if (newTurn){
-                scoreController.updateScore(currentPlayer);
+                scoreController.calculatePlacedRoutesScore(currentPlayer);
 
                 if(gameModel.isWagonCardDeckEmpty()) gameModel.fillWagonCardDeck();
 
                 nbTurn++;
             }
         }
-        scoreController.calculateFinalScores();
+        scoreController.setFinalScores();
 
         lastTurnPlayer.ifPresent(playerIdentification -> gameView.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons()));
 
