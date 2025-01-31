@@ -34,6 +34,10 @@ public class City implements CityReadOnly {
         this.owner = owner;
     }
 
+    public PlayerIdentification getOwner() {
+        return owner;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

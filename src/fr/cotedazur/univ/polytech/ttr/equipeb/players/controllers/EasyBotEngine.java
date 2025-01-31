@@ -55,8 +55,7 @@ public class EasyBotEngine extends BotEngine {
             return Action.PICK_DESTINATION_CARDS;
         }
         else {
-            List<Action> actions = List.of(Action.CLAIM_ROUTE, Action.PLACE_STATION);
-            return actions.get(random.nextInt(actions.size()));
+            return Action.STOP;
         }
     }
 
@@ -112,6 +111,14 @@ public class EasyBotEngine extends BotEngine {
     public WagonCard askWagonCardFromShownCards() {
         List<WagonCard> shownCards = gameModel.getListOfShownWagonCards();
         return shownCards.get(random.nextInt(shownCards.size()));
+    }
+
+    @Override
+    public RouteReadOnly askChooseRouteStation(CityReadOnly city) {
+        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAdjacentRoutes(city);
+        if(availableRoutes.isEmpty()) return null;
+        int randomIndex = random.nextInt(availableRoutes.size());
+        return availableRoutes.get(randomIndex);
     }
 
     private RouteReadOnly chooseRoute() {

@@ -22,6 +22,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     private final List<WagonCard> wagonCards;
     private final List<DestinationCard> destinationCards;
     private final IPlayerViewable view;
+    private final List<RouteReadOnly> chosenRouteStations;
     private int stationsLeft;
     private int score;
     private int numberOfWagons;
@@ -31,6 +32,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         this.playerType = playerType;
         this.wagonCards = new ArrayList<>();
         this.destinationCards = new ArrayList<>();
+        this.chosenRouteStations = new ArrayList<>();
         this.view = view;
         this.score = 0;
         this.stationsLeft = 0;
@@ -137,6 +139,16 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     @Override
     public void removeWagons(int numberOfWagons) {
         this.numberOfWagons -= numberOfWagons;
+    }
+
+    @Override
+    public void addChosenRouteStation(RouteReadOnly route) {
+        this.chosenRouteStations.add(route);
+    }
+
+    @Override
+    public List<RouteReadOnly> getSelectedStationRoutes() {
+        return new ArrayList<>(this.chosenRouteStations);
     }
 
     @Override

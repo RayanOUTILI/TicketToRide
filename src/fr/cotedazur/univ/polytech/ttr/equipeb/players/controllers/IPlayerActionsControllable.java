@@ -8,6 +8,8 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,4 +35,6 @@ public interface IPlayerActionsControllable {
     Optional<ActionDrawWagonCard> askDrawWagonCard(List<ActionDrawWagonCard> possibleActions);
 
     WagonCard askWagonCardFromShownCards();
+
+    RouteReadOnly askChooseRouteStation(CityReadOnly city);
 }
