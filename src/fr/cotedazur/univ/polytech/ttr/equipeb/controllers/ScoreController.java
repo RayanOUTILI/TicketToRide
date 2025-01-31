@@ -88,6 +88,7 @@ public class ScoreController {
                 })
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+        if (playerLongestPaths.isEmpty()) return Collections.emptyList();
         int maxLongestPath = Collections.max(playerLongestPaths.values());
 
         List<IPlayerModelControllable> playersWithLongestPath = playerLongestPaths.entrySet().stream()
