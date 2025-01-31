@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface IRoutesControllerGameModel {
     boolean setAllRoutesNotClaimed();
+    boolean setAllRoutesIDs();
     Route getRoute(int id);
 
     /**

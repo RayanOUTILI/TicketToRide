@@ -23,7 +23,7 @@ public class RoutesController extends Controller {
 
     @Override
     public boolean initGame() {
-        return gameModel.setAllRoutesNotClaimed();
+        return gameModel.setAllRoutesIDs() && gameModel.setAllRoutesNotClaimed();
     }
 
     @Override

@@ -129,6 +129,14 @@ public class GameModel implements
     }
 
     @Override
+    public boolean setAllRoutesIDs() {
+        for (int i = 0; i < routes.size(); i++) {
+            routes.get(i).setId(i);
+        }
+        return true;
+    }
+
+    @Override
     public Route getRoute(int id) {
         return routes.stream().filter(r -> r.getId() == id).findFirst().orElse(null);
     }
