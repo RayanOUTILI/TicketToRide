@@ -28,7 +28,7 @@ class GameStatisticsTest {
     void setUp() {
         gameStatistics = new GameStatistics();
         objectMapper = mock(ObjectMapper.class);
-        GameStatistics.objectMapper = objectMapper;
+        gameStatistics.setObjectMapper(objectMapper);
     }
 
     @Test
@@ -59,7 +59,6 @@ class GameStatisticsTest {
 
     @Test
     void calculateWinRatesWithValidResults() {
-        //on mock le game result
         GameResultWrapper gameResult1 = mock(GameResultWrapper.class);
         when(gameResult1.getWinnerType()).thenReturn(PlayerType.EASY_BOT);
         GameResultWrapper gameResult2 = mock(GameResultWrapper.class);
@@ -73,21 +72,18 @@ class GameStatisticsTest {
                 gameResult3
         );
 
-        gameStatistics.calculateWinRates(gameResults);
-
-        PrintStream originalOut = System.out; //on utilise un printstream pour récupérer le contenu de la sortie standard
+        PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
-        List<PlayerType> sortedTypes = Arrays.asList(PlayerType.MEDIUM_BOT, PlayerType.EASY_BOT);
         gameStatistics.calculateWinRates(gameResults);
 
-        String expectedOutput = "MEDIUM_BOT win rate: 33,33%" + System.lineSeparator() + "EASY_BOT win rate: 66,67%" + System.lineSeparator();
-        assertEquals(expectedOutput, outContent.toString());
+        String expectedOutput = "EASY_BOT win rate: 66,67%\nMEDIUM_BOT win rate: 33,33%\n";
+        String actualOutput = outContent.toString().replaceAll("[\\r\\n]", "");
+        assertEquals(expectedOutput.replaceAll("[\\r\\n]", ""), actualOutput);
 
         System.setOut(originalOut);
     }
-
 
     @Test
     void calculateWinRatesWithNoWinners() {

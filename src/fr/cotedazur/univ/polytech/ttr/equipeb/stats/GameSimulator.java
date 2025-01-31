@@ -54,7 +54,6 @@ public class GameSimulator {
      */
     protected void simulateGame(List<Player> players) throws JsonParseException {
         GameModel gameModel = createNewGameModel(playerModels);
-        players = playerFactory.createThreeEasyBots(playerModels, gameModel);
         GameEngine gameEngine = new GameEngine(gameModel, players);
         gameEngine.initGame();
         gameEngine.initPlayers();
@@ -93,12 +92,12 @@ public class GameSimulator {
      * Configuration 2 : 2 bots MEDIUM + 1 bot EASY
      */
     public List<Player> createEasyMediumConfig2() throws JsonParseException {
-        List<PlayerModel> playerModels = List.of(
+        List<PlayerModel> playersModels = List.of(
                 new PlayerModel(PlayerIdentification.BLUE, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.BLUE)),
                 new PlayerModel(PlayerIdentification.RED, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
                 new PlayerModel(PlayerIdentification.GREEN, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.GREEN))
         );
-        return playerFactory.createTwoMediumOneEasyBots(playerModels, createNewGameModel(playerModels));
+        return playerFactory.createTwoMediumOneEasyBots(playersModels, createNewGameModel(playerModels));
     }
 
     public static void main(String[] args) {

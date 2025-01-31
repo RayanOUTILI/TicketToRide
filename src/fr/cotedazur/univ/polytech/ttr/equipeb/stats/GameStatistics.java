@@ -18,7 +18,7 @@ public class GameStatistics {
 
     private static final String FILE_PATH = "resources/stats/gameResult.json";
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Reads and loads the game results from a JSON file.
@@ -43,10 +43,14 @@ public class GameStatistics {
 
         long totalGames = gameResults.size();
 
-        winCounts.forEach((playerType, count) -> {
-            double winRate = (double) count / totalGames * 100;
-            System.out.println(playerType + " win rate: " + String.format("%.2f", winRate) + "%");
-        });
+        winCounts.entrySet().stream()
+                .sorted((entry1, entry2) -> Double.compare(
+                        (double) entry2.getValue() / totalGames * 100,
+                        (double) entry1.getValue() / totalGames * 100))
+                .forEach(entry -> {
+                    double winRate = (double) entry.getValue() / totalGames * 100;
+                    System.out.println(entry.getKey() + " win rate: " + String.format("%.2f", winRate) + "%");
+                });
     }
 
     /**
@@ -63,5 +67,9 @@ public class GameStatistics {
             System.err.println("Error reading game results: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 }
