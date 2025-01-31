@@ -1,207 +1,283 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IScoreControllerGameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.*;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.CityPair;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ScoreControllerTest {
     ScoreController scoreController;
     IScoreControllerGameModel gameModel;
     IPlayerModelControllable player;
 
-    RouteReadOnly routeLength1;
-    RouteReadOnly routeLength2;
-    RouteReadOnly routeLength3;
-    RouteReadOnly routeLength4;
-    RouteReadOnly routeLength6;
-    RouteReadOnly routeLength8;
-    RouteReadOnly getRouteLengthOther;
+    Route routeLength1;
+    Route routeLength2;
+    Route routeLength3;
+    Route routeLength4;
+    Route routeLength6;
+    Route routeLength8;
+    Route getRouteLengthOther;
 
-//    @org.junit.jupiter.api.BeforeEach
-//    void setUp() {
-//        gameModel = mock(IScoreControllerGameModel.class);
-//        scoreController = new ScoreController(gameModel);
-//        player = new PlayerModel(PlayerIdentification.BLACK, null);
-//
-//        routeLength1 = mock(RouteReadOnly.class);
-//            when(routeLength1.getLength()).thenReturn(1);
-//            when(routeLength1.isClaimed()).thenReturn(true);
-//        routeLength2 = mock(RouteReadOnly.class);
-//            when(routeLength2.getLength()).thenReturn(2);
-//            when(routeLength2.isClaimed()).thenReturn(true);
-//        routeLength3 = mock(RouteReadOnly.class);
-//            when(routeLength3.getLength()).thenReturn(3);
-//            when(routeLength3.isClaimed()).thenReturn(true);
-//        routeLength4 = mock(RouteReadOnly.class);
-//            when(routeLength4.getLength()).thenReturn(4);
-//            when(routeLength4.isClaimed()).thenReturn(true);
-//        routeLength6 = mock(RouteReadOnly.class);
-//            when(routeLength6.getLength()).thenReturn(6);
-//            when(routeLength6.isClaimed()).thenReturn(true);
-//        routeLength8 = mock(RouteReadOnly.class);
-//            when(routeLength8.getLength()).thenReturn(8);
-//            when(routeLength8.isClaimed()).thenReturn(true);
-//        getRouteLengthOther = mock(RouteReadOnly.class);
-//            when(getRouteLengthOther.getLength()).thenReturn(5);
-//            when(getRouteLengthOther.isClaimed()).thenReturn(true);
-//    }
-//
-//    @org.junit.jupiter.api.Test
-//    void testUpdateScoreWithMultipleRoutes() {
-//        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength1, routeLength2, routeLength3, routeLength4, routeLength6, routeLength8, getRouteLengthOther));
-//        scoreController.updateScore(player);
-//        assertEquals((1 + 2 + 4 + 7 + 15 + 21 + 0), player.getScore());
-//    }
-//
-//    @org.junit.jupiter.api.Test
-//    void testUpdateScoreWithNoRoutes() {
-//        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of());
-//        scoreController.updateScore(player);
-//        assertEquals(0, player.getScore());
-//    }
-//
-//    @org.junit.jupiter.api.Test
-//    void testUpdateScoreWithOneRoute() {
-//        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength1));
-//        scoreController.updateScore(player);
-//        assertEquals(1, player.getScore());
-//
-//        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength2));
-//        scoreController.updateScore(player);
-//        assertEquals(2, player.getScore());
-//
-//        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength3));
-//        scoreController.updateScore(player);
-//        assertEquals(4, player.getScore());
-//
-//        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength4));
-//        scoreController.updateScore(player);
-//        assertEquals(7, player.getScore());
-//
-//        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength6));
-//        scoreController.updateScore(player);
-//        assertEquals(15, player.getScore());
-//
-//        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength8));
-//        scoreController.updateScore(player);
-//        assertEquals(21, player.getScore());
-//
-//        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(getRouteLengthOther));
-//        scoreController.updateScore(player);
-//        assertEquals(0, player.getScore());
-//    }
-//
-//    @Test
-//    void testCalculateDestinationsScores() {
-//        ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
-//
-//        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, null);
-//        playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));
-//
-//        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, Color.BLACK , 5);
-//        routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
-//
-//        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, Color.BLACK, 5);
-//        routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
-//
-//
-//        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid));
-//        when(gameModel.getPlayers()).thenReturn(List.of(playerWithDestinations));
-//        scoreController.calculateFinalScores();
-//        assertEquals(10, playerWithDestinations.getScore());
-//    }
-//
-//    @Test
-//    void testCalculateDestinationsScoresWithAnIncompleteObjective() {
-//        ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Berlin"), new City("Paris"), 10);
-//        ShortDestinationCard parisToDakarDestination = new ShortDestinationCard(new City("Paris"), new City("Dakar"), 5);
-//
-//        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, null);
-//        playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination, parisToDakarDestination));
-//
-//        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, Color.BLACK , 5);
-//        routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
-//
-//        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, Color.BLACK, 5);
-//        routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
-//
-//
-//        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid));
-//        when(gameModel.getPlayers()).thenReturn(List.of(playerWithDestinations));
-//        scoreController.calculateFinalScores();
-//        assertEquals(5, playerWithDestinations.getScore());
-//    }
-//
-//    @Test
-//    void testCyclicDestinationsScores() {
-//        ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
-//
-//        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, null);
-//        playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));
-//
-//        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, Color.BLACK , 5);
-//        routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
-//
-//        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, Color.BLACK, 5);
-//        routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
-//
-//        Route routeBerlinToParis = new Route(new City("Berlin"), new City("Paris"), 0, RouteType.TRAIN, Color.BLACK, 5);
-//        routeBerlinToParis.setClaimerPlayer(PlayerIdentification.BLACK);
-//
-//
-//        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid, routeBerlinToParis));
-//        when(gameModel.getPlayers()).thenReturn(List.of(playerWithDestinations));
-//        scoreController.calculateFinalScores();
-//        assertEquals(10, playerWithDestinations.getScore());
-//    }
+    @org.junit.jupiter.api.BeforeEach
+    void setUp() {
+        gameModel = mock(IScoreControllerGameModel.class);
+        scoreController = new ScoreController(gameModel);
+        player = new PlayerModel(PlayerIdentification.BLACK, null);
 
-    /*@Test
-    //TODO: Test this in graph utils Test
-    void testCalculateDestinationWithALoopCity() {
+        routeLength1 = new Route(new City("Paris"), new City("Berlin"), 1, RouteType.TRAIN, Color.BLACK, 0);
+        routeLength1.setClaimerPlayer(player.getIdentification());
+
+        routeLength2 = new Route(new City("Paris"), new City("Berlin"), 2, RouteType.TRAIN, Color.BLACK, 0);
+        routeLength2.setClaimerPlayer(player.getIdentification());
+
+        routeLength3 = new Route(new City("Paris"), new City("Berlin"), 3, RouteType.TRAIN, Color.BLACK, 0);
+        routeLength3.setClaimerPlayer(player.getIdentification());
+
+        routeLength4 = new Route(new City("Paris"), new City("Berlin"), 4, RouteType.TRAIN, Color.BLACK, 0);
+        routeLength4.setClaimerPlayer(player.getIdentification());
+
+        routeLength6 = new Route(new City("Paris"), new City("Berlin"), 6, RouteType.TRAIN, Color.BLACK, 0);
+        routeLength6.setClaimerPlayer(player.getIdentification());
+
+        routeLength8 = new Route(new City("Paris"), new City("Berlin"), 8, RouteType.TRAIN, Color.BLACK, 0);
+        routeLength8.setClaimerPlayer(player.getIdentification());
+
+        getRouteLengthOther = new Route(new City("Paris"), new City("Berlin"), 0, RouteType.TRAIN, Color.BLACK, 0);
+        getRouteLengthOther.setClaimerPlayer(player.getIdentification());
+    }
+
+    @org.junit.jupiter.api.Test
+    void testCalculatePlacedRoutesScoreWithMultipleRoutes() {
+        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength1, routeLength2, routeLength3, routeLength4, routeLength6, routeLength8, getRouteLengthOther));
+        when(gameModel.getPlayers()).thenReturn(List.of(player));
+        scoreController.setFinalScores();
+        // + 10 comes from longest Route
+        assertEquals((1 + 2 + 4 + 7 + 15 + 21 + 0 +10), player.getScore());
+    }
+
+    @org.junit.jupiter.api.Test
+    void testCalculatePlacedRoutesScoreWithNoRoutes() {
+        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of());
+        assertEquals(0, scoreController.calculatePlacedRoutesScore(player));
+    }
+
+    @org.junit.jupiter.api.Test
+    void testCalculatePlacedRoutesScoreWithOneRoute() {
+        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength1));
+        assertEquals(1, scoreController.calculatePlacedRoutesScore(player));
+
+        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength2));
+        assertEquals(2, scoreController.calculatePlacedRoutesScore(player));
+
+        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength3));
+        assertEquals(4, scoreController.calculatePlacedRoutesScore(player));
+
+        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength4));
+        assertEquals(7, scoreController.calculatePlacedRoutesScore(player));
+
+        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength6));
+        assertEquals(15, scoreController.calculatePlacedRoutesScore(player));
+
+        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(routeLength8));
+        assertEquals(21, scoreController.calculatePlacedRoutesScore(player));
+
+        when(gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())).thenReturn(List.of(getRouteLengthOther));
+        assertEquals(0, scoreController.calculatePlacedRoutesScore(player));
+    }
+
+    @Test
+    void testCalculateDestinationsScores() {
         ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
 
         IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, null);
         playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));
 
-        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 5, RouteType.TRAIN, Color.BLACK , 5);
+        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, Color.BLACK , 5);
         routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
 
-        Route routeMadridToMarseille = new Route(new City("Madrid"), new City("Marseille"), 5, RouteType.TRAIN, Color.BLACK, 5);
-        routeMadridToMarseille.setClaimerPlayer(PlayerIdentification.BLACK);
-
-        Route routeMarseilleToNice = new Route(new City("Marseille"), new City("Nice"), 5, RouteType.TRAIN, Color.BLACK, 5);
-        routeMarseilleToNice.setClaimerPlayer(PlayerIdentification.BLACK);
-
-        Route routeNiceToMadrid = new Route(new City("Nice"), new City("Madrid"), 5, RouteType.TRAIN, Color.BLACK, 5);
-        routeNiceToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
-
-        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 5, RouteType.TRAIN, Color.BLACK, 5);
+        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, Color.BLACK, 5);
         routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
 
-        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid, routeMadridToMarseille, routeMarseilleToNice, routeNiceToMadrid));
+
+        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid));
         when(gameModel.getPlayers()).thenReturn(List.of(playerWithDestinations));
-        Set<CityPair> allClaimedCityPair = scoreController.getAllCityPairs(playerWithDestinations);
-        System.out.println(allClaimedCityPair.size());
-        assertEquals(13, allClaimedCityPair.size());
+        scoreController.setFinalScores();
+        // +10 for longest route
+        assertEquals(10 + 10, playerWithDestinations.getScore());
+    }
 
-        System.out.println("All claimed city pairs:");
-        for (CityPair pair : allClaimedCityPair) {
-            System.out.println(pair);
-        }
+    @Test
+    void testCalculateDestinationsScoresWithAnIncompleteObjective() {
+        ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Berlin"), new City("Paris"), 10);
+        ShortDestinationCard parisToDakarDestination = new ShortDestinationCard(new City("Paris"), new City("Dakar"), 5);
 
-        // Check if the length of the route between Paris and Berlin is the highest of all possible routes
-        // beetwen Paris and Berlin
-        // it should be:
-        // Paris -> Madrid -> Marseille -> Nice -> Madrid -> Berlin
-        //        5    +    5     +     5   +   5     +    5        = 25
+        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, null);
+        playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination, parisToDakarDestination));
 
-        Optional<CityPair> parisToBerlin = allClaimedCityPair.stream()
-                .filter(pair -> pair.equals(new CityPair(new City("Paris"), new City("Berlin"))))
-                .findFirst();
+        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, Color.BLACK , 5);
+        routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
 
-        assertTrue(parisToBerlin.isPresent());
+        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, Color.BLACK, 5);
+        routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
 
-        assertEquals(10, parisToBerlin.get().getMinLength());
-        assertEquals(25, parisToBerlin.get().getMaxLength());
-    }*/
+
+        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid));
+        when(gameModel.getPlayers()).thenReturn(List.of(playerWithDestinations));
+        scoreController.setFinalScores();
+        // +10 for longest route
+        assertEquals(5 + 10, playerWithDestinations.getScore());
+    }
+
+    @Test
+    void testCyclicDestinationsScores() {
+        ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
+
+        IPlayerModelControllable playerWithDestinations = new PlayerModel(PlayerIdentification.BLACK, null);
+        playerWithDestinations.receivedDestinationCards(List.of(parisToBerlinDestination));
+
+        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 0, RouteType.TRAIN, Color.BLACK , 5);
+        routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
+
+        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 0, RouteType.TRAIN, Color.BLACK, 5);
+        routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
+
+        Route routeBerlinToParis = new Route(new City("Berlin"), new City("Paris"), 0, RouteType.TRAIN, Color.BLACK, 5);
+        routeBerlinToParis.setClaimerPlayer(PlayerIdentification.BLACK);
+
+
+        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid, routeBerlinToParis));
+        when(gameModel.getPlayers()).thenReturn(List.of(playerWithDestinations));
+        scoreController.setFinalScores();
+        // +10 for longest route
+        assertEquals(10 + 10, playerWithDestinations.getScore());
+    }
+
+
+//    @Test
+//    void testCalculateFinalScoreWithAStation() {
+//        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 4, RouteType.TRAIN, Color.BLACK , 5);
+//        routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
+//
+//        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 4, RouteType.TRAIN, Color.BLACK, 5);
+//        routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
+//
+//        City paris = new City("Paris");
+//        paris.setOwner(PlayerIdentification.BLACK);
+//        player.decrementStationsLeft();
+//
+//
+//        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid));
+//        when(gameModel.getPlayers()).thenReturn(List.of(player));
+//        when(gameModel.getStationsPlacedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(paris));
+//        scoreController.calculateFinalScores();
+//        assertEquals( 14 + 8 + 10, player.getScore());
+//    }
+
+
+//    @Test
+//    void testCalculateFinalScoreWithAStationThatFulfillsObjective() {
+//        ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
+//
+//        PlayerModel playerWithDestination = new PlayerModel(PlayerIdentification.BLACK, null);
+//        playerWithDestination.defineStartingStationsNumber(3);
+//        playerWithDestination.receivedDestinationCards(List.of(parisToBerlinDestination));
+//        City madrid = new City("Madrid");
+//        madrid.setOwner(PlayerIdentification.BLACK);
+//        playerWithDestination.decrementStationsLeft();
+//        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 4, RouteType.TRAIN, Color.BLACK, 5);
+//        routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
+//
+//
+//
+//        IPlayerModelControllable playerWithParisMadridRoute = new PlayerModel(PlayerIdentification.GREEN, null);
+//        playerWithParisMadridRoute.defineStartingStationsNumber(3);
+//        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 4, RouteType.TRAIN, Color.BLACK , 5);
+//        routeParisToMadrid.setClaimerPlayer(PlayerIdentification.GREEN);
+//
+//
+//        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin));
+//        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.GREEN)).thenReturn(List.of(routeParisToMadrid));
+//
+//        when(gameModel.getPlayers()).thenReturn(List.of(playerWithParisMadridRoute, playerWithDestination));
+//
+//        when(gameModel.getStationsPlacedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(madrid));
+//        scoreController.calculateFinalScores();
+//        assertEquals(10 + 7 + 8, playerWithDestination.getScore());
+//    }
+
+    @Test
+    void testCalculateFinalScoreWithLongestRoute(){
+        PlayerModel playerWithLongestRoute = new PlayerModel(PlayerIdentification.BLACK, null);
+        playerWithLongestRoute.defineStartingStationsNumber(3);
+        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 6, RouteType.TRAIN, Color.BLACK , 5);
+        routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
+        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 6, RouteType.TRAIN, Color.BLACK, 5);
+        routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
+        Route routeBerlinToTokyo = new Route(new City("Berlin"), new City("Tokyo"), 6, RouteType.TRAIN, Color.BLACK, 5);
+
+        PlayerModel otherPlayer = new PlayerModel(PlayerIdentification.GREEN, null);
+        otherPlayer.defineStartingStationsNumber(3);
+        Route routeEdinburghToTokyo = new Route(new City("Edinburgh"), new City("Tokyo"), 3, RouteType.TRAIN, Color.BLACK, 5);
+        routeEdinburghToTokyo.setClaimerPlayer(PlayerIdentification.GREEN);
+        Route routeTokyoToParis = new Route(new City("Tokyo"), new City("Paris"), 4, RouteType.TRAIN, Color.BLACK, 5);
+        routeTokyoToParis.setClaimerPlayer(PlayerIdentification.GREEN);
+        Route routeParisToBerlin = new Route(new City("Paris"), new City("Berlin"), 4, RouteType.TRAIN, Color.BLACK , 5);
+        routeParisToBerlin.setClaimerPlayer(PlayerIdentification.GREEN);
+        Route routeBerlinToLondon = new Route(new City("Berlin"), new City("London"), 4, RouteType.TRAIN, Color.BLACK, 5);
+        routeBerlinToLondon.setClaimerPlayer(PlayerIdentification.GREEN);
+
+        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid, routeBerlinToTokyo));
+        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.GREEN)).thenReturn(List.of(routeEdinburghToTokyo, routeTokyoToParis, routeParisToBerlin, routeBerlinToLondon));
+        when(gameModel.getPlayers()).thenReturn(List.of(playerWithLongestRoute, otherPlayer));
+
+        scoreController.setFinalScores();
+        assertEquals(15 + 15 + 15 + 10 + 12, playerWithLongestRoute.getScore());
+        assertEquals(4 + 21 + 12, otherPlayer.getScore());
+    }
+
+    /**
+     * Test the calculation of the final score with a loop in the longest route
+     * Expected behavior : the loop is taken into account in the calculation of the longest route
+     */
+    @Test
+    void testCalculateFinalScoreWithLongestRouteLooping() {
+        PlayerModel playerWithLoopingRoute = new PlayerModel(PlayerIdentification.BLACK, null);
+        playerWithLoopingRoute.defineStartingStationsNumber(3);
+        Route routeMunchenToWien = new Route(new City("Munchen"), new City("Wien"), 3, RouteType.TRAIN, Color.BLACK, 5);
+        routeMunchenToWien.setClaimerPlayer(PlayerIdentification.BLACK);
+        Route routeWienToBerlin = new Route(new City("Wien"), new City("Berlin"), 3, RouteType.TRAIN, Color.BLACK, 5);
+        routeWienToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
+        Route routeBerlinToMunchen = new Route(new City("Berlin"), new City("Munchen"), 2, RouteType.TRAIN, Color.BLACK, 5);
+        routeBerlinToMunchen.setClaimerPlayer(PlayerIdentification.BLACK);
+        Route routeMunchenToZurich = new Route(new City("Munchen"), new City("Zurich"), 4, RouteType.TRAIN, Color.BLACK, 5);
+        routeMunchenToZurich.setClaimerPlayer(PlayerIdentification.BLACK);
+
+        PlayerModel otherPlayer = new PlayerModel(PlayerIdentification.GREEN, null);
+        otherPlayer.defineStartingStationsNumber(3);
+        Route routeDanzicToRiga = new Route(new City("Danzic"), new City("Riga"), 6, RouteType.TRAIN, Color.BLACK, 5);
+        routeDanzicToRiga.setClaimerPlayer(PlayerIdentification.GREEN);
+        Route routeRigaToPetrograd = new Route(new City("Riga"), new City("Petrograd"), 4, RouteType.TRAIN, Color.BLACK, 5);
+        routeRigaToPetrograd.setClaimerPlayer(PlayerIdentification.GREEN);
+
+        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMunchenToWien, routeWienToBerlin, routeBerlinToMunchen, routeMunchenToZurich));
+        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.GREEN)).thenReturn(List.of(routeDanzicToRiga, routeRigaToPetrograd));
+        when(gameModel.getPlayers()).thenReturn(List.of(playerWithLoopingRoute, otherPlayer));
+
+        scoreController.setFinalScores();
+        assertEquals(4 + 4 + 2 + 7 + 10 + 12, playerWithLoopingRoute.getScore());
+        assertEquals(15 + 7 + 12, otherPlayer.getScore());
+    }
 }
