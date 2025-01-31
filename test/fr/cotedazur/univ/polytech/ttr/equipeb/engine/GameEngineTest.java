@@ -9,6 +9,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ class GameEngineTest {
     private ScoreController scoreController;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws NoSuchFieldException, IllegalAccessException {
         gameModel = mock(GameModel.class);
         gameView = mock(IGameViewable.class);
         controller = mock(Controller.class);
@@ -36,7 +37,19 @@ class GameEngineTest {
         player2 = mock(Player.class);
         scoreController = mock(ScoreController.class);
         players = List.of(player1, player2);
-        gameEngine = new GameEngine(gameModel, players, gameView, Map.of(Action.PICK_WAGON_CARD, controller), scoreController);
+        gameEngine = new GameEngine(gameModel, players);
+
+        Field gameViewField = GameEngine.class.getDeclaredField("gameView");
+        gameViewField.setAccessible(true);
+        gameViewField.set(gameEngine, gameView);
+
+        Field scoreControllerField = GameEngine.class.getDeclaredField("scoreController");
+        scoreControllerField.setAccessible(true);
+        scoreControllerField.set(gameEngine, scoreController);
+
+        Field controllerField = GameEngine.class.getDeclaredField("controllers");
+        controllerField.setAccessible(true);
+        controllerField.set(gameEngine, Map.of(Action.PICK_WAGON_CARD, controller));
     }
 
     @Test

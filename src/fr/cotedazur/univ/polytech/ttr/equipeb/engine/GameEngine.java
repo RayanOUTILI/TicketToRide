@@ -43,20 +43,6 @@ public class GameEngine {
         this.lastTurnPlayer = Optional.empty();
     }
 
-    protected GameEngine(GameModel gameModel, List<Player> players, IGameViewable gameView, Map<Action, Controller> controllers, ScoreController scoreController) {
-        this.gameModel = gameModel;
-        this.players = players;
-        this.gameView = gameView;
-        this.controllers = controllers;
-
-        this.playerIterator = players.iterator();
-        this.currentPlayer = playerIterator.next();
-        this.scoreController = scoreController;
-
-        this.lastTurnPlayer = Optional.empty();
-
-    }
-
     public boolean initGame() {
         boolean success;
 
