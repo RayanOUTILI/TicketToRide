@@ -1,10 +1,8 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IChooseRouteStationControllerGameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IWagonCardsControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
