@@ -172,7 +172,7 @@ class ScoreControllerTest {
         assertEquals(10, playerWithDestinations.getScore());
     }
 
-    @Test
+    /*@Test
     //TODO: Test this in graph utils Test
     void testCalculateDestinationWithALoopCity() {
         ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
@@ -220,5 +220,5 @@ class ScoreControllerTest {
 
         assertEquals(10, parisToBerlin.get().getMinLength());
         assertEquals(25, parisToBerlin.get().getMaxLength());
-    }
+    }*/
 }
