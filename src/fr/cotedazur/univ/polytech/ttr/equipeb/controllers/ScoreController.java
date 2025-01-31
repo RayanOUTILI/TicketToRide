@@ -7,7 +7,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.CityPair;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IScoreView;
-import fr.cotedazur.univ.polytech.ttr.equipeb.views.ScoreConsoleView;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,9 +18,9 @@ public class ScoreController {
     IScoreControllerGameModel gameModel;
     private final IScoreView scoreView;
 
-    public ScoreController( IScoreControllerGameModel gameModel) {
+    public ScoreController(IScoreControllerGameModel gameModel, IScoreView scoreView) {
         this.gameModel = gameModel;
-        this.scoreView = new ScoreConsoleView();
+        this.scoreView = scoreView;
     }
 
     public int calculatePlacedRoutesScore(IPlayerModelControllable player) {

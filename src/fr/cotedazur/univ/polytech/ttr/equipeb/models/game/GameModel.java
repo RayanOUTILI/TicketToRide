@@ -243,6 +243,13 @@ public class GameModel implements
     }
 
     @Override
+    public List<RouteReadOnly> getNonControllableAdjacentRoutes(CityReadOnly city){
+        return routes.stream()
+                .filter(r -> r.getFirstCity().equals(city) || r.getSecondCity().equals(city))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Route> getAdjacentRoutes(City city) {
         return routes.stream()
                 .filter(r -> r.getFirstCity().equals(city) || r.getSecondCity().equals(city))

@@ -13,6 +13,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentificatio
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.views.ScoreConsoleView;
 
 import java.util.*;
 
@@ -41,7 +42,7 @@ public class GameEngine {
         this.endGameControllers = Map.of(
             EndGameAction.CHOOSE_ROUTE_STATION, new ChooseRouteStationController(gameModel)
         );
-        this.scoreController = new ScoreController(gameModel);
+        this.scoreController = new ScoreController(gameModel, new ScoreConsoleView());
         this.playerIterator = players.iterator();
         this.currentPlayer = playerIterator.next();
 

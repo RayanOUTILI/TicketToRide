@@ -41,5 +41,7 @@ public interface IPlayerGameModel {
      * @return if the wagon card deck is empty
      */
     boolean isWagonCardDeckEmpty();
+
+    List<RouteReadOnly> getNonControllableAdjacentRoutes(CityReadOnly city);
 }
 

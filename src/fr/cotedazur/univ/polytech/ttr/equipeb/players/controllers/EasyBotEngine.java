@@ -134,7 +134,7 @@ public class EasyBotEngine implements IPlayerActionsControllable {
 
     @Override
     public RouteReadOnly askChooseRouteStation(CityReadOnly city) {
-        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes().stream().filter(route -> route.getFirstCity().equals(city) || route.getSecondCity().equals(city)).toList();
+        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAdjacentRoutes(city);
         if(availableRoutes.isEmpty()) return null;
         int randomIndex = random.nextInt(availableRoutes.size());
         return availableRoutes.get(randomIndex);

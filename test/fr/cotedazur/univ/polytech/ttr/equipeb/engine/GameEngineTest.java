@@ -18,6 +18,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.views.ScoreConsoleView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -104,7 +105,7 @@ class GameEngineTest {
 
         GameModel gameModel = new GameModel(playerModels, wagonCardDeck, destinationCardDeck, routes);
         List<Player> players = playerFactory.createThreeEasyBots(playerModels, gameModel);
-        ScoreController scoreController = new ScoreController(gameModel);
+        ScoreController scoreController = new ScoreController(gameModel, new ScoreConsoleView());
 
         this.gameEngine = new GameEngine(gameModel, players);
 

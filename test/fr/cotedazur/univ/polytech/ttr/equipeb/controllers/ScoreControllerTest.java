@@ -3,18 +3,17 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IScoreControllerGameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.*;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.CityPair;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
