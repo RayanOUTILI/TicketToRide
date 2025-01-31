@@ -1,4 +1,4 @@
-package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
+package fr.cotedazur.univ.polytech.ttr.equipeb.actions;
 
 public enum ReasonActionRefused {
     ACTION_INVALID,
@@ -16,7 +16,6 @@ public enum ReasonActionRefused {
     ROUTE_TUNNEL_WRONG_WAGON_CARDS_COLOR,
     ROUTE_TUNNEL_NOT_ENOUGH_WAGON_CARDS,
     ROUTE_TUNNEL_NOT_ENOUGH_REMOVED_WAGON_CARDS,
-    ROUTE_UNKNOW_TYPE,
     STATION_NOT_ENOUGH_STATIONS_LEFT,
     STATION_CITY_NOT_VALID,
     STATION_NOT_ENOUGH_WAGON_CARDS,

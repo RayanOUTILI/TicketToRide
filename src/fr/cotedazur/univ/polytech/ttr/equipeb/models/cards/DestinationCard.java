@@ -2,7 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.models.cards;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 
-public class DestinationCard extends Card{
+public class DestinationCard {
     private final City startCity;
     private final City endCity;
     private final int points;

@@ -1,6 +1,5 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
@@ -27,7 +26,7 @@ class GameModelTest {
 
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.players = List.of(mock(PlayerModel.class));
         this.wagonCardDeck = mock(WagonCardDeck.class);
         this.destinationCardDeck = mock(DestinationCardDeck.class);
@@ -39,7 +38,7 @@ class GameModelTest {
 
     @Test
     void testIsAllRoutesClaimed() {
-        this.routes.forEach(route -> when(route.isClaimed()).thenReturn(true));
+        this.routes.forEach(r -> when(r.isClaimed()).thenReturn(true));
         assertTrue(gameModel.isAllRoutesClaimed());
     }
 
@@ -120,8 +119,8 @@ class GameModelTest {
         when(route2.getSecondCity()).thenReturn(city4);
         when(route2.getId()).thenReturn(2);
 
-        List<Route> routes = List.of(route1, route2);
-        GameModel gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+        routes = List.of(route1, route2);
+        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
         assertEquals(gameModel.getDoubleRouteOf(2), route1);
         assertEquals(gameModel.getDoubleRouteOf(1), route2);
     }
@@ -156,7 +155,7 @@ class GameModelTest {
     void testSetAllRoutesNotClaimed() {
         when(route.isClaimed()).thenReturn(true);
         gameModel.setAllRoutesNotClaimed();
-        routes.forEach(route -> assertTrue(route.isClaimed()));
+        routes.forEach(r -> assertTrue(r.isClaimed()));
     }
 
     @Test

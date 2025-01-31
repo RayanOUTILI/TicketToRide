@@ -1,18 +1,19 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.engine;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class GameEngine {
     private final ScoreController scoreController;
@@ -42,33 +43,54 @@ public class GameEngine {
         this.lastTurnPlayer = Optional.empty();
     }
 
-    protected GameEngine(GameModel gameModel, List<Player> players, IGameViewable gameView, Map<Action, Controller> controllers, ScoreController scoreController) {
-        this.gameModel = gameModel;
-        this.players = players;
-        this.gameView = gameView;
-        this.controllers = controllers;
+    public boolean initGame() {
+        boolean success;
 
-        this.playerIterator = players.iterator();
-        this.currentPlayer = playerIterator.next();
-        this.scoreController = new ScoreController(gameModel);
+        Set<Map.Entry<Action, Controller>> entries = controllers.entrySet();
+        Iterator<Map.Entry<Action, Controller>> iterator = entries.iterator();
+        for(success = true; success && iterator.hasNext();) {
+            Map.Entry<Action, Controller> entry = iterator.next();
+            success = entry.getValue().initGame();
+        }
 
+        return success;
+    }
+
+    public boolean initPlayers() {
+        boolean success = true;
+
+        Iterator<Player> playersIterator = this.players.iterator();
+        while(playersIterator.hasNext() && success) {
+            Player player = playersIterator.next();
+
+            Iterator<Map.Entry<Action, Controller>> entries = controllers.entrySet().iterator();
+            while (entries.hasNext() && success) {
+                Map.Entry<Action, Controller> entry = entries.next();
+                success = entry.getValue().initPlayer(player);
+            }
+        }
+
+        return success;
     }
 
     public int startGame() {
         int nbTurn = 0;
 
-        controllers.forEach((action, controller) -> controller.initGame());
+        boolean forcedEndGame = false;
 
-        players.forEach(player -> controllers.values().forEach(controller -> controller.initPlayer(player)));
+        while(!isWasTheLastTurn() && !forcedEndGame) {
+            boolean success = false;
+            int failedAction;
 
-        while(lastTurnPlayer.isEmpty() || currentPlayer.getIdentification() != lastTurnPlayer.get()) {
-            boolean success;
+            if(isHisLastTurn(currentPlayer)) lastTurnPlayer = Optional.of(currentPlayer.getIdentification());
 
-            if(lastTurn(currentPlayer)) lastTurnPlayer = Optional.of(currentPlayer.getIdentification());
-
-            do {
+            for(failedAction = 0; !success && failedAction < 3; failedAction++) {
                 success = handlePlayerAction(currentPlayer);
-            } while (!success);
+            }
+
+            if(!success) {
+                forcedEndGame = isForcedEndGame();
+            }
 
             boolean newTurn = nextPlayer();
 
@@ -82,15 +104,20 @@ public class GameEngine {
         }
         scoreController.calculateFinalScores();
 
-        gameView.displayEndGameReason(lastTurnPlayer.get(), currentPlayer.getNumberOfWagons());
+        lastTurnPlayer.ifPresent(playerIdentification -> gameView.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons()));
 
         PlayerModel winner = gameModel.getWinner();
+
         if(winner != null) gameView.displayWinner(winner.getIdentification(), winner.getScore());
 
         return nbTurn;
     }
 
-    protected boolean handlePlayerAction(Player player) {
+    private boolean isWasTheLastTurn() {
+        return lastTurnPlayer.isPresent() && currentPlayer.getIdentification() == lastTurnPlayer.get();
+    }
+
+    private boolean handlePlayerAction(Player player) {
         Action action = player.askAction();
 
         if(action == null || !controllers.containsKey(action)) {
@@ -118,7 +145,52 @@ public class GameEngine {
         return true;
     }
 
-    private boolean lastTurn(Player player) {
+    private boolean isHisLastTurn(Player player) {
         return player.getNumberOfWagons() <= 2;
+    }
+
+    private boolean isForcedEndGame() {
+        if(!gameModel.isWagonCardDeckEmpty() || !gameModel.isDestinationCardDeckEmpty()) return false;
+
+        boolean canClaimRouteOrStation = false;
+
+        Iterator<Player> playersIterator = players.iterator();
+        while(playersIterator.hasNext() && !canClaimRouteOrStation) {
+            Player player = playersIterator.next();
+            canClaimRouteOrStation = canClaimRoute(player) || canClaimStation(player);
+        }
+
+        return !canClaimRouteOrStation;
+    }
+
+    private boolean canClaimRoute(Player player) {
+        PlayerModel playerModel = gameModel.getPlayer(player.getIdentification());
+        if(gameModel.getPlayer(player.getIdentification()).getNumberOfWagonCards() == 0) return false;
+
+        Iterator<RouteReadOnly> routeIterator = gameModel.getNonControllableAvailableRoutes().iterator();
+        boolean canClaim = false;
+
+        while(routeIterator.hasNext() && !canClaim) {
+            RouteReadOnly route = routeIterator.next();
+            canClaim = !route.isClaimed() && playerModel.getNumberOfWagons() >= route.getLength() && playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getType() == RouteType.FERRY ? route.getNbLocomotives() : 0).size() == route.getLength();
+        }
+
+        return canClaim;
+
+    }
+
+    private boolean canClaimStation(Player player) {
+        PlayerModel playerModel = gameModel.getPlayer(player.getIdentification());
+        if(player.getStationsLeft() == 0) return false;
+
+        boolean canClaim = false;
+
+        Iterator<City> cityIterator = gameModel.getAllCities().iterator();
+        while(cityIterator.hasNext() && !canClaim) {
+            City city = cityIterator.next();
+            canClaim = !city.isClaimed() && playerModel.getWagonCardsIncludingAnyColor(3 - (player.getStationsLeft() - 1)).size() >= 3 - (playerModel.getStationsLeft()-1);
+        }
+
+        return canClaim;
     }
 }

@@ -12,7 +12,11 @@ import java.util.List;
 import java.util.Map;
 
 public class DestinationCardsParser extends BaseParser<Map<String, List<Map<String, Object>>>> {
-
+    private static final String NAME_SHORT_DESTINATIONS = "shortDestinations";
+    private static final String NAME_LONG_DESTINATIONS = "longDestinations";
+    private static final String START_FIELD = "start";
+    private static final String END_FIELD = "end";
+    private static final String POINTS_FIELD = "points";
     /**
      * Parses all destination cards (short and long) from a JSON file.
      *
@@ -23,21 +27,21 @@ public class DestinationCardsParser extends BaseParser<Map<String, List<Map<Stri
         Map<String, List<Map<String, Object>>> cardsData = parseJsonFile(filePath, new TypeReference<>() {});
         List<DestinationCard> allCards = new ArrayList<>();
 
-        List<Map<String, Object>> shortCardsData = cardsData.get("shortDestinations");
-        List<Map<String, Object>> longCardsData = cardsData.get("longDestinations");
+        List<Map<String, Object>> shortCardsData = cardsData.get(NAME_SHORT_DESTINATIONS);
+        List<Map<String, Object>> longCardsData = cardsData.get(NAME_LONG_DESTINATIONS);
 
         for (Map<String, Object> cardData : shortCardsData) {
-            City start = getOrCreateCity((String) cardData.get("start"));
-            City end = getOrCreateCity((String) cardData.get("end"));
-            int points = (Integer) cardData.get("points");
+            City start = getOrCreateCity((String) cardData.get(START_FIELD));
+            City end = getOrCreateCity((String) cardData.get(END_FIELD));
+            int points = (Integer) cardData.get(POINTS_FIELD);
 
             allCards.add(new ShortDestinationCard(start, end, points));
         }
 
         for (Map<String, Object> cardData : longCardsData) {
-            City start = getOrCreateCity((String) cardData.get("start"));
-            City end = getOrCreateCity((String) cardData.get("end"));
-            int points = (Integer) cardData.get("points");
+            City start = getOrCreateCity((String) cardData.get(START_FIELD));
+            City end = getOrCreateCity((String) cardData.get(END_FIELD));
+            int points = (Integer) cardData.get(POINTS_FIELD);
 
             allCards.add(new LongDestinationCard(start, end, points));
         }
@@ -55,12 +59,12 @@ public class DestinationCardsParser extends BaseParser<Map<String, List<Map<Stri
         Map<String, List<Map<String, Object>>> cardsData = parseJsonFile(filePath, new TypeReference<>() {});
         List<ShortDestinationCard> shortCards = new ArrayList<>();
 
-        List<Map<String, Object>> shortCardsData = cardsData.get("shortDestinations");
+        List<Map<String, Object>> shortCardsData = cardsData.get(NAME_SHORT_DESTINATIONS);
 
         for (Map<String, Object> cardData : shortCardsData) {
-            City start = getOrCreateCity((String) cardData.get("start"));
-            City end = getOrCreateCity((String) cardData.get("end"));
-            int points = (Integer) cardData.get("points");
+            City start = getOrCreateCity((String) cardData.get(START_FIELD));
+            City end = getOrCreateCity((String) cardData.get(END_FIELD));
+            int points = (Integer) cardData.get(POINTS_FIELD);
 
             shortCards.add(new ShortDestinationCard(start, end, points));
         }
@@ -78,12 +82,12 @@ public class DestinationCardsParser extends BaseParser<Map<String, List<Map<Stri
         Map<String, List<Map<String, Object>>> cardsData = parseJsonFile(filePath, new TypeReference<>() {});
         List<LongDestinationCard> longCards = new ArrayList<>();
 
-        List<Map<String, Object>> longCardsData = cardsData.get("longDestinations");
+        List<Map<String, Object>> longCardsData = cardsData.get(NAME_LONG_DESTINATIONS);
 
         for (Map<String, Object> cardData : longCardsData) {
-            City start = getOrCreateCity((String) cardData.get("start"));
-            City end = getOrCreateCity((String) cardData.get("end"));
-            int points = (Integer) cardData.get("points");
+            City start = getOrCreateCity((String) cardData.get(START_FIELD));
+            City end = getOrCreateCity((String) cardData.get(END_FIELD));
+            int points = (Integer) cardData.get(POINTS_FIELD);
 
             longCards.add(new LongDestinationCard(start, end, points));
         }
