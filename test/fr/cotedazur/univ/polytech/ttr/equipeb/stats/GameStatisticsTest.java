@@ -2,6 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.stats;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,15 +34,19 @@ class GameStatisticsTest {
 
     @Test
     void readGameResultsSuccessfully() throws IOException {
+        GameResultWrapper gameResultWrapper = new GameResultWrapper(PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT, 50, 3);
         List<GameResultWrapper> expectedResults = Arrays.asList(
-                new GameResultWrapper(),
+                gameResultWrapper,
                 new GameResultWrapper()
         );
         when(objectMapper.readValue(Mockito.any(File.class), Mockito.any(TypeReference.class)))
                 .thenReturn(expectedResults);
 
         List<GameResultWrapper> actualResults = gameStatistics.readGameResults();
-
+        assertEquals(PlayerIdentification.GREEN, gameResultWrapper.getWinner());
+        assertEquals(PlayerType.MEDIUM_BOT, gameResultWrapper.getWinnerType());
+        assertEquals(50, gameResultWrapper.getTotalTurns());
+        assertEquals(3, gameResultWrapper.getNumberOfBots());
         assertEquals(expectedResults, actualResults);
     }
 
