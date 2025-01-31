@@ -47,34 +47,38 @@ class MediumBotEngineTest {
         randomField.set(botEngine, random);
     }
 
-    /*@Test
+    @Test
     void askAction_claimRoute() {
         when(gameModel.getNonControllableAvailableRoutes()).thenReturn(Collections.singletonList(mock(RouteReadOnly.class)));
-        when(playerModel.getNumberOfWagonCardsIncludingAnyColor(any())).thenReturn(5);
-        when(playerModel.getNumberOfWagons()).thenReturn(5);
+
+        when(playerModel.getNumberOfWagonCards()).thenReturn(16);
+        when(playerModel.getNumberOfWagons()).thenReturn(20);
         when(gameModel.getNonControllableAvailableRoutes().get(0).isClaimed()).thenReturn(false);
         when(gameModel.getNonControllableAvailableRoutes().get(0).getLength()).thenReturn(5);
         when(gameModel.getNonControllableAvailableRoutes().get(0).getColor()).thenReturn(Color.BLACK);
         when(gameModel.getNonControllableAvailableRoutes().get(0).getType()).thenReturn(RouteType.TRAIN);
+        when(playerModel.getNumberOfWagonCardsIncludingAnyColor(Color.BLACK)).thenReturn(5);
         assertEquals(Action.CLAIM_ROUTE, botEngine.askAction());
-    }*/
+    }
 
-    /*@Test
+    @Test
     void askAction_placeStation() {
         when(playerModel.getStationsLeft()).thenReturn(1);
+        when(playerModel.getNumberOfWagonCards()).thenReturn(16);
         when(playerModel.getWagonCardsIncludingAnyColor(anyInt())).thenReturn(Arrays.asList(mock(WagonCard.class), mock(WagonCard.class), mock(WagonCard.class)));
 
         assertEquals(Action.PLACE_STATION, botEngine.askAction());
-    }*/
+    }
 
 
-    /*@Test
+    @Test
     void askAction_pickDestinationCards() {
         when(playerModel.getDestinationCards()).thenReturn(Collections.emptyList());
         when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
+        when(playerModel.getNumberOfWagonCards()).thenReturn(16);
 
         assertEquals(Action.PICK_DESTINATION_CARDS, botEngine.askAction());
-    }*/
+    }
 
     @Test
     void askAction_pickWagonCard() {

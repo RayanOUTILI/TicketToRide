@@ -1,7 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
@@ -70,7 +69,7 @@ public class MediumBotEngine implements IPlayerActionsControllable {
     }
 
     private boolean shouldPickCards() {
-        return playerModel.getNumberOfWagonCards() < 10 && !gameModel.isWagonCardDeckEmpty();
+        return playerModel.getNumberOfWagonCards() < 15 && !gameModel.isWagonCardDeckEmpty();
     }
 
     /**
@@ -130,6 +129,9 @@ public class MediumBotEngine implements IPlayerActionsControllable {
 
     @Override
     public Optional<ActionDrawWagonCard> askDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
+        if (possibleActions == null || possibleActions.isEmpty()) {
+            return Optional.empty();
+        }
         return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
     }
 
@@ -207,14 +209,17 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @return the priority score for the route.
      */
     private int evaluateRoutePriority(RouteReadOnly route) {
-        int priority = 0;
-        for (DestinationCard card : playerModel.getDestinationCards()) {
-            if (card.getCities().contains(route.getFirstCity()) || card.getCities().contains(route.getSecondCity())) {
-                priority += 10;
-            }
-        }
-        priority += route.getLength();
-        return priority;
+        int routeScore =
+            switch (route.getLength()) {
+            case(1) -> 1;
+            case 2 -> 2;
+            case 3 -> 4;
+            case 4 -> 7;
+            case 6 -> 15;
+            case 8 -> 21;
+            default -> 0;
+        };
+        return routeScore;
     }
 
     /**
