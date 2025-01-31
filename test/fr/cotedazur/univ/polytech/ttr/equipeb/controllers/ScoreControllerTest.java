@@ -9,6 +9,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.views.ScoreConsoleView;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -33,7 +34,7 @@ class ScoreControllerTest {
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
         gameModel = mock(IScoreControllerGameModel.class);
-        scoreController = new ScoreController(gameModel);
+        scoreController = new ScoreController(gameModel, new ScoreConsoleView());
         player = new PlayerModel(PlayerIdentification.BLACK, null);
 
         routeLength1 = new Route(new City("Paris"), new City("Berlin"), 1, RouteType.TRAIN, Color.BLACK, 0);
