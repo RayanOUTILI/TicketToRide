@@ -44,7 +44,8 @@ public class EasyBotEngine extends BotEngine {
             return Action.PICK_DESTINATION_CARDS;
         } else if (canTakeARoute()) {
             return Action.CLAIM_ROUTE;
-        } else if (playerModel.getStationsLeft() > 0 && playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft() - 1)).size() == 3 - (playerModel.getStationsLeft() - 1)) {
+        // Else The bot will try to place a station if it can
+        } else if (playerModel.getStationsLeft() > 0 && playerModel.getWagonCardsIncludingAnyColor(3- (playerModel.getStationsLeft()-1)).size() == 3- (playerModel.getStationsLeft()-1)) {
             return Action.PLACE_STATION;
         // Else, the bot will pick a wagon card
         } else if(!gameModel.isWagonCardDeckEmpty()) {
@@ -54,8 +55,7 @@ public class EasyBotEngine extends BotEngine {
             return Action.PICK_DESTINATION_CARDS;
         }
         else {
-            List<Action> actions = List.of(Action.CLAIM_ROUTE, Action.PLACE_STATION);
-            return actions.get(random.nextInt(actions.size()));
+            return Action.STOP;
         }
     }
 
@@ -75,7 +75,6 @@ public class EasyBotEngine extends BotEngine {
         int cityIndex = random.nextInt(availableCities.size());
         CityReadOnly city = availableCities.get(cityIndex);
 
-        // TODO: find a proper way to get the right amount of cards
         return new ClaimStation(city, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft()-1)));
     }
 
@@ -112,6 +111,14 @@ public class EasyBotEngine extends BotEngine {
     public WagonCard askWagonCardFromShownCards() {
         List<WagonCard> shownCards = gameModel.getListOfShownWagonCards();
         return shownCards.get(random.nextInt(shownCards.size()));
+    }
+
+    @Override
+    public RouteReadOnly askChooseRouteStation(CityReadOnly city) {
+        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAdjacentRoutes(city);
+        if(availableRoutes.isEmpty()) return null;
+        int randomIndex = random.nextInt(availableRoutes.size());
+        return availableRoutes.get(randomIndex);
     }
 
     private RouteReadOnly chooseRoute() {

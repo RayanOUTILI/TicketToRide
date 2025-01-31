@@ -23,15 +23,11 @@ public class GameModel implements
         IWagonCardsControllerGameModel,
         IDestinationCardsControllerGameModel,
         IScoreControllerGameModel,
-        IStationControllerGameModel
+        IStationControllerGameModel,
+        IChooseRouteStationControllerGameModel
 {
 
     private List<PlayerModel> playerModels;
-    // Its needed to change how the WagonCardDeck works
-    // Like there is 5 cards showed to the players
-    // And the rest of the deck is hidden
-    // Also we need to add the discard pile cause when the deck is empty
-    // The discard pile is added to the deck
     private WagonCardDeck wagonCardDeck;
     private DestinationCardDeck destinationCardDeck;
     private List<Route> routes;
@@ -236,5 +232,27 @@ public class GameModel implements
                 .map(Route::getFirstCity)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public List<City> getCitiesClaimedByPlayer(PlayerIdentification player) {
+        return routes.stream()
+                .flatMap(r -> Stream.of(r.getFirstCity(), r.getSecondCity()))
+                .distinct()
+                .filter(c -> player.equals(c.getOwner())).toList();
+    }
+
+    @Override
+    public List<RouteReadOnly> getNonControllableAdjacentRoutes(CityReadOnly city){
+        return routes.stream()
+                .filter(r -> r.getFirstCity().equals(city) || r.getSecondCity().equals(city))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Route> getAdjacentRoutes(City city) {
+        return routes.stream()
+                .filter(r -> r.getFirstCity().equals(city) || r.getSecondCity().equals(city))
+                .toList();
     }
 }

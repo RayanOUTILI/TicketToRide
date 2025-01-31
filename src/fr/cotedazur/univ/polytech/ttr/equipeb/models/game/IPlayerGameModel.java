@@ -44,5 +44,7 @@ public interface IPlayerGameModel {
     boolean isWagonCardDeckEmpty();
 
     List<RouteReadOnly> getAllRoutesClaimedByPlayer(PlayerIdentification player);
+  
+    List<RouteReadOnly> getNonControllableAdjacentRoutes(CityReadOnly city);
 }
 

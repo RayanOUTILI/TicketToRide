@@ -19,7 +19,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * This class defines the MediumBotEngine, an bot for the game "Ticket to Ride" that uses a more strategic approach
@@ -128,6 +127,14 @@ public class MediumBotEngine extends BotEngine {
         return shownCards.get(random.nextInt(shownCards.size()));
     }
 
+    @Override
+    public RouteReadOnly askChooseRouteStation(CityReadOnly city) {
+        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAdjacentRoutes(city);
+        if(availableRoutes.isEmpty()) return null;
+        int randomIndex = random.nextInt(availableRoutes.size());
+        return availableRoutes.get(randomIndex);
+    }
+
     /**
      * Checks if the bot should claim a route.
      *
@@ -219,7 +226,7 @@ public class MediumBotEngine extends BotEngine {
         return cards.stream()
                 .sorted(Comparator.comparingInt(this::evaluateDestinationCardPriority).reversed())
                 .limit(2)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

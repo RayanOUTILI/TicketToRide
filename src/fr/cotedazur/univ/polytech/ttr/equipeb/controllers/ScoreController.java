@@ -6,18 +6,25 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.CityPair;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.views.IScoreView;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.findLengthBetweenAllCityInGraph;
+import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.getGraphFromRoutes;
 
 public class ScoreController {
     IScoreControllerGameModel gameModel;
+    private final IScoreView scoreView;
 
-    public ScoreController( IScoreControllerGameModel gameModel) {
+    public ScoreController(IScoreControllerGameModel gameModel, IScoreView scoreView) {
         this.gameModel = gameModel;
+        this.scoreView = scoreView;
     }
 
-    public void updateScore(IPlayerModelControllable player) {
-        int score = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())
+    public int calculatePlacedRoutesScore(IPlayerModelControllable player) {
+        return gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())
                             .stream()
                             .mapToInt(route -> switch (route.getLength()) {
                                 case 1 -> 1;
@@ -29,70 +36,86 @@ public class ScoreController {
                                 default -> 0;
                             })
                             .sum();
-        player.setScore(score);
     }
 
-    private void calculateDestinationCardsScore(IPlayerModelControllable player) {
-        List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification());
+    private int calculateDestinationCardsScore(IPlayerModelControllable player) {
+        // Its necessary to remove the length of routes that is "claimed" with stations
+        // Please note that the station implementation is not yet implemented here
         List<DestinationCard> destinationCards = player.getDestinationCardsHand();
+        List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification());
+        List<RouteReadOnly> claimedRoutesWithStations = player.getSelectedStationRoutes();
 
-        // Create a graph of cities and their connected cities
-        // This will allow us to find all pairs of cities with continuous routes
-        // At first, we will consider all routes as bidirectional
-        Map<City, Map<City, Integer>> graph = new HashMap<>();
-        claimedRoutes.forEach(route -> {
-            City firstCity = route.getFirstCity();
-            City secondCity = route.getSecondCity();
-            graph.putIfAbsent(firstCity, new HashMap<>());
-            graph.putIfAbsent(secondCity, new HashMap<>());
-            graph.get(firstCity).put(secondCity, route.getLength());
-            graph.get(secondCity).put(firstCity, route.getLength());
-        });
+        // Combine all routes
+        List<RouteReadOnly> allRoutes = new ArrayList<>();
+        allRoutes.addAll(claimedRoutes);
+        allRoutes.addAll(claimedRoutesWithStations);
 
         // Find all pairs of cities with continuous routes
-        Set<CityPair> allCityPairs = new HashSet<>();
-        Set<CityPair> visitedPairs = new HashSet<>();
-        graph.keySet().forEach(
-                city -> findAllCityPairs(city, city, 0, new HashSet<>(), graph, allCityPairs, visitedPairs)
-        );
+        Map<City, Map<City, Integer>> claimedPlayerRouteGraph = getGraphFromRoutes(allRoutes);
+        Set<CityPair> allCityPairs = findLengthBetweenAllCityInGraph(claimedPlayerRouteGraph);
 
         // Calculate the score based on destination cards
-        int score = destinationCards.stream()
+        return destinationCards.stream()
                 .mapToInt(card -> {
                     CityPair pair = new CityPair(card.getStartCity(), card.getEndCity());
-                    return allCityPairs.contains(pair) ?
-                            card.getPoints() : -card.getPoints();
+                    if (allCityPairs.contains(pair)) {
+                        scoreView.displayCompletedDestination(player.getIdentification(), card);
+                        return card.getPoints();
+                    } else {
+                        scoreView.displayFailedDestination(player.getIdentification(), card);
+                        return -card.getPoints();
+                    }
                 })
                 .sum();
-
-        player.setScore(player.getScore() + score);
     }
 
-    private void findAllCityPairs(
-            City start,
-            City current,
-            int currentPathLength,
-            Set<City> visited,
-            Map<City, Map<City, Integer>> graph,
-            Set<CityPair> allCityPairs,
-            Set<CityPair> visitedPairs
-    ) {
-        visited.add(current);
-        for (City neighbor : graph.getOrDefault(current, new HashMap<>()).keySet()) {
-            int length = currentPathLength + graph.get(current).get(neighbor);
-            CityPair pair = new CityPair(start, neighbor, length);
-            if (!visitedPairs.contains(pair)) {
-                allCityPairs.add(pair);
-                visitedPairs.add(pair);
-                if (!visited.contains(neighbor)) {
-                    findAllCityPairs(start, neighbor, length, visited, graph, allCityPairs, visitedPairs);
-                }
-            }
-        }
+    private int calculateRemainingStationsScore(IPlayerModelControllable player) {
+        int score = player.getScore() + player.getStationsLeft() * 4;
+        scoreView.displayRemainingStationsScore(player.getIdentification(), score);
+        return score;
     }
 
-    public void calculateFinalScores(){
-        gameModel.getPlayers().forEach(this::updateScore);
-        gameModel.getPlayers().forEach(this::calculateDestinationCardsScore);
+    private List<IPlayerModelControllable> calculatePlayerWithTheLongestContinuousRoute() {
+        Map<IPlayerModelControllable, Integer> playerLongestPaths = gameModel.getPlayers().stream()
+                .map(player -> {
+                    List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification());
+                    Set<CityPair> allCityPairs = findLengthBetweenAllCityInGraph(getGraphFromRoutes(claimedRoutes));
+                    int longestPath = allCityPairs.stream()
+                            .mapToInt(CityPair::getMaxLength)
+                            .max()
+                            .orElse(0);
+                    return new AbstractMap.SimpleEntry<>(player, longestPath);
+                })
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        if (playerLongestPaths.isEmpty()) return Collections.emptyList();
+        int maxLongestPath = Collections.max(playerLongestPaths.values());
+
+        List<IPlayerModelControllable> playersWithLongestPath = playerLongestPaths.entrySet().stream()
+                .filter(entry -> entry.getValue() == maxLongestPath)
+                .map(Map.Entry::getKey)
+                .toList();
+
+        playersWithLongestPath.forEach(
+                player -> scoreView.displayPlayerHasLongestPath(player.getIdentification(), maxLongestPath)
+        );
+
+        return playersWithLongestPath;
+    }
+
+    private int getFinalScore(IPlayerModelControllable player){
+        int score = 0;
+        score += calculatePlacedRoutesScore(player);
+        score += calculateDestinationCardsScore(player);
+        score += calculateRemainingStationsScore(player);
+
+        return score;
+    }
+
+    public void setFinalScores(){
+        HashMap<IPlayerModelControllable, Integer> finalScores = new HashMap<>();
+        gameModel.getPlayers().forEach(player -> finalScores.put(player, getFinalScore(player)));
+        calculatePlayerWithTheLongestContinuousRoute().forEach(player -> finalScores.put(player, finalScores.get(player) + 10));
+        finalScores.forEach(IPlayerModelControllable::setScore);
     }
 }

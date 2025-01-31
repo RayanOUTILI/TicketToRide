@@ -22,6 +22,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     private final List<WagonCard> wagonCards;
     private final List<DestinationCard> destinationCards;
     private final IPlayerViewable view;
+    private final List<RouteReadOnly> chosenRouteStations;
     private int stationsLeft;
     private int score;
     private int numberOfWagons;
@@ -31,6 +32,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         this.playerType = playerType;
         this.wagonCards = new ArrayList<>();
         this.destinationCards = new ArrayList<>();
+        this.chosenRouteStations = new ArrayList<>();
         this.view = view;
         this.score = 0;
         this.stationsLeft = 0;
@@ -140,6 +142,16 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     }
 
     @Override
+    public void addChosenRouteStation(RouteReadOnly route) {
+        this.chosenRouteStations.add(route);
+    }
+
+    @Override
+    public List<RouteReadOnly> getSelectedStationRoutes() {
+        return new ArrayList<>(this.chosenRouteStations);
+    }
+
+    @Override
     public int getNumberOfWagonCards() {
         return wagonCards.size();
     }
@@ -158,17 +170,9 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         return cards;
     }
 
-    //TODO: There is too much logic in this method, it should be refactored
     @Override
     public List<WagonCard> getWagonCardsIncludingAnyColor(int numberOfCards) {
-        Map<Color, Long> colorCount = wagonCards.stream()
-                .filter(card -> !card.getColor().equals(Color.ANY))
-                .collect(Collectors.groupingBy(WagonCard::getColor, Collectors.counting()));
-
-        Color mostFrequentColor = colorCount.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse(null);
+        Color mostFrequentColor = getMostFrequentColor();
 
         List<WagonCard> selectedCards = new ArrayList<>();
         if (mostFrequentColor != null) {
@@ -181,7 +185,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         if (selectedCards.size() < numberOfCards) {
             List<WagonCard> anyCards = wagonCards.stream()
                     .filter(card -> card.getColor().equals(Color.ANY))
-                    .limit(numberOfCards - selectedCards.size())
+                    .limit((long) numberOfCards - selectedCards.size())
                     .toList();
             selectedCards.addAll(anyCards);
         }

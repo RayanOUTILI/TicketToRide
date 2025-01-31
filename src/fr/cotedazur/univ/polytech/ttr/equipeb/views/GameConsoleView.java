@@ -14,12 +14,16 @@ public class GameConsoleView implements IGameViewable {
 
     @Override
     public void displayEndGameReason(PlayerIdentification playerId, int nbOfWagons) {
-        logger.log(Level.INFO, "Player " + playerId + " has run out of wagons");
+        if(logger.isLoggable(Level.INFO)) {
+            logger.log(Level.INFO, String.format("Player %s has run out of wagons", playerId));
+        }
     }
 
     @Override
     public void displayWinner(PlayerIdentification playerId, int score) {
-        logger.log(Level.INFO, "Player " + playerId + " won with a score of " + score);
+        if(logger.isLoggable(Level.INFO)) {
+            logger.log(Level.INFO, String.format("Player %s has won with a score of %d", playerId, score));
+        }
     }
 
 }
