@@ -78,7 +78,7 @@ class GameStatisticsTest {
 
         gameStatistics.calculateWinRates(gameResults);
 
-        String expectedOutput = "EASY_BOT win rate: 66,67%\nMEDIUM_BOT win rate: 33,33%\n";
+        String expectedOutput = "EASY_BOT win rate: 66.67%\nMEDIUM_BOT win rate: 33.33%\n";
         String actualOutput = outContent.toString().replaceAll("[\\r\\n]", "");
         assertEquals(expectedOutput.replaceAll("[\\r\\n]", ""), actualOutput);
 
