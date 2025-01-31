@@ -196,12 +196,6 @@ public class GameModel implements
         return new ArrayList<>(playerModels);
     }
 
-    public PlayerModel getPlayer(PlayerIdentification player) {
-        return playerModels.stream()
-                .filter(p -> p.getIdentification().equals(player))
-                .findFirst()
-                .orElse(null);
-    }
     public PlayerModel getWinner() {
         if (playerModels == null || playerModels.isEmpty()) {
             return null;
