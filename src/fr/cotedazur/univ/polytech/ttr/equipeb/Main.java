@@ -27,7 +27,6 @@ public class Main {
 
             PlayerFactory playerFactory = new PlayerFactory();
 
-            //TODO: devrions nous pas également déléguer la création des playerModel à la factory ?
             List<PlayerModel> playerModels = List.of(
                     new PlayerModel(PlayerIdentification.BLUE, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.BLUE)),
                     new PlayerModel(PlayerIdentification.RED, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
