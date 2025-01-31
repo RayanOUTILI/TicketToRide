@@ -27,6 +27,8 @@ public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineV
 
         ConsoleHandler consoleHandler = new ConsoleHandler();
         consoleHandler.setLevel(Level.ALL);
+        consoleHandler.setLevel(Level.OFF);
+        logger.setLevel(Level.OFF);
         logger.addHandler(consoleHandler);
     }
 

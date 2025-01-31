@@ -48,18 +48,29 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      */
     @Override
     public Action askAction() {
-        if (shouldClaimRoute()) {
-            return Action.CLAIM_ROUTE;
-        } else if (shouldPlaceStation()) {
-            return Action.PLACE_STATION;
-        } else if (shouldPickDestinationCards()) {
-            return Action.PICK_DESTINATION_CARDS;
-        } else {
-            if (gameModel.isWagonCardDeckEmpty() && !gameModel.isDestinationCardDeckEmpty()) {
-                return Action.PICK_DESTINATION_CARDS;
-            }
+        if (shouldPickCards()) {
             return Action.PICK_WAGON_CARD;
         }
+        if (shouldClaimRoute()) {
+            return Action.CLAIM_ROUTE;
+        }
+        if (shouldPlaceStation()) {
+            return Action.PLACE_STATION;
+        }
+        if (shouldPickDestinationCards()) {
+            return Action.PICK_DESTINATION_CARDS;
+        }
+        if (gameModel.isWagonCardDeckEmpty() && !gameModel.isDestinationCardDeckEmpty()) {
+            return Action.PICK_DESTINATION_CARDS;
+        }
+        if (!gameModel.isWagonCardDeckEmpty()) {
+            return Action.PICK_WAGON_CARD;
+        }
+        return Action.STOP;
+    }
+
+    private boolean shouldPickCards() {
+        return playerModel.getNumberOfWagonCards() < 10 && !gameModel.isWagonCardDeckEmpty();
     }
 
     /**

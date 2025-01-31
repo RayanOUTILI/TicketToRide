@@ -17,16 +17,22 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
 
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class GameSimulator {
 
     private final GameResultDataWriter gameResultPersistence;
     private final PlayerFactory playerFactory;
-    List<PlayerModel> playerModels;
+    private List<PlayerModel> playerModels;
+    private GameModel gameModel;
+    Logger logger;
 
     public GameSimulator() {
         this.gameResultPersistence = new GameResultDataWriter();
         this.playerFactory = new PlayerFactory();
+        this.logger = Logger.getLogger(GameSimulator.class.getName());
+        this.logger.setLevel(java.util.logging.Level.INFO);
     }
 
     public GameSimulator(GameResultDataWriter gameResultWrapper, PlayerFactory playerFactory) {
@@ -52,52 +58,67 @@ public class GameSimulator {
     /**
      * Simulate a game with the given players.
      */
-    protected void simulateGame(List<Player> players) throws JsonParseException {
-        GameModel gameModel = createNewGameModel(playerModels);
-        GameEngine gameEngine = new GameEngine(gameModel, players);
+    protected void simulateGame(Map<Player, PlayerModel> playersMap) throws JsonParseException {
+        GameEngine gameEngine = new GameEngine(gameModel, List.copyOf(playersMap.keySet()));
         gameEngine.initGame();
         gameEngine.initPlayers();
         int nbTurn = gameEngine.startGame();
 
         PlayerModel winner = gameModel.getWinner();
         GameResultWrapper gameResult = new GameResultWrapper(
-                    winner.getIdentification(),
-                    winner.getPlayerType(),
-                    nbTurn,
-                    gameModel.getNbOfPlayers()
+                winner.getIdentification(),
+                winner.getPlayerType(),
+                nbTurn,
+                gameModel.getNbOfPlayers()
         );
         gameResultPersistence.saveGameResult(gameResult);
     }
 
     public void simulateMultipleGames(int numSimulations) throws JsonParseException {
         for (int i = 0; i < numSimulations; i++) {
-            System.out.println("Simulating game " + (i + 1) + " of " + numSimulations);
-            simulateGame(createEasyMediumConfig1());
+            logger.info(String.format("Simulating game %d of %d", (i + 1), numSimulations));
+
+            simulateGame(createEasyMediumConfig1()); 
         }
     }
 
     /**
      * Configuration 1 : 2 bots EASY + 1 bot MEDIUM
      */
-    public List<Player> createEasyMediumConfig1() throws JsonParseException {
+    public Map<Player, PlayerModel> createEasyMediumConfig1() throws JsonParseException {
         this.playerModels = List.of(
                 new PlayerModel(PlayerIdentification.BLUE, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.BLUE)),
                 new PlayerModel(PlayerIdentification.RED, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
                 new PlayerModel(PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.GREEN))
         );
-        return playerFactory.createTwoEasyOneMediumBots(playerModels, createNewGameModel(playerModels));
+        // Créer le GameModel avec la liste de PlayerModels
+        gameModel = createNewGameModel(playerModels);
+
+        // Créer les joueurs à partir du GameModel
+        List<Player> players = playerFactory.createTwoEasyOneMediumBots(playerModels, gameModel);
+
+        // Retourner la correspondance entre les joueurs et les modèles de joueurs
+        return Map.of(
+                players.get(0), playerModels.get(0),
+                players.get(1), playerModels.get(1),
+                players.get(2), playerModels.get(2)
+        );
     }
 
     /**
      * Configuration 2 : 2 bots MEDIUM + 1 bot EASY
      */
     public List<Player> createEasyMediumConfig2() throws JsonParseException {
-        List<PlayerModel> playersModels = List.of(
+        this.playerModels = List.of(
                 new PlayerModel(PlayerIdentification.BLUE, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.BLUE)),
                 new PlayerModel(PlayerIdentification.RED, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
                 new PlayerModel(PlayerIdentification.GREEN, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.GREEN))
         );
-        return playerFactory.createTwoMediumOneEasyBots(playersModels, createNewGameModel(playerModels));
+        // Créer le GameModel avec la liste de PlayerModels
+        gameModel = createNewGameModel(playerModels);
+
+        // Créer les joueurs à partir du GameModel
+        return playerFactory.createTwoMediumOneEasyBots(playerModels, gameModel);
     }
 
     public static void main(String[] args) {

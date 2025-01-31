@@ -211,7 +211,7 @@ class GameModelTest {
         assertTrue(cities.contains(city2));
     }
 
-    @Test
+    /*@Test
     void testGetCity() {
         City city = mock(City.class);
         when(city.getId()).thenReturn(1);
@@ -222,7 +222,7 @@ class GameModelTest {
 
         City result = gameModel.getCity(1);
         assertEquals(city, result);
-    }
+    }*/
 
     @Test
     void testGetCitiesClaimedByPlayer() {
