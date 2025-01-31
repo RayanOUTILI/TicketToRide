@@ -209,9 +209,8 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @return the priority score for the route.
      */
     private int evaluateRoutePriority(RouteReadOnly route) {
-        int routeScore =
-            switch (route.getLength()) {
-            case(1) -> 1;
+        return switch (route.getLength()) {
+            case 1 -> 1;
             case 2 -> 2;
             case 3 -> 4;
             case 4 -> 7;
@@ -219,7 +218,6 @@ public class MediumBotEngine implements IPlayerActionsControllable {
             case 8 -> 21;
             default -> 0;
         };
-        return routeScore;
     }
 
     /**
