@@ -6,7 +6,10 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -43,13 +46,16 @@ public class GameStatistics {
 
         long totalGames = gameResults.size();
 
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.FRANCE);
+        DecimalFormat decimalFormat = new DecimalFormat("#.00", symbols);
+
         winCounts.entrySet().stream()
                 .sorted((entry1, entry2) -> Double.compare(
                         (double) entry2.getValue() / totalGames * 100,
                         (double) entry1.getValue() / totalGames * 100))
                 .forEach(entry -> {
                     double winRate = (double) entry.getValue() / totalGames * 100;
-                    System.out.println(entry.getKey() + " win rate: " + String.format("%.2f", winRate) + "%");
+                    System.out.println(entry.getKey() + " win rate: " + decimalFormat.format(winRate) + "%");
                 });
     }
 
