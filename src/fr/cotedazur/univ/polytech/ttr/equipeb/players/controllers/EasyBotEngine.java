@@ -50,7 +50,6 @@ public class EasyBotEngine implements IPlayerActionsControllable {
         } else if (canTakeARoute()) {
             return Action.CLAIM_ROUTE;
         // Else The bot will try to place a station if it can
-        // TODO: change the condition to check if the player has enough cards to place a station
         } else if (playerModel.getStationsLeft() > 0 && playerModel.getWagonCardsIncludingAnyColor(3- (playerModel.getStationsLeft()-1)).size() == 3- (playerModel.getStationsLeft()-1)) {
             return Action.PLACE_STATION;
         // Else, the bot will pick a wagon card
@@ -82,7 +81,6 @@ public class EasyBotEngine implements IPlayerActionsControllable {
         int cityIndex = random.nextInt(availableCities.size());
         CityReadOnly city = availableCities.get(cityIndex);
 
-        // TODO: find a proper way to get the right amount of cards
         return new ClaimStation(city, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft()-1)));
     }
 
