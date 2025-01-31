@@ -106,17 +106,26 @@ public class GameSimulator {
     }
 
     /**
-     * Configuration 2 : 2 bots MEDIUM + 1 bot EASY
+     * Configuration 2 : 1 bots EASY + 2 bot MEDIUM
      */
-    public List<Player> createEasyMediumConfig2() throws JsonParseException {
+    public Map<Player, PlayerModel> createEasyMediumConfig2() throws JsonParseException {
         this.playerModels = List.of(
-                new PlayerModel(PlayerIdentification.BLUE, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.BLUE)),
+                new PlayerModel(PlayerIdentification.BLUE, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.BLUE)),
                 new PlayerModel(PlayerIdentification.RED, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
-                new PlayerModel(PlayerIdentification.GREEN, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.GREEN))
+                new PlayerModel(PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.GREEN))
         );
+        // Créer le GameModel avec la liste de PlayerModels
         gameModel = createNewGameModel(playerModels);
 
-        return playerFactory.createTwoMediumOneEasyBots(playerModels, gameModel);
+        // Créer les joueurs à partir du GameModel
+        List<Player> players = playerFactory.createTwoMediumOneEasyBots(playerModels, gameModel);
+
+        // Retourner la correspondance entre les joueurs et les modèles de joueurs
+        return Map.of(
+                players.get(0), playerModels.get(0),
+                players.get(1), playerModels.get(1),
+                players.get(2), playerModels.get(2)
+        );
     }
 
     public static void main(String[] args) {
