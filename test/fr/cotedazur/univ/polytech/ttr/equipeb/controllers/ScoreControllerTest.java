@@ -166,57 +166,14 @@ class ScoreControllerTest {
     }
 
 
-//    @Test
-//    void testCalculateFinalScoreWithAStation() {
-//        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 4, RouteType.TRAIN, Color.BLACK , 5);
-//        routeParisToMadrid.setClaimerPlayer(PlayerIdentification.BLACK);
-//
-//        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 4, RouteType.TRAIN, Color.BLACK, 5);
-//        routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
-//
-//        City paris = new City("Paris");
-//        paris.setOwner(PlayerIdentification.BLACK);
-//        player.decrementStationsLeft();
-//
-//
-//        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin, routeParisToMadrid));
-//        when(gameModel.getPlayers()).thenReturn(List.of(player));
-//        when(gameModel.getStationsPlacedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(paris));
-//        scoreController.calculateFinalScores();
-//        assertEquals( 14 + 8 + 10, player.getScore());
-//    }
-
-
-//    @Test
-//    void testCalculateFinalScoreWithAStationThatFulfillsObjective() {
-//        ShortDestinationCard parisToBerlinDestination = new ShortDestinationCard(new City("Paris"), new City("Berlin"), 10);
-//
-//        PlayerModel playerWithDestination = new PlayerModel(PlayerIdentification.BLACK, null);
-//        playerWithDestination.defineStartingStationsNumber(3);
-//        playerWithDestination.receivedDestinationCards(List.of(parisToBerlinDestination));
-//        City madrid = new City("Madrid");
-//        madrid.setOwner(PlayerIdentification.BLACK);
-//        playerWithDestination.decrementStationsLeft();
-//        Route routeMadridToBerlin = new Route(new City("Madrid"), new City("Berlin"), 4, RouteType.TRAIN, Color.BLACK, 5);
-//        routeMadridToBerlin.setClaimerPlayer(PlayerIdentification.BLACK);
-//
-//
-//
-//        IPlayerModelControllable playerWithParisMadridRoute = new PlayerModel(PlayerIdentification.GREEN, null);
-//        playerWithParisMadridRoute.defineStartingStationsNumber(3);
-//        Route routeParisToMadrid = new Route(new City("Paris"), new City("Madrid"), 4, RouteType.TRAIN, Color.BLACK , 5);
-//        routeParisToMadrid.setClaimerPlayer(PlayerIdentification.GREEN);
-//
-//
-//        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMadridToBerlin));
-//        when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.GREEN)).thenReturn(List.of(routeParisToMadrid));
-//
-//        when(gameModel.getPlayers()).thenReturn(List.of(playerWithParisMadridRoute, playerWithDestination));
-//
-//        when(gameModel.getStationsPlacedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(madrid));
-//        scoreController.calculateFinalScores();
-//        assertEquals(10 + 7 + 8, playerWithDestination.getScore());
-//    }
+    @Test
+    void testCalculateFinalScoreWithAStation() {
+        player.defineStartingStationsNumber(3);
+        when(gameModel.getPlayers()).thenReturn(List.of(player));
+        scoreController.setFinalScores();
+        // +10 for longest route
+        assertEquals( 12 + 10, player.getScore());
+    }
 
     @Test
     void testCalculateFinalScoreWithLongestRoute(){
