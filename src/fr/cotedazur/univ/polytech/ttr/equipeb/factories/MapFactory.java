@@ -43,7 +43,7 @@ public class MapFactory {
      * @param filePath the path to the JSON file
      * @return the list of routes
      */
-    protected List<Route> getMapFromJson(String filePath) throws JsonParseException {
+    public List<Route> getMapFromJson(String filePath) throws JsonParseException {
         return routeParser.parseRoutes(filePath);
     }
 

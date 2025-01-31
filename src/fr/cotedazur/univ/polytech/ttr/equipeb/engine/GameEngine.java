@@ -144,7 +144,6 @@ public class GameEngine {
 
     private TypeActionHandled handlePlayerAction(Player player) {
         Action action = player.askAction();
-
         if(action == Action.STOP) return TypeActionHandled.STOP;
 
         else if(action == null || !gameControllers.containsKey(action)) {

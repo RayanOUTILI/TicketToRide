@@ -32,7 +32,7 @@ public abstract class BaseParser<T> {
      * @param typeReference The type reference for JSON deserialization.
      * @return The parsed object.
      */
-    protected T parseJsonFile(String filePath, TypeReference<T> typeReference) throws JsonParseException {
+    public T parseJsonFile(String filePath, TypeReference<T> typeReference) throws JsonParseException {
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
             if (inputStream == null) {

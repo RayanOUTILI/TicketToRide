@@ -20,33 +20,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class EasyBotEngine implements IPlayerActionsControllable {
-    private final IPlayerGameModel gameModel;
-    private final IPlayerModel playerModel;
-    private final IPlayerEngineViewable view;
-
-    private final RandomGenerator random;
+public class EasyBotEngine extends BotEngine {
 
     public EasyBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view) {
-        this(playerModel, gameModel, view, new RandomGenerator());
+        super(playerModel, gameModel, view, new RandomGenerator());
     }
 
     protected EasyBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view, RandomGenerator random) {
-        this.gameModel = gameModel;
-        this.playerModel = playerModel;
-        this.view = view;
-        this.random = random;
+        super(playerModel, gameModel, view, random);
     }
 
 
+    /**
+     * Determines the next action for the bot to take.
+     *
+     * @return the next action for the bot to take
+     */
     @Override
     public Action askAction() {
         int action = random.nextInt(2);
 
-        // The bot will always try to pick destination cards if it can and has less than 3 cards
         if (action == 0 && !gameModel.isDestinationCardDeckEmpty() && playerModel.getDestinationCards().size() < 3) {
             return Action.PICK_DESTINATION_CARDS;
-        // Else The bot will try to claim a route if it can
         } else if (canTakeARoute()) {
             return Action.CLAIM_ROUTE;
         // Else The bot will try to place a station if it can
@@ -99,20 +94,6 @@ public class EasyBotEngine implements IPlayerActionsControllable {
         }
 
         return cardsToKeep;
-    }
-
-    @Override
-    public void actionRefused(Action action, ReasonActionRefused reason) {
-        if(view != null) {
-            view.displayActionRefused(action, reason);
-        }
-    }
-
-    @Override
-    public void actionCompleted(Action action) {
-        if(view != null) {
-            view.displayActionCompleted(action);
-        }
     }
 
     @Override

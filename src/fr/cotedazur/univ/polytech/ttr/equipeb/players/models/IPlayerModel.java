@@ -20,4 +20,7 @@ public interface IPlayerModel {
     List<WagonCard> getWagonCardsOfColor(Color color, int numberOfCards);
 
     int getNumberOfWagons();
+    PlayerIdentification getPlayerIdentification();
+
+    int getNumberOfWagonCardsIncludingAnyColor(Color color);
 }

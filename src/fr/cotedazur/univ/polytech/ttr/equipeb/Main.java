@@ -13,6 +13,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
 
 import java.util.List;
@@ -27,13 +28,13 @@ public class Main {
             PlayerFactory playerFactory = new PlayerFactory();
 
             List<PlayerModel> playerModels = List.of(
-                    new PlayerModel(PlayerIdentification.BLUE, new PlayerConsoleView(PlayerIdentification.BLUE)),
-                    new PlayerModel(PlayerIdentification.RED, new PlayerConsoleView(PlayerIdentification.RED)),
-                    new PlayerModel(PlayerIdentification.GREEN, new PlayerConsoleView(PlayerIdentification.GREEN))
+                    new PlayerModel(PlayerIdentification.BLUE, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.BLUE)),
+                    new PlayerModel(PlayerIdentification.RED, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
+                    new PlayerModel(PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.GREEN))
             );
 
             GameModel gameModel = new GameModel(playerModels, wagonCardDeck, destinationCardDeck, routes);
-            List<Player> players = playerFactory.createThreeEasyBots(playerModels, gameModel);
+            List<Player> players = playerFactory.createTwoEasyOneMediumBots(playerModels, gameModel);
 
             GameEngine gameEngine = new GameEngine(gameModel, players);
             gameEngine.initGame();
