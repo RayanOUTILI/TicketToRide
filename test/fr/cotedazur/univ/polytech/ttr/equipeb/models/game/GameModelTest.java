@@ -211,18 +211,18 @@ class GameModelTest {
         assertTrue(cities.contains(city2));
     }
 
-    /*@Test
+    @Test
     void testGetCity() {
         City city = mock(City.class);
         when(city.getId()).thenReturn(1);
         Route routeMocked = mock(Route.class);
         when(routeMocked.getFirstCity()).thenReturn(city);
-        routes = List.of(route);
+        when(routeMocked.getSecondCity()).thenReturn(mock(City.class));
+        routes = List.of(routeMocked);
         gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
-
         City result = gameModel.getCity(1);
         assertEquals(city, result);
-    }*/
+    }
 
     @Test
     void testGetCitiesClaimedByPlayer() {

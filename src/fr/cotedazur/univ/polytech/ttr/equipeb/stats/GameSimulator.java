@@ -78,7 +78,7 @@ public class GameSimulator {
         for (int i = 0; i < numSimulations; i++) {
             logger.info(String.format("Simulating game %d of %d", (i + 1), numSimulations));
 
-            simulateGame(createEasyMediumConfig1()); 
+            simulateGame(createEasyMediumConfig1());
         }
     }
 
@@ -114,17 +114,15 @@ public class GameSimulator {
                 new PlayerModel(PlayerIdentification.RED, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
                 new PlayerModel(PlayerIdentification.GREEN, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.GREEN))
         );
-        // Créer le GameModel avec la liste de PlayerModels
         gameModel = createNewGameModel(playerModels);
 
-        // Créer les joueurs à partir du GameModel
         return playerFactory.createTwoMediumOneEasyBots(playerModels, gameModel);
     }
 
     public static void main(String[] args) {
         try {
             GameSimulator simulator = new GameSimulator();
-            simulator.simulateMultipleGames(1000);
+            simulator.simulateMultipleGames(20000);
         } catch (JsonParseException e) {
             e.printStackTrace();
         }
