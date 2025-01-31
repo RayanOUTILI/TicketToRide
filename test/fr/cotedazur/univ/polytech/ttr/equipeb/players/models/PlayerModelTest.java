@@ -89,6 +89,28 @@ class PlayerModelTest {
 
         cards = playerModel.getWagonCardsIncludingAnyColor(Color.BLUE, 4, 2);
         assertEquals(0, cards.size());
+    }
 
+    @Test
+    void testGetWagonCardsIncludingAnyColorOnlyByNumber() {
+        List<WagonCard> wagonCards = getWagonCards(List.of(Color.BLUE, Color.ANY, Color.ANY, Color.ANY, Color.BLUE, Color.RED, Color.ORANGE, Color.YELLOW));
+        playerModel.receivedWagonCards(wagonCards);
+
+        List<WagonCard> cards;
+
+        cards = playerModel.getWagonCardsIncludingAnyColor(2);
+        assertEquals(2, cards.size());
+        assertEquals(2, cards.stream().filter(card -> card.getColor() == Color.BLUE).count());
+
+        cards = playerModel.getWagonCardsIncludingAnyColor(4);
+        assertEquals(4, cards.size());
+        assertEquals(2, cards.stream().filter(card -> card.getColor() == Color.BLUE).count());
+        assertEquals(2, cards.stream().filter(card -> card.getColor() == Color.ANY).count());
+
+
+        cards = playerModel.getWagonCardsIncludingAnyColor(6);
+        assertEquals(5, cards.size());
+        assertEquals(2, cards.stream().filter(card -> card.getColor() == Color.BLUE).count());
+        assertEquals(3, cards.stream().filter(card -> card.getColor() == Color.ANY).count());
     }
 }
