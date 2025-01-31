@@ -1,9 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
@@ -24,8 +21,11 @@ import java.util.Optional;
  * This class defines the MediumBotEngine, an bot for the game "Ticket to Ride" that uses a more strategic approach
  * compared to the EasyBot. It considers available routes, destination cards, and stations to make decisions.
  */
-public class MediumBotEngine extends BotEngine {
-
+public class MediumBotEngine implements IPlayerActionsControllable {
+    private final IPlayerGameModel gameModel;
+    private final IPlayerModel playerModel;
+    private final Optional<IPlayerEngineViewable> view;
+    private final RandomGenerator random;
     /**
      * Constructs a MediumBotEngine with a specified player model, game model, and view.
      *
@@ -34,19 +34,10 @@ public class MediumBotEngine extends BotEngine {
      * @param view the view interface used for displaying game actions.
      */
     public MediumBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view) {
-        super(playerModel, gameModel, view, new RandomGenerator());
-    }
-
-    /**
-     * Constructs a MediumBotEngine with a specified player model, game model, view, and random generator.
-     *
-     * @param playerModel the model of the player this bot controls.
-     * @param gameModel the model of the game.
-     * @param view the view interface used for displaying game actions.
-     * @param random the random number generator.
-     */
-    protected MediumBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view, RandomGenerator random) {
-        super(playerModel, gameModel, view, random);
+        this.gameModel = gameModel;
+        this.playerModel = playerModel;
+        this.view = view != null ? Optional.of(view) : Optional.empty();
+        this.random = new RandomGenerator();
     }
 
     /**
@@ -109,6 +100,16 @@ public class MediumBotEngine extends BotEngine {
     @Override
     public List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards) {
         return prioritizeDestinationCards(cards);
+    }
+
+    @Override
+    public void actionRefused(Action action, ReasonActionRefused reason) {
+        view.ifPresent(iPlayerEngineViewable -> iPlayerEngineViewable.displayActionRefused(action, reason));
+    }
+
+    @Override
+    public void actionCompleted(Action action) {
+        view.ifPresent(iPlayerEngineViewable -> iPlayerEngineViewable.displayActionCompleted(action));
     }
 
     @Override

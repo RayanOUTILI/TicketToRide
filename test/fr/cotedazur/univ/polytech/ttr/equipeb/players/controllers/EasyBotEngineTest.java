@@ -15,6 +15,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,13 +31,17 @@ class EasyBotEngineTest {
     private RandomGenerator random;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IllegalAccessException, NoSuchFieldException {
         playerModel = mock(IPlayerModel.class);
         gameModel = mock(IPlayerGameModel.class);
         random = mock(RandomGenerator.class);
         view = mock(IPlayerEngineViewable.class);
 
-        easyBotEngine = new EasyBotEngine(playerModel, gameModel, view, random);
+        easyBotEngine = new EasyBotEngine(playerModel, gameModel, view);
+
+        Field randomField = EasyBotEngine.class.getDeclaredField("random");
+        randomField.setAccessible(true);
+        randomField.set(easyBotEngine, random);
     }
 
     @Test
