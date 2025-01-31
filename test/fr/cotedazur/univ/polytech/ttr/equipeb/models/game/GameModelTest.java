@@ -5,7 +5,10 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -162,5 +165,163 @@ class GameModelTest {
     void testFillWagonCardDeck() {
         when(wagonCardDeck.fillDeck()).thenReturn(true);
         assertTrue(gameModel.fillWagonCardDeck());
+    }
+
+    @Test
+    void testGetAllRoutesClaimedByPlayer() {
+        PlayerIdentification player = PlayerIdentification.GREEN;
+        Route route1 = mock(Route.class);
+        Route route2 = mock(Route.class);
+        when(route1.isClaimed()).thenReturn(true);
+        when(route1.getClaimerPlayer()).thenReturn(player);
+        when(route2.isClaimed()).thenReturn(false);
+        routes = List.of(route1, route2);
+        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+
+        List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player);
+        assertEquals(1, claimedRoutes.size());
+        assertEquals(route1, claimedRoutes.get(0));
+    }
+
+    @Test
+    void testGetWinner() {
+        PlayerModel player1 = mock(PlayerModel.class);
+        PlayerModel player2 = mock(PlayerModel.class);
+        when(player1.getScore()).thenReturn(10);
+        when(player2.getScore()).thenReturn(20);
+        gameModel = new GameModel(List.of(player1, player2), wagonCardDeck, destinationCardDeck, routes);
+
+        PlayerModel winner = gameModel.getWinner();
+        assertEquals(player2, winner);
+    }
+
+    @Test
+    void testGetAllCities() {
+        City city1 = mock(City.class);
+        City city2 = mock(City.class);
+        Route route1 = mock(Route.class);
+        when(route1.getFirstCity()).thenReturn(city1);
+        when(route1.getSecondCity()).thenReturn(city2);
+        routes = List.of(route1);
+        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+
+        List<City> cities = gameModel.getAllCities();
+        assertEquals(2, cities.size());
+        assertTrue(cities.contains(city1));
+        assertTrue(cities.contains(city2));
+    }
+
+    @Test
+    void testGetCity() {
+        City city = mock(City.class);
+        when(city.getId()).thenReturn(1);
+        Route route = mock(Route.class);
+        when(route.getFirstCity()).thenReturn(city);
+        routes = List.of(route);
+        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+
+        City result = gameModel.getCity(1);
+        assertEquals(city, result);
+    }
+
+    @Test
+    void testGetCitiesClaimedByPlayer() {
+        PlayerIdentification player = PlayerIdentification.GREEN;
+        City city1 = mock(City.class);
+        City city2 = mock(City.class);
+        when(city1.getOwner()).thenReturn(player);
+        when(city2.getOwner()).thenReturn(null);
+        Route route1 = mock(Route.class);
+        when(route1.getFirstCity()).thenReturn(city1);
+        when(route1.getSecondCity()).thenReturn(city2);
+        routes = List.of(route1);
+        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+
+        List<City> cities = gameModel.getCitiesClaimedByPlayer(player);
+        assertEquals(1, cities.size());
+        assertEquals(city1, cities.get(0));
+    }
+
+    @Test
+    void testGetNonControllableAdjacentRoutes() {
+        City city = mock(City.class);
+        Route route1 = mock(Route.class);
+        Route route2 = mock(Route.class);
+        when(route1.getFirstCity()).thenReturn(city);
+        when(route1.getSecondCity()).thenReturn(mock(City.class));
+        when(route2.getFirstCity()).thenReturn(mock(City.class));
+        when(route2.getSecondCity()).thenReturn(city);
+        routes = List.of(route1, route2);
+        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+
+        List<RouteReadOnly> adjacentRoutes = gameModel.getNonControllableAdjacentRoutes(city);
+        assertEquals(2, adjacentRoutes.size());
+        assertTrue(adjacentRoutes.contains(route1));
+        assertTrue(adjacentRoutes.contains(route2));
+    }
+
+    @Test
+    void testGetAdjacentRoutes() {
+        City city = mock(City.class);
+        Route route1 = mock(Route.class);
+        Route route2 = mock(Route.class);
+        when(route1.getFirstCity()).thenReturn(city);
+        when(route1.getSecondCity()).thenReturn(mock(City.class));
+        when(route2.getFirstCity()).thenReturn(mock(City.class));
+        when(route2.getSecondCity()).thenReturn(city);
+        routes = List.of(route1, route2);
+        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+
+        List<Route> adjacentRoutes = gameModel.getAdjacentRoutes(city);
+        assertEquals(2, adjacentRoutes.size());
+        assertTrue(adjacentRoutes.contains(route1));
+        assertTrue(adjacentRoutes.contains(route2));
+    }
+
+    @Test
+    void testGetNonControllableAvailableRoutes() {
+        Route route1 = mock(Route.class);
+        Route route2 = mock(Route.class);
+        when(route1.isClaimed()).thenReturn(false);
+        when(route2.isClaimed()).thenReturn(true);
+        routes = List.of(route1, route2);
+        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+
+        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes();
+        assertEquals(1, availableRoutes.size());
+        assertTrue(availableRoutes.contains(route1));
+    }
+
+    @Test
+    void testGetNonControllableAvailableRoutesWithMaxLength() {
+        Route route1 = mock(Route.class);
+        Route route2 = mock(Route.class);
+        when(route1.isClaimed()).thenReturn(false);
+        when(route1.getLength()).thenReturn(3);
+        when(route2.isClaimed()).thenReturn(false);
+        when(route2.getLength()).thenReturn(5);
+        routes = List.of(route1, route2);
+        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+
+        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes(4);
+        assertEquals(1, availableRoutes.size());
+        assertTrue(availableRoutes.contains(route1));
+    }
+
+    @Test
+    void testGetNonControllableAvailableCities() {
+        City city1 = mock(City.class);
+        City city2 = mock(City.class);
+        Route route1 = mock(Route.class);
+        when(route1.isClaimed()).thenReturn(false);
+        when(route1.getFirstCity()).thenReturn(city1);
+        when(route1.getSecondCity()).thenReturn(city2);
+        routes = List.of(route1);
+        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+
+        List<CityReadOnly> availableCities = gameModel.getNonControllableAvailableCities();
+        assertEquals(2, availableCities.size());
+        assertTrue(availableCities.contains(city1));
+        assertTrue(availableCities.contains(city2));
     }
 }
