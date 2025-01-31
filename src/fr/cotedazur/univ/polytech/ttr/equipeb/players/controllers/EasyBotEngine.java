@@ -44,7 +44,8 @@ public class EasyBotEngine extends BotEngine {
             return Action.PICK_DESTINATION_CARDS;
         } else if (canTakeARoute()) {
             return Action.CLAIM_ROUTE;
-        } else if (playerModel.getStationsLeft() > 0 && playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft() - 1)).size() == 3 - (playerModel.getStationsLeft() - 1)) {
+        // Else The bot will try to place a station if it can
+        } else if (playerModel.getStationsLeft() > 0 && playerModel.getWagonCardsIncludingAnyColor(3- (playerModel.getStationsLeft()-1)).size() == 3- (playerModel.getStationsLeft()-1)) {
             return Action.PLACE_STATION;
         // Else, the bot will pick a wagon card
         } else if(!gameModel.isWagonCardDeckEmpty()) {
@@ -75,7 +76,6 @@ public class EasyBotEngine extends BotEngine {
         int cityIndex = random.nextInt(availableCities.size());
         CityReadOnly city = availableCities.get(cityIndex);
 
-        // TODO: find a proper way to get the right amount of cards
         return new ClaimStation(city, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft()-1)));
     }
 

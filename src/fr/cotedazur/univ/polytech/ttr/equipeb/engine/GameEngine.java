@@ -43,20 +43,6 @@ public class GameEngine {
         this.lastTurnPlayer = Optional.empty();
     }
 
-    protected GameEngine(GameModel gameModel, List<Player> players, IGameViewable gameView, Map<Action, Controller> controllers, ScoreController scoreController) {
-        this.gameModel = gameModel;
-        this.players = players;
-        this.gameView = gameView;
-        this.controllers = controllers;
-
-        this.playerIterator = players.iterator();
-        this.currentPlayer = playerIterator.next();
-        this.scoreController = scoreController;
-
-        this.lastTurnPlayer = Optional.empty();
-
-    }
-
     public boolean initGame() {
         boolean success;
 
@@ -92,11 +78,11 @@ public class GameEngine {
 
         boolean forcedEndGame = false;
 
-        while((lastTurnPlayer.isEmpty() || currentPlayer.getIdentification() != lastTurnPlayer.get()) && !forcedEndGame) {
+        while(!isWasTheLastTurn() && !forcedEndGame) {
             boolean success = false;
             int failedAction;
 
-            if(lastTurn(currentPlayer)) lastTurnPlayer = Optional.of(currentPlayer.getIdentification());
+            if(isHisLastTurn(currentPlayer)) lastTurnPlayer = Optional.of(currentPlayer.getIdentification());
 
             for(failedAction = 0; !success && failedAction < 3; failedAction++) {
                 success = handlePlayerAction(currentPlayer);
@@ -118,15 +104,20 @@ public class GameEngine {
         }
         scoreController.calculateFinalScores();
 
-        gameView.displayEndGameReason(lastTurnPlayer.get(), currentPlayer.getNumberOfWagons());
+        lastTurnPlayer.ifPresent(playerIdentification -> gameView.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons()));
 
         PlayerModel winner = gameModel.getWinner();
+
         if(winner != null) gameView.displayWinner(winner.getIdentification(), winner.getScore());
 
         return nbTurn;
     }
 
-    protected boolean handlePlayerAction(Player player) {
+    private boolean isWasTheLastTurn() {
+        return lastTurnPlayer.isPresent() && currentPlayer.getIdentification() == lastTurnPlayer.get();
+    }
+
+    private boolean handlePlayerAction(Player player) {
         Action action = player.askAction();
         if(action == null || !controllers.containsKey(action)) {
             player.actionRefused(action, ReasonActionRefused.ACTION_INVALID);
@@ -153,7 +144,7 @@ public class GameEngine {
         return true;
     }
 
-    private boolean lastTurn(Player player) {
+    private boolean isHisLastTurn(Player player) {
         return player.getNumberOfWagons() <= 2;
     }
 
@@ -162,9 +153,9 @@ public class GameEngine {
 
         boolean canClaimRouteOrStation = false;
 
-        Iterator<Player> playerIterator = players.iterator();
-        while(playerIterator.hasNext() && !canClaimRouteOrStation) {
-            Player player = playerIterator.next();
+        Iterator<Player> playersIterator = players.iterator();
+        while(playersIterator.hasNext() && !canClaimRouteOrStation) {
+            Player player = playersIterator.next();
             canClaimRouteOrStation = canClaimRoute(player) || canClaimStation(player);
         }
 

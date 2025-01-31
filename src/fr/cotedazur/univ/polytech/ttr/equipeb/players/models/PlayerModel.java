@@ -158,17 +158,9 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         return cards;
     }
 
-    //TODO: There is too much logic in this method, it should be refactored
     @Override
     public List<WagonCard> getWagonCardsIncludingAnyColor(int numberOfCards) {
-        Map<Color, Long> colorCount = wagonCards.stream()
-                .filter(card -> !card.getColor().equals(Color.ANY))
-                .collect(Collectors.groupingBy(WagonCard::getColor, Collectors.counting()));
-
-        Color mostFrequentColor = colorCount.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse(null);
+        Color mostFrequentColor = getMostFrequentColor();
 
         List<WagonCard> selectedCards = new ArrayList<>();
         if (mostFrequentColor != null) {
@@ -181,7 +173,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         if (selectedCards.size() < numberOfCards) {
             List<WagonCard> anyCards = wagonCards.stream()
                     .filter(card -> card.getColor().equals(Color.ANY))
-                    .limit(numberOfCards - selectedCards.size())
+                    .limit((long) numberOfCards - selectedCards.size())
                     .toList();
             selectedCards.addAll(anyCards);
         }
