@@ -92,11 +92,11 @@ public class GameEngine {
 
         boolean forcedEndGame = false;
 
-        while((lastTurnPlayer.isEmpty() || currentPlayer.getIdentification() != lastTurnPlayer.get()) && !forcedEndGame) {
+        while(!isWasTheLastTurn() && !forcedEndGame) {
             boolean success = false;
             int failedAction;
 
-            if(lastTurn(currentPlayer)) lastTurnPlayer = Optional.of(currentPlayer.getIdentification());
+            if(isHisLastTurn(currentPlayer)) lastTurnPlayer = Optional.of(currentPlayer.getIdentification());
 
             for(failedAction = 0; !success && failedAction < 3; failedAction++) {
                 success = handlePlayerAction(currentPlayer);
@@ -118,15 +118,20 @@ public class GameEngine {
         }
         scoreController.calculateFinalScores();
 
-        gameView.displayEndGameReason(lastTurnPlayer.get(), currentPlayer.getNumberOfWagons());
+        lastTurnPlayer.ifPresent(playerIdentification -> gameView.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons()));
 
         PlayerModel winner = gameModel.getWinner();
+
         if(winner != null) gameView.displayWinner(winner.getIdentification(), winner.getScore());
 
         return nbTurn;
     }
 
-    protected boolean handlePlayerAction(Player player) {
+    private boolean isWasTheLastTurn() {
+        return lastTurnPlayer.isPresent() && currentPlayer.getIdentification() == lastTurnPlayer.get();
+    }
+
+    private boolean handlePlayerAction(Player player) {
         Action action = player.askAction();
 
         if(action == null || !controllers.containsKey(action)) {
@@ -154,7 +159,7 @@ public class GameEngine {
         return true;
     }
 
-    private boolean lastTurn(Player player) {
+    private boolean isHisLastTurn(Player player) {
         return player.getNumberOfWagons() <= 2;
     }
 
@@ -163,9 +168,9 @@ public class GameEngine {
 
         boolean canClaimRouteOrStation = false;
 
-        Iterator<Player> playerIterator = players.iterator();
-        while(playerIterator.hasNext() && !canClaimRouteOrStation) {
-            Player player = playerIterator.next();
+        Iterator<Player> playersIterator = players.iterator();
+        while(playersIterator.hasNext() && !canClaimRouteOrStation) {
+            Player player = playersIterator.next();
             canClaimRouteOrStation = canClaimRoute(player) || canClaimStation(player);
         }
 
