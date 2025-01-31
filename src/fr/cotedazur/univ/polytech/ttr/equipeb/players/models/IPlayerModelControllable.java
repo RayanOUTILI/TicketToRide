@@ -39,4 +39,6 @@ public interface IPlayerModelControllable {
     int getNumberOfWagons();
 
     void removeWagons(int numberOfWagons);
+    void addChosenRouteStation(RouteReadOnly route);
+    List<RouteReadOnly> getSelectedStationRoutes();
 }

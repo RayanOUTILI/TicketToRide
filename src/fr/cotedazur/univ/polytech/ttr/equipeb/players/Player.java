@@ -77,6 +77,11 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
+    public RouteReadOnly askChooseRouteStation(CityReadOnly city) {
+        return actionsController.askChooseRouteStation(city);
+    }
+
+    @Override
     public PlayerIdentification getIdentification() {
         return modelController.getIdentification();
     }
@@ -124,6 +129,16 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     @Override
     public void removeWagons(int numberOfWagons) {
         modelController.removeWagons(numberOfWagons);
+    }
+
+    @Override
+    public void addChosenRouteStation(RouteReadOnly route) {
+        modelController.addChosenRouteStation(route);
+    }
+
+    @Override
+    public List<RouteReadOnly> getSelectedStationRoutes() {
+        return modelController.getSelectedStationRoutes();
     }
 
     @Override
