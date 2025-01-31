@@ -16,11 +16,15 @@ import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.getG
 
 public class ScoreController {
     IScoreControllerGameModel gameModel;
-    private final IScoreView scoreView;
+    private final Optional<IScoreView> scoreView;
 
     public ScoreController(IScoreControllerGameModel gameModel, IScoreView scoreView) {
         this.gameModel = gameModel;
-        this.scoreView = scoreView;
+        this.scoreView = scoreView != null ? Optional.of(scoreView) : Optional.empty();
+    }
+
+    public ScoreController(IScoreControllerGameModel gameModel) {
+        this(gameModel, null);
     }
 
     public int calculatePlacedRoutesScore(IPlayerModelControllable player) {
@@ -59,10 +63,10 @@ public class ScoreController {
                 .mapToInt(card -> {
                     CityPair pair = new CityPair(card.getStartCity(), card.getEndCity());
                     if (allCityPairs.contains(pair)) {
-                        scoreView.displayCompletedDestination(player.getIdentification(), card);
+                        scoreView.ifPresent(v -> v.displayCompletedDestination(player.getIdentification(), card));
                         return card.getPoints();
                     } else {
-                        scoreView.displayFailedDestination(player.getIdentification(), card);
+                        scoreView.ifPresent(v -> v.displayFailedDestination(player.getIdentification(), card));
                         return -card.getPoints();
                     }
                 })
@@ -71,7 +75,7 @@ public class ScoreController {
 
     private int calculateRemainingStationsScore(IPlayerModelControllable player) {
         int score = player.getScore() + player.getStationsLeft() * 4;
-        scoreView.displayRemainingStationsScore(player.getIdentification(), score);
+        scoreView.ifPresent(v -> v.displayRemainingStationsScore(player.getIdentification(), score));
         return score;
     }
 
@@ -97,7 +101,7 @@ public class ScoreController {
                 .toList();
 
         playersWithLongestPath.forEach(
-                player -> scoreView.displayPlayerHasLongestPath(player.getIdentification(), maxLongestPath)
+                player -> scoreView.ifPresent(v -> v.displayPlayerHasLongestPath(player.getIdentification(), maxLongestPath))
         );
 
         return playersWithLongestPath;

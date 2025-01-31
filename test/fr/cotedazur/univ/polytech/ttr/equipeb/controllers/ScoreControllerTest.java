@@ -34,7 +34,7 @@ class ScoreControllerTest {
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
         gameModel = mock(IScoreControllerGameModel.class);
-        scoreController = new ScoreController(gameModel, new ScoreConsoleView());
+        scoreController = new ScoreController(gameModel);
         player = new PlayerModel(PlayerIdentification.BLACK, null);
 
         routeLength1 = new Route(new City("Paris"), new City("Berlin"), 1, RouteType.TRAIN, Color.BLACK, 0);
