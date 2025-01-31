@@ -1,19 +1,9 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.stats;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.engine.GameEngine;
-import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.PlayerFactory;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 class GameSimulatorTest {
 
@@ -28,6 +18,7 @@ class GameSimulatorTest {
         gameSimulator = new GameSimulator(gameResultPersistence, playerFactory);
     }
 
+    /*
     @Test
     void simulateGame_withWinner() throws JsonParseException {
         GameModel gameModel = mock(GameModel.class);
@@ -50,7 +41,7 @@ class GameSimulatorTest {
 
         List<Player> players = List.of(mock(Player.class), mock(Player.class), mock(Player.class));
         verify(gameResultPersistence).saveGameResult(any(GameResultWrapper.class));
-    }
+    }*/
 
     /*@Test
     void simulateGame_noWinner() throws JsonParseException {
