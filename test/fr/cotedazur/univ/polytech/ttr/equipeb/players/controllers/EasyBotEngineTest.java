@@ -1,7 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
-import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ReasonActionRefused;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;

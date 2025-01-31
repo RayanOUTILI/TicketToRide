@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class RouteFactoryTest {
+class RouteFactoryTest {
 
     private MapFactory mapFactory;
     private RouteParser routeParserMock;
@@ -33,7 +33,7 @@ public class RouteFactoryTest {
     @Test
     void testParseRoutesFromJson() {
         try {
-            MapFactory mapFactory = new MapFactory();
+            mapFactory = new MapFactory();
             List<Route> routes = mapFactory.getMapFromJson();
 
             assertNotNull(routes, "The list of routes should not be null.");

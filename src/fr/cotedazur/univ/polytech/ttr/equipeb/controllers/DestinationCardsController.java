@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IDestinationCardsControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
@@ -18,16 +19,12 @@ public class DestinationCardsController extends Controller {
 
     @Override
     public boolean initGame() {
-        return false;
+        return gameModel.shuffleDestinationCardDeck();
     }
 
     @Override
     public boolean initPlayer(Player player) {
         if(gameModel.isDestinationCardDeckEmpty()) return false;
-
-        boolean shuffled = gameModel.shuffleDestinationCardDeck();
-
-        if (!shuffled) return false;
 
         List<ShortDestinationCard> cards = gameModel.drawDestinationCards(STARTING_DESTINATION_CARDS);
 

@@ -222,7 +222,7 @@ public class GameModel implements
         return routes.stream()
                 .flatMap(r -> Stream.of(r.getFirstCity(), r.getSecondCity()))
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
