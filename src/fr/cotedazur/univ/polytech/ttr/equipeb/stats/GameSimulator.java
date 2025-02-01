@@ -35,16 +35,6 @@ public class GameSimulator {
         this.logger.setLevel(java.util.logging.Level.INFO);
     }
 
-    public GameSimulator(GameResultDataWriter gameResultWrapper, PlayerFactory playerFactory) {
-        this.gameResultPersistence = gameResultWrapper;
-        this.playerFactory = playerFactory;
-    }
-
-    public GameSimulator(PlayerFactory mockPlayerFactory, GameResultDataWriter mockGameResultDataWriter) {
-        this.gameResultPersistence = mockGameResultDataWriter;
-        this.playerFactory = mockPlayerFactory;
-    }
-
     /**
      * Initialize a new game model with the given players.
      */
@@ -128,12 +118,8 @@ public class GameSimulator {
         );
     }
 
-    public static void main(String[] args) {
-        try {
-            GameSimulator simulator = new GameSimulator();
-            simulator.simulateMultipleGames(20000);
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args) throws JsonParseException {
+        GameSimulator simulator = new GameSimulator();
+        simulator.simulateMultipleGames(20000);
     }
 }
