@@ -7,9 +7,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentificatio
  * Represents a route between two cities on the map
  */
 public class Route implements RouteReadOnly {
-    private static int idCounter = 0;
-
-    private final int id;
+    private int id;
 
     private final City firstCity;
 
@@ -26,7 +24,6 @@ public class Route implements RouteReadOnly {
     private final int nbLocomotives;
 
     public Route(City firstCity, City secondCity, int length, RouteType type, Color color, int nbLocomotives) {
-        id = idCounter++;
         this.firstCity = firstCity;
         this.secondCity = secondCity;
         this.length = length;
@@ -34,6 +31,10 @@ public class Route implements RouteReadOnly {
         this.color = color;
         claimerPlayer = null;
         this.nbLocomotives = nbLocomotives;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

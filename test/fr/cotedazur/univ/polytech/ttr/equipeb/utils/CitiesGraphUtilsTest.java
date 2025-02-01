@@ -20,7 +20,7 @@ class CitiesGraphUtilsTest {
     void testLengthBetweenAllCityInGraphBasic() {
         City nice = new City("Nice");
         City marseille = new City("Marseille");
-        City paris = new City("Paris");;
+        City paris = new City("Paris");
 
         Map<City, Map<City, Integer>> graph = new HashMap<>();
 
@@ -33,9 +33,9 @@ class CitiesGraphUtilsTest {
         assertTrue(cityPairs.contains(new CityPair(marseille, paris)));
         assertTrue(cityPairs.contains(new CityPair(nice, paris)));
 
-        assertTrue(cityPairs.stream().filter(pair -> pair.equals(new CityPair(nice, marseille))).findFirst().get().getMaxLength() == 5);
-        assertTrue(cityPairs.stream().filter(pair -> pair.equals(new CityPair(marseille, paris))).findFirst().get().getMaxLength() == 5);
-        assertTrue(cityPairs.stream().filter(pair -> pair.equals(new CityPair(nice, paris))).findFirst().get().getMaxLength() == 10);
+        assertEquals(5, cityPairs.stream().filter(pair -> pair.equals(new CityPair(nice, marseille))).findFirst().get().getMaxLength());
+        assertEquals(5, cityPairs.stream().filter(pair -> pair.equals(new CityPair(marseille, paris))).findFirst().get().getMaxLength());
+        assertEquals(10, cityPairs.stream().filter(pair -> pair.equals(new CityPair(nice, paris))).findFirst().get().getMaxLength());
     }
 
     @Test

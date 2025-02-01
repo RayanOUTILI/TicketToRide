@@ -20,16 +20,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class EasyBotEngine extends BotEngine {
+public class EasyBotEngine implements IPlayerActionsControllable {
+    private final IPlayerGameModel gameModel;
+    private final IPlayerModel playerModel;
+    private final Optional<IPlayerEngineViewable> view;
+
+    private final RandomGenerator random;
 
     public EasyBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view) {
-        super(playerModel, gameModel, view, new RandomGenerator());
+        this.gameModel = gameModel;
+        this.playerModel = playerModel;
+        this.view = view != null ? Optional.of(view) : Optional.empty();
+        this.random = new RandomGenerator();
     }
 
-    protected EasyBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view, RandomGenerator random) {
-        super(playerModel, gameModel, view, random);
+    public EasyBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel) {
+        this(playerModel, gameModel, null);
     }
-
 
     /**
      * Determines the next action for the bot to take.
@@ -94,6 +101,16 @@ public class EasyBotEngine extends BotEngine {
         }
 
         return cardsToKeep;
+    }
+
+    @Override
+    public void actionRefused(Action action, ReasonActionRefused reason) {
+        view.ifPresent(v -> v.displayActionRefused(action, reason));
+    }
+
+    @Override
+    public void actionCompleted(Action action) {
+        view.ifPresent(v -> v.displayActionCompleted(action));
     }
 
     @Override

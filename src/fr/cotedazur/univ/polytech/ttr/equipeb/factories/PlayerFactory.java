@@ -21,6 +21,14 @@ public class PlayerFactory {
         return new Player(new EasyBotEngine(playerModel, gameModel, new PlayerConsoleView(playerModel.getIdentification())), playerModel);
     }
 
+    public Player createEasyBotWithoutView(PlayerModel playerModel, GameModel gameModel) {
+        return new Player(new EasyBotEngine(playerModel, gameModel), playerModel);
+    }
+
+    public List<Player> createThreeEasyBotsWithoutViews(List<PlayerModel> playerModels, GameModel gameModel) {
+        return playerModels.stream().map(playerModel -> createEasyBotWithoutView(playerModel, gameModel)).toList();
+    }
+
     /**
      * Crée trois bots (joueurs) à partir des modèles de joueurs fournis.
      * @param playerModels La liste des modèles de joueurs.

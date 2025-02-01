@@ -1,31 +1,22 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.engine;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.Controller;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ScoreController;
-import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
-import fr.cotedazur.univ.polytech.ttr.equipeb.factories.DestinationCardsFactory;
-import fr.cotedazur.univ.polytech.ttr.equipeb.factories.MapFactory;
-import fr.cotedazur.univ.polytech.ttr.equipeb.factories.PlayerFactory;
-import fr.cotedazur.univ.polytech.ttr.equipeb.factories.WagonCardsFactory;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
-import fr.cotedazur.univ.polytech.ttr.equipeb.views.ScoreConsoleView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -84,44 +75,69 @@ class GameEngineTest {
     }
 
     @Test
-    void testStartGame() throws JsonParseException, NoSuchFieldException, IllegalAccessException {
-        List<Route> routes = (new MapFactory()).getMapFromJson();
-        WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
-        DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getShortDestinationCards());
+    void testStop() {
+        when(controller.initGame()).thenReturn(true);
+        when(controller.initPlayer(player1)).thenReturn(true);
+        when(controller.initPlayer(player2)).thenReturn(true);
 
-        PlayerFactory playerFactory = new PlayerFactory();
-
-        Map<PlayerIdentification, IPlayerViewable> playersView = Map.of(
-                PlayerIdentification.BLUE, mock(PlayerConsoleView.class),
-                PlayerIdentification.RED, mock(PlayerConsoleView.class),
-                PlayerIdentification.GREEN, mock(PlayerConsoleView.class)
-        );
-
-        List<PlayerModel> playerModels = List.of(
-                new PlayerModel(PlayerIdentification.BLUE, playersView.get(PlayerIdentification.BLUE)),
-                new PlayerModel(PlayerIdentification.RED, playersView.get(PlayerIdentification.RED)),
-                new PlayerModel(PlayerIdentification.GREEN, playersView.get(PlayerIdentification.GREEN))
-        );
-
-        GameModel gameModel = new GameModel(playerModels, wagonCardDeck, destinationCardDeck, routes);
-        List<Player> players = playerFactory.createThreeEasyBots(playerModels, gameModel);
-        ScoreController scoreController = new ScoreController(gameModel, new ScoreConsoleView());
-
-        this.gameEngine = new GameEngine(gameModel, players);
-
-        Field gameViewField = GameEngine.class.getDeclaredField("gameView");
-        gameViewField.setAccessible(true);
-        gameViewField.set(gameEngine, this.gameView);
-
-        Field scoreControllerField = GameEngine.class.getDeclaredField("scoreController");
-        scoreControllerField.setAccessible(true);
-        scoreControllerField.set(gameEngine, scoreController);
+        when(player1.getIdentification()).thenReturn(PlayerIdentification.BLUE);
+        when(player2.getIdentification()).thenReturn(PlayerIdentification.RED);
 
         assertTrue(gameEngine.initGame());
         assertTrue(gameEngine.initPlayers());
+
+        when(player1.askAction()).thenReturn(Action.STOP);
+        when(player2.askAction()).thenReturn(Action.STOP);
+
         int nbTurn = gameEngine.startGame();
-        assertTrue(nbTurn >= 0);
+        assertEquals(1, nbTurn);
+        verify(scoreController, times(1)).calculatePlacedRoutesScore(player2);
+        verify(scoreController, times(0)).calculatePlacedRoutesScore(player1);
     }
 
+    @Test
+    void testStop2Turn() {
+        when(controller.initGame()).thenReturn(true);
+        when(controller.initPlayer(player1)).thenReturn(true);
+        when(controller.initPlayer(player2)).thenReturn(true);
 
+        when(player1.getIdentification()).thenReturn(PlayerIdentification.BLUE);
+        when(player2.getIdentification()).thenReturn(PlayerIdentification.RED);
+
+        assertTrue(gameEngine.initGame());
+        assertTrue(gameEngine.initPlayers());
+
+        when(player1.askAction()).thenReturn(Action.STOP, Action.PICK_DESTINATION_CARDS, Action.STOP);
+        when(player2.askAction()).thenReturn(Action.PICK_WAGON_CARD, Action.STOP, Action.STOP);
+
+        int nbTurn = gameEngine.startGame();
+        assertEquals(2, nbTurn);
+
+        verify(player1, times(3)).askAction();
+        verify(player2, times(2)).askAction();
+    }
+
+    @Test
+    void testActionRefused() {
+        when(controller.initGame()).thenReturn(true);
+        when(controller.initPlayer(player1)).thenReturn(true);
+        when(controller.initPlayer(player2)).thenReturn(true);
+        when(controller.doAction(player1)).thenReturn(Optional.of(ReasonActionRefused.ACTION_INVALID));
+
+        when(player1.getIdentification()).thenReturn(PlayerIdentification.BLUE);
+        when(player2.getIdentification()).thenReturn(PlayerIdentification.RED);
+
+        assertTrue(gameEngine.initGame());
+        assertTrue(gameEngine.initPlayers());
+
+        when(player1.askAction()).thenReturn(Action.PICK_WAGON_CARD, Action.STOP, Action.STOP);
+        when(player2.askAction()).thenReturn(Action.PICK_WAGON_CARD, Action.PICK_WAGON_CARD, Action.STOP);
+
+        int nbTurn = gameEngine.startGame();
+        assertEquals(3, nbTurn);
+
+        verify(player1, times(4)).askAction();
+        verify(player2, times(3)).askAction();
+        verify(controller, times(2)).doAction(player2);
+    }
 }

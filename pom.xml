@@ -98,7 +98,31 @@
                 <configuration>
                     <mainClass>fr.cotedazur.univ.polytech.ttr.equipeb.Main</mainClass>
                 </configuration>
+                <executions>
+                    <!-- Exécution de GameStatistics -->
+                    <execution>
+                        <id>gameStatistics</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>fr.cotedazur.univ.polytech.ttr.equipeb.stats.GameStatistics</mainClass>
+                        </configuration>
+                    </execution>
+
+                    <!-- Exécution de GameSimulator -->
+                    <execution>
+                        <id>gameSimulator</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>fr.cotedazur.univ.polytech.ttr.equipeb.stats.GameSimulator</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
+
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
