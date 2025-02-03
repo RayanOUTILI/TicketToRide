@@ -2,6 +2,8 @@ package fr.cotedazur.univ.polytech.ttr.equipeb;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import fr.cotedazur.univ.polytech.ttr.equipeb.engine.GameEngine;
 import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.DestinationCardsFactory;
@@ -20,26 +22,20 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-        int verboseLevel = 2;
+        CLIArgs cliArgs = new CLIArgs();
+        JCommander.newBuilder()
+                .addObject(cliArgs)
+                .build()
+                .parse(args);
 
-        //on lit le paramètre --verbose=X si présent
-        for (String arg : args) {
-            if (arg.startsWith("--verbose=")) {
-                try {
-                    verboseLevel = Integer.parseInt(arg.split("=")[1]);
-                } catch (NumberFormatException e) {
-                    logger.info("Niveau de verbosité invalide, utilisation du niveau par défaut (INFO)");
-                }
-            }
-        }
-
-        setLogLevel(verboseLevel);
+        setLogLevel(cliArgs.verbose);
 
         try {
             logger.debug("Démarrage de l'application...");
@@ -69,6 +65,17 @@ public class Main {
         } catch (JsonParseException e) {
             logger.error("Erreur lors de la lecture du JSON: {}", e.getMessage());
         }
+    }
+
+    /**
+     * Classe pour gérer les arguments en ligne de commande avec JCommander.
+     */
+    private static class CLIArgs {
+        @Parameter(names = "--verbose", description = "Niveau de verbosité : 1=ERROR/WARN, 2=INFO, 3=DEBUG", required = false)
+        private int verbose = 2;
+
+        @Parameter(description = "Main parameter")
+        private List<String> main = new ArrayList<>();
     }
 
     /**
