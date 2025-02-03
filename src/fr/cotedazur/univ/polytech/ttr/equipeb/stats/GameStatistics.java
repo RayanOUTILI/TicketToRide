@@ -3,6 +3,8 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.stats;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,8 +13,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -22,13 +22,9 @@ import java.util.stream.Collectors;
 public class GameStatistics {
 
     private static final String FILE_PATH = "resources/stats/gameResult.json";
-    private final Logger logger = Logger.getLogger(GameStatistics.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(GameStatistics.class);
 
     private ObjectMapper objectMapper = new ObjectMapper();
-
-    public GameStatistics() {
-        this.logger.setLevel(Level.ALL);
-    }
 
     /**
      * Reads and loads the game results from a JSON file.
@@ -38,6 +34,7 @@ public class GameStatistics {
      */
     public List<GameResultWrapper> readGameResults() throws IOException {
         File file = new File(FILE_PATH);
+        logger.info("Reading game results from file: {}", FILE_PATH);
         return objectMapper.readValue(file, new TypeReference<List<GameResultWrapper>>() {});
     }
 
@@ -47,11 +44,17 @@ public class GameStatistics {
      * @param gameResults the list of game results to analyze.
      */
     public void calculateWinRates(List<GameResultWrapper> gameResults) {
+        if (gameResults.isEmpty()) {
+            logger.warn("No game results found. Skipping win rate calculation.");
+            return;
+        }
+
         Map<PlayerType, Long> winCounts = gameResults.stream()
                 .filter(result -> result.getWinnerType() != null)
                 .collect(Collectors.groupingBy(GameResultWrapper::getWinnerType, Collectors.counting()));
 
         long totalGames = gameResults.size();
+        logger.info("Total games processed: {}", totalGames);
 
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.FRANCE);
         DecimalFormat decimalFormat = new DecimalFormat("#.00", symbols);
@@ -62,7 +65,7 @@ public class GameStatistics {
                         (double) entry1.getValue() / totalGames * 100))
                 .forEach(entry -> {
                     double winRate = (double) entry.getValue() / totalGames * 100;
-                    System.out.println(entry.getKey() + " win rate: " + decimalFormat.format(winRate) + "%");
+                    logger.info("{} win rate: {}%", entry.getKey(), decimalFormat.format(winRate));
                 });
     }
 
@@ -77,8 +80,7 @@ public class GameStatistics {
             List<GameResultWrapper> gameResults = stats.readGameResults();
             stats.calculateWinRates(gameResults);
         } catch (IOException e) {
-            stats.logger.log(Level.SEVERE, "Error reading game results from JSON file", e);
-            e.printStackTrace();
+            stats.logger.error("Error reading game results from JSON file", e);
         }
     }
 

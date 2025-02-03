@@ -16,23 +16,23 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class GameSimulator {
 
+    private final Logger logger = LoggerFactory.getLogger(GameSimulator.class);
     private final GameResultDataWriter gameResultPersistence;
     private final PlayerFactory playerFactory;
     private List<PlayerModel> playerModels;
     private GameModel gameModel;
-    Logger logger;
 
     public GameSimulator() {
         this.gameResultPersistence = new GameResultDataWriter();
         this.playerFactory = new PlayerFactory();
-        this.logger = Logger.getLogger(GameSimulator.class.getName());
-        this.logger.setLevel(java.util.logging.Level.INFO);
     }
 
     /**
@@ -66,8 +66,7 @@ public class GameSimulator {
 
     public void simulateMultipleGames(int numSimulations) throws JsonParseException {
         for (int i = 0; i < numSimulations; i++) {
-            logger.info(String.format("Simulating game %d of %d", (i + 1), numSimulations));
-
+            logger.info("Simulating game {} of {}", (i + 1), numSimulations);
             simulateGame(createEasyMediumConfig1());
         }
     }
@@ -81,13 +80,8 @@ public class GameSimulator {
                 new PlayerModel(PlayerIdentification.RED, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
                 new PlayerModel(PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.GREEN))
         );
-        // Créer le GameModel avec la liste de PlayerModels
         gameModel = createNewGameModel(playerModels);
-
-        // Créer les joueurs à partir du GameModel
         List<Player> players = playerFactory.createTwoEasyOneMediumBots(playerModels, gameModel);
-
-        // Retourner la correspondance entre les joueurs et les modèles de joueurs
         return Map.of(
                 players.get(0), playerModels.get(0),
                 players.get(1), playerModels.get(1),
@@ -104,13 +98,8 @@ public class GameSimulator {
                 new PlayerModel(PlayerIdentification.RED, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.RED)),
                 new PlayerModel(PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.GREEN))
         );
-        // Créer le GameModel avec la liste de PlayerModels
         gameModel = createNewGameModel(playerModels);
-
-        // Créer les joueurs à partir du GameModel
         List<Player> players = playerFactory.createTwoMediumOneEasyBots(playerModels, gameModel);
-
-        // Retourner la correspondance entre les joueurs et les modèles de joueurs
         return Map.of(
                 players.get(0), playerModels.get(0),
                 players.get(1), playerModels.get(1),

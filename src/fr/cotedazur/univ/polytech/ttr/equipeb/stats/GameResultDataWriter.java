@@ -2,33 +2,26 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.stats;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.logging.Logger;
-
 
 public class GameResultDataWriter {
-    private final Optional<Logger> logger;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Logger logger = LoggerFactory.getLogger(GameResultDataWriter.class);
     private static final String FILE_PATH = "resources/stats/gameResult.json";
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public GameResultDataWriter() {
-        this(true);
     }
 
-    public GameResultDataWriter(boolean allowLog) {
-        if (allowLog) {
-            logger = Optional.of(Logger.getLogger(GameResultDataWriter.class.getName()));
-        } else {
-            logger = Optional.empty();
-        }
-
-    }
-
+    /**
+     * Enregistre un résultat de jeu dans le fichier JSON.
+     * @param gameResult Résultat à enregistrer.
+     */
     public void saveGameResult(GameResultWrapper gameResult) {
         File file = new File(FILE_PATH);
 
@@ -45,9 +38,9 @@ public class GameResultDataWriter {
             }
             gameResults.add(gameResult);
             objectMapper.writeValue(file, gameResults);
-            logger.ifPresent(l -> l.info("Game result has been saved to JSON."));
+            logger.info("Game result has been successfully saved to JSON.");
         } catch (IOException e) {
-            logger.ifPresent(l -> l.severe("Error saving game result to JSON: " + e.getMessage()));
+            logger.error("Error saving game result to JSON: {}", e.getMessage());
         }
     }
 }

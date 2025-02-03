@@ -2,98 +2,67 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.views;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * Player console view
+ * Player console view using SLF4J
  */
 public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineViewable {
-    private final Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(PlayerConsoleView.class);
 
     public PlayerConsoleView(PlayerIdentification playerIdentification) {
         super(playerIdentification);
-        logger = Logger.getLogger(String.format("PlayerConsoleView {%s}", playerIdentification));
-        logger.setLevel(Level.ALL);
-
-        ConsoleHandler consoleHandler = new ConsoleHandler();
-        consoleHandler.setLevel(Level.ALL);
-        logger.addHandler(consoleHandler);
     }
 
-    private void log(Level level, String message) {
-        if (logger.isLoggable(level)) {
-            logger.log(level, String.format("Player %s: %s", getPlayerIdentification(), message));
-        }
+    private void log(String message, Object... args) {
+        logger.info("Player {}: " + message, getPlayerIdentification(), args);
     }
 
     @Override
     public void displayReceivedWagonCards(WagonCard... wagonCards) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Received wagon cards: ");
-        for (WagonCard wagonCard : wagonCards) {
-            sb.append(wagonCard).append(" ");
-        }
-        log(Level.FINE, sb.toString());
+        logger.debug("Received wagon cards: {}", (Object) wagonCards);
     }
 
     @Override
     public void displayReceivedWagonCards(List<WagonCard> wagonCards) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Received wagon cards: ");
-        for (WagonCard wagonCard : wagonCards) {
-            sb.append(wagonCard).append(" ");
-        }
-        log(Level.FINE, sb.toString());
+        logger.debug("Received wagon cards: {}", wagonCards);
     }
 
     @Override
-    public void displayClaimedRoute(RouteReadOnly route)  {
-        log(Level.FINE, "Claimed route: " + route);
+    public void displayClaimedRoute(RouteReadOnly route) {
+        logger.debug("Claimed route: {}", route);
     }
 
     @Override
     public void displayReceivedDestinationCards(List<ShortDestinationCard> destinationCards) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Received destination cards: ");
-        for (DestinationCard destinationCard : destinationCards) {
-            sb.append(destinationCard).append(" ");
-        }
-        log(Level.FINE, sb.toString());
+        logger.debug("Received destination cards: {}", destinationCards);
     }
 
     @Override
     public void displayNewScore(int score) {
-        log(Level.FINE, "New score: " + score);
+        logger.info("New score: {}", score);
     }
 
     @Override
     public void displayClaimedStation(CityReadOnly city, List<WagonCard> wagonCards, int stationsLeft) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Claimed station: ").append(city).append(" with wagon cards: ");
-        for (WagonCard wagonCard : wagonCards) {
-            sb.append(wagonCard).append(" ");
-        }
-        sb.append("Stations left: ").append(stationsLeft);
-        log(Level.FINE, sb.toString());
+        logger.debug("Claimed station: {} with wagon cards: {}. Stations left: {}", city, wagonCards, stationsLeft);
     }
 
     @Override
     public void displayActionRefused(Action action, ReasonActionRefused reason) {
-        log(Level.WARNING, "Action refused: " + action + " -> " + reason);
+        logger.warn("Action refused: {} -> {}", action, reason);
     }
 
     @Override
     public void displayActionCompleted(Action action) {
-        log(Level.INFO,  "Action completed: " + action);
+        logger.info("Action completed: {}", action);
     }
 }

@@ -13,7 +13,7 @@ class GameResultDataWriterTest {
 
     @BeforeEach
     void setUp() {
-        gameResultDataWriter = new GameResultDataWriter(false);
+        gameResultDataWriter = new GameResultDataWriter();
         gameResult = new GameResultWrapper();
     }
 
