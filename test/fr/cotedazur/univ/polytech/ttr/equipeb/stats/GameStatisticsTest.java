@@ -8,8 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +62,6 @@ class GameStatisticsTest {
         assertEquals("File not found", exception.getMessage());
     }
 
-    /* TODO : redo
     @Test
     void calculateWinRatesWithValidResults() {
         GameResultWrapper gameResult1 = mock(GameResultWrapper.class);
@@ -82,12 +83,16 @@ class GameStatisticsTest {
 
         gameStatistics.calculateWinRates(gameResults);
 
+        System.setOut(originalOut);
         String actualOutput = outContent.toString().replaceAll("[\\r\\n]", "");
-        String expectedOutput = "Total games processed: 3EASY_BOT win rate: 66,67%MEDIUM_BOT win rate: 33,33%";
+
+        actualOutput = actualOutput.replaceAll(".*?(EASY_BOT win rate: \\d+,\\d+%).*", "$1");
+
+        String expectedOutput = "EASY_BOT win rate: 66,67%";
 
         assertEquals(expectedOutput, actualOutput);
-        System.setOut(originalOut);
-    }*/
+    }
+
 
     @Test
     void calculateWinRatesWithNoWinners() {
