@@ -16,7 +16,7 @@ on:
 
 jobs:
   build:
-
+    timeout-minutes: 2
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +31,10 @@ jobs:
         cache: maven
 
     - name: Build with Maven
-      run: mvn -B clean install --file pom.xml
+      run: mvn -B package --file pom.xml
 
     - name: Run tests with Maven
       run: mvn test --file pom.xml
+
+    - name: Run a single run in demo mode
+      run: mvn exec:java -Dexec.args="--demo" --file pom.xml
