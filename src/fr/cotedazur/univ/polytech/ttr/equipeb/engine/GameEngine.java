@@ -1,7 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.engine;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.EndGameAction;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
@@ -15,11 +14,11 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.views.ScoreConsoleView;
 import java.util.*;
 
 public class GameEngine {
-    private final ScoreController scoreController;
     private final GameModel gameModel;
     private final IGameViewable gameView;
     private final Map<Action, Controller> gameControllers;
-    private final Map<EndGameAction, Controller> endGameControllers;
+    private final List<Controller> endPlayerTurnControllers;
+    private final List<Controller> endGameControllers;
     private final List<Player> players;
     private Iterator<Player> playerIterator;
     private Optional<PlayerIdentification> lastTurnPlayer;
@@ -36,10 +35,16 @@ public class GameEngine {
             Action.PICK_DESTINATION_CARDS, new DestinationCardsController(gameModel),
             Action.PLACE_STATION, new StationController(gameModel)
         );
-        this.endGameControllers = Map.of(
-            EndGameAction.CHOOSE_ROUTE_STATION, new ChooseRouteStationController(gameModel)
+
+        this.endPlayerTurnControllers = List.of(
+            new CurrentPlayerScoreController(gameModel)
         );
-        this.scoreController = new ScoreController(gameModel, new ScoreConsoleView());
+
+        this.endGameControllers = List.of(
+            new ChooseRouteStationController(gameModel),
+            new EndGameScoreController(gameModel, new ScoreConsoleView())
+        );
+
         this.playerIterator = players.iterator();
         this.currentPlayer = playerIterator.next();
 
@@ -102,11 +107,11 @@ public class GameEngine {
                 nbPlayersWantStop = 0;
             }
 
+            this.endPlayerTurnControllers.forEach(controller -> controller.doAction(currentPlayer));
+
             boolean newTurn = nextPlayer();
 
             if (newTurn){
-                scoreController.calculatePlacedRoutesScore(currentPlayer);
-
                 if(gameModel.isWagonCardDeckEmpty()) gameModel.fillWagonCardDeck();
 
                 nbTurn++;
@@ -114,8 +119,6 @@ public class GameEngine {
         }
 
         askForEndGameActions();
-
-        scoreController.setFinalScores();
 
         lastTurnPlayer.ifPresent(playerIdentification -> gameView.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons()));
 
@@ -127,12 +130,12 @@ public class GameEngine {
     }
 
     private void askForEndGameActions() {
-        for(Map.Entry<EndGameAction, Controller> entry : endGameControllers.entrySet()) {
+        for(Controller controller : endGameControllers) {
 
             for (Player player : players) {
                 Optional<ReasonActionRefused> endGameAction;
                 do {
-                    endGameAction = entry.getValue().doAction(player);
+                    endGameAction = controller.doAction(player);
                 } while (endGameAction.isPresent());
             }
         }

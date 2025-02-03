@@ -47,7 +47,7 @@ public class EasyBotEngine implements IPlayerActionsControllable {
     public Action askAction() {
         int action = random.nextInt(2);
 
-        if (action == 0 && !gameModel.isDestinationCardDeckEmpty() && playerModel.getDestinationCards().size() < 3) {
+        if (action == 0 && !gameModel.isShortDestCardDeckEmpty() && playerModel.getDestinationCardsHand().size() < 3) {
             return Action.PICK_DESTINATION_CARDS;
         } else if (canTakeARoute()) {
             return Action.CLAIM_ROUTE;
@@ -58,7 +58,7 @@ public class EasyBotEngine implements IPlayerActionsControllable {
         } else if(!gameModel.isWagonCardDeckEmpty()) {
             return Action.PICK_WAGON_CARD;
         }
-        else if(!gameModel.isDestinationCardDeckEmpty()) {
+        else if(!gameModel.isShortDestCardDeckEmpty()) {
             return Action.PICK_DESTINATION_CARDS;
         }
         else {

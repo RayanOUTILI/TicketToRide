@@ -3,7 +3,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.engine;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.Controller;
-import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.ScoreController;
+import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.EndGameScoreController;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
@@ -30,8 +30,6 @@ class GameEngineTest {
     private Player player2;
     private List<Player> players;
 
-    private ScoreController scoreController;
-
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
         gameModel = mock(GameModel.class);
@@ -39,7 +37,6 @@ class GameEngineTest {
         controller = mock(Controller.class);
         player1 = mock(Player.class);
         player2 = mock(Player.class);
-        scoreController = mock(ScoreController.class);
         players = List.of(player1, player2);
         gameEngine = new GameEngine(gameModel, players);
 
@@ -47,9 +44,14 @@ class GameEngineTest {
         gameViewField.setAccessible(true);
         gameViewField.set(gameEngine, gameView);
 
-        Field scoreControllerField = GameEngine.class.getDeclaredField("scoreController");
-        scoreControllerField.setAccessible(true);
-        scoreControllerField.set(gameEngine, scoreController);
+        List<Controller> endGameControllers = List.of(
+            mock(EndGameScoreController.class)
+        );
+
+        Field endGameControllersField = GameEngine.class.getDeclaredField("endGameControllers");
+        endGameControllersField.setAccessible(true);
+        endGameControllersField.set(gameEngine, endGameControllers);
+
 
         Field controllerField = GameEngine.class.getDeclaredField("gameControllers");
         controllerField.setAccessible(true);
@@ -91,8 +93,6 @@ class GameEngineTest {
 
         int nbTurn = gameEngine.startGame();
         assertEquals(1, nbTurn);
-        verify(scoreController, times(1)).calculatePlacedRoutesScore(player2);
-        verify(scoreController, times(0)).calculatePlacedRoutesScore(player1);
     }
 
     @Test

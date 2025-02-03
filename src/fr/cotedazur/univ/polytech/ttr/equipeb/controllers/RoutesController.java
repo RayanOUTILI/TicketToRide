@@ -23,7 +23,7 @@ public class RoutesController extends Controller {
 
     @Override
     public boolean initGame() {
-        return gameModel.setAllRoutesIDs() && gameModel.setAllRoutesNotClaimed();
+        return gameModel.setAllRoutesIDs();
     }
 
     @Override
@@ -85,6 +85,16 @@ public class RoutesController extends Controller {
         player.notifyClaimedRoute(route);
 
         return Optional.empty();
+    }
+
+    @Override
+    public boolean resetPlayer(Player player) {
+        return player.clearNumberOfWagons();
+    }
+
+    @Override
+    public boolean resetGame() {
+        return gameModel.retrieveDeletedRoutes() && gameModel.setAllRoutesNotClaimed();
     }
 
     private Optional<ReasonActionRefused> claimFerry(Route route, List<WagonCard> removedCards) {

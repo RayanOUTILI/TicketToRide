@@ -34,7 +34,7 @@ public interface IPlayerGameModel {
     /**
      * @return if the destination card deck is empty
      */
-    boolean isDestinationCardDeckEmpty();
+    boolean isShortDestCardDeckEmpty();
 
     List<WagonCard> getListOfShownWagonCards();
 

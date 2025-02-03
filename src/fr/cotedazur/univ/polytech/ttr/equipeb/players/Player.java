@@ -6,6 +6,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
@@ -102,6 +103,11 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
+    public List<WagonCard> getWagonCardsHand() {
+        return modelController.getWagonCardsHand();
+    }
+
+    @Override
     public void replaceRemovedWagonCards(List<WagonCard> wagonCards) {
         modelController.replaceRemovedWagonCards(wagonCards);
     }
@@ -142,13 +148,53 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
+    public boolean clearDestinationCards() {
+        return modelController.clearDestinationCards();
+    }
+
+    @Override
+    public boolean clearChosenRouteStations() {
+        return modelController.clearChosenRouteStations();
+    }
+
+    @Override
+    public boolean clearScore() {
+        return modelController.clearScore();
+    }
+
+    @Override
+    public boolean clearStationsLeft() {
+        return modelController.clearStationsLeft();
+    }
+
+    @Override
+    public boolean clearNumberOfWagons() {
+        return modelController.clearNumberOfWagons();
+    }
+
+    @Override
     public void receivedDestinationCards(List<ShortDestinationCard> destinationCards) {
         modelController.receivedDestinationCards(destinationCards);
     }
 
     @Override
+    public void receiveLongDestCards(List<LongDestinationCard> destinationCards) {
+        modelController.receiveLongDestCards(destinationCards);
+    }
+
+    @Override
     public List<DestinationCard> getDestinationCardsHand() {
         return modelController.getDestinationCardsHand();
+    }
+
+    @Override
+    public List<ShortDestinationCard> getShortDestinationCardsHand() {
+        return modelController.getShortDestinationCardsHand();
+    }
+
+    @Override
+    public List<LongDestinationCard> getLongDestinationCardsHand() {
+        return modelController.getLongDestinationCardsHand();
     }
 
     @Override

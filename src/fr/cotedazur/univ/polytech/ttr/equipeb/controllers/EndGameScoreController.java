@@ -1,10 +1,12 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IScoreControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.CityPair;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IScoreView;
 
@@ -14,32 +16,58 @@ import java.util.stream.Collectors;
 import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.findLengthBetweenAllCityInGraph;
 import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.getGraphFromRoutes;
 
-public class ScoreController {
-    IScoreControllerGameModel gameModel;
+public class EndGameScoreController extends Controller {
+    private static final int LONGEST_PATH_BONUS = 10;
+    private final IScoreControllerGameModel gameModel;
     private final Optional<IScoreView> scoreView;
+    private final List<IPlayerModelControllable> playersWithLongestPath = new ArrayList<>();
 
-    public ScoreController(IScoreControllerGameModel gameModel, IScoreView scoreView) {
+    public EndGameScoreController(IScoreControllerGameModel gameModel, IScoreView scoreView) {
         this.gameModel = gameModel;
         this.scoreView = scoreView != null ? Optional.of(scoreView) : Optional.empty();
     }
 
-    public ScoreController(IScoreControllerGameModel gameModel) {
+    public EndGameScoreController(IScoreControllerGameModel gameModel) {
         this(gameModel, null);
     }
 
-    public int calculatePlacedRoutesScore(IPlayerModelControllable player) {
-        return gameModel.getAllRoutesClaimedByPlayer(player.getIdentification())
-                            .stream()
-                            .mapToInt(route -> switch (route.getLength()) {
-                                case 1 -> 1;
-                                case 2 -> 2;
-                                case 3 -> 4;
-                                case 4 -> 7;
-                                case 6 -> 15;
-                                case 8 -> 21;
-                                default -> 0;
-                            })
-                            .sum();
+    @Override
+    public boolean initGame() {
+        return true;
+    }
+
+    @Override
+    public boolean initPlayer(Player player) {
+        player.setScore(0);
+        return true;
+    }
+
+    @Override
+    public Optional<ReasonActionRefused> doAction(Player player) {
+        int finalScore = getFinalScore(player);
+
+        if(this.playersWithLongestPath.isEmpty()) {
+            this.playersWithLongestPath.addAll(calculatePlayerWithTheLongestContinuousRoute());
+        }
+
+        if(this.playersWithLongestPath.contains(player)) {
+            finalScore += LONGEST_PATH_BONUS;
+        }
+
+        player.setScore(finalScore);
+
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean resetPlayer(Player player) {
+        return player.clearScore();
+    }
+
+    @Override
+    public boolean resetGame() {
+        this.playersWithLongestPath.clear();
+        return true;
     }
 
     private int calculateDestinationCardsScore(IPlayerModelControllable player) {
@@ -108,18 +136,11 @@ public class ScoreController {
     }
 
     private int getFinalScore(IPlayerModelControllable player){
-        int score = 0;
-        score += calculatePlacedRoutesScore(player);
+        int score = player.getScore();
+
         score += calculateDestinationCardsScore(player);
         score += calculateRemainingStationsScore(player);
 
         return score;
-    }
-
-    public void setFinalScores(){
-        HashMap<IPlayerModelControllable, Integer> finalScores = new HashMap<>();
-        gameModel.getPlayers().forEach(player -> finalScores.put(player, getFinalScore(player)));
-        calculatePlayerWithTheLongestContinuousRoute().forEach(player -> finalScores.put(player, finalScores.get(player) + 10));
-        finalScores.forEach(IPlayerModelControllable::setScore);
     }
 }

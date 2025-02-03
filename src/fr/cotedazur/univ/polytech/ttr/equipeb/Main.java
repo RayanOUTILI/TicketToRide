@@ -6,6 +6,8 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.factories.DestinationCardsFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.MapFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.PlayerFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.WagonCardsFactory;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
@@ -23,7 +25,10 @@ public class Main {
         try {
             List<Route> routes = (new MapFactory()).getMapFromJson();
             WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
-            DestinationCardDeck destinationCardDeck = new DestinationCardDeck((new DestinationCardsFactory()).getShortDestinationCards());
+
+            DestinationCardsFactory destinationCardDeck = new DestinationCardsFactory();
+            DestinationCardDeck<ShortDestinationCard> shortDestinationCardDeck = new DestinationCardDeck<>(destinationCardDeck.getShortDestinationCards());
+            DestinationCardDeck<LongDestinationCard> longDestinationCardDeck = new DestinationCardDeck<>(destinationCardDeck.getLongDestinationCards());
 
             PlayerFactory playerFactory = new PlayerFactory();
 
@@ -33,7 +38,7 @@ public class Main {
                     new PlayerModel(PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.GREEN))
             );
 
-            GameModel gameModel = new GameModel(playerModels, wagonCardDeck, destinationCardDeck, routes);
+            GameModel gameModel = new GameModel(playerModels, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
             List<Player> players = playerFactory.createTwoEasyOneMediumBots(playerModels, gameModel);
 
             GameEngine gameEngine = new GameEngine(gameModel, players);

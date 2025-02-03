@@ -73,8 +73,8 @@ class MediumBotEngineTest {
 
     @Test
     void askAction_pickDestinationCards() {
-        when(playerModel.getDestinationCards()).thenReturn(Collections.emptyList());
-        when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
+        when(playerModel.getDestinationCardsHand()).thenReturn(Collections.emptyList());
+        when(gameModel.isShortDestCardDeckEmpty()).thenReturn(false);
         when(playerModel.getNumberOfWagonCards()).thenReturn(16);
 
         assertEquals(Action.PICK_DESTINATION_CARDS, botEngine.askAction());
@@ -82,7 +82,7 @@ class MediumBotEngineTest {
 
     @Test
     void askAction_pickWagonCard() {
-        when(playerModel.getDestinationCards()).thenReturn(Arrays.asList(mock(ShortDestinationCard.class), mock(ShortDestinationCard.class), mock(ShortDestinationCard.class)));
+        when(playerModel.getDestinationCardsHand()).thenReturn(Arrays.asList(mock(ShortDestinationCard.class), mock(ShortDestinationCard.class), mock(ShortDestinationCard.class)));
         when(gameModel.isWagonCardDeckEmpty()).thenReturn(false);
 
         assertEquals(Action.PICK_WAGON_CARD, botEngine.askAction());
