@@ -1,41 +1,28 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
-import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class EasyBotEngine implements IPlayerActionsControllable {
-    private final IPlayerGameModel gameModel;
-    private final IPlayerModel playerModel;
-    private final Optional<IPlayerEngineViewable> view;
-
-    private final RandomGenerator random;
+public class EasyBotEngine extends BotModelControllable {
 
     public EasyBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view) {
-        this.gameModel = gameModel;
-        this.playerModel = playerModel;
-        this.view = view != null ? Optional.of(view) : Optional.empty();
-        this.random = new RandomGenerator();
+        super(gameModel, playerModel, view);
     }
 
-    public EasyBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel) {
-        this(playerModel, gameModel, null);
+    public EasyBotEngine(PlayerModel playerModel, GameModel gameModel) {
+        super(gameModel, playerModel, null);
     }
 
     /**
@@ -66,27 +53,21 @@ public class EasyBotEngine implements IPlayerActionsControllable {
         }
     }
 
-    @Override
-    public ClaimRoute askClaimRoute() {
-        RouteReadOnly route = chooseRoute();
-
-        if(route == null) return null;
-
-        return new ClaimRoute(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getType() == RouteType.FERRY ? route.getNbLocomotives() : 0));
+    protected RouteReadOnly chooseRoute() {
+        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes().stream().filter(this::canTakeRoute).toList();
+        if (availableRoutes.isEmpty()) return null;
+        int randomIndex = random.nextInt(availableRoutes.size());
+        return availableRoutes.get(randomIndex);
     }
 
     @Override
-    public ClaimStation askClaimStation() {
-        List<CityReadOnly> availableCities = gameModel.getNonControllableAvailableCities();
-
+    protected CityReadOnly chooseCityToPlaceStation(List<CityReadOnly> availableCities) {
         int cityIndex = random.nextInt(availableCities.size());
-        CityReadOnly city = availableCities.get(cityIndex);
-
-        return new ClaimStation(city, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft()-1)));
+        return availableCities.get(cityIndex);
     }
 
     @Override
-    public List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards) {
+    protected List<ShortDestinationCard> chooseDestinationCards(List<ShortDestinationCard> cards) {
         int maxCardsNumber = cards.size();
 
         List<ShortDestinationCard> cardsToKeep = new ArrayList<>(cards);
@@ -104,43 +85,12 @@ public class EasyBotEngine implements IPlayerActionsControllable {
     }
 
     @Override
-    public void actionRefused(Action action, ReasonActionRefused reason) {
-        view.ifPresent(v -> v.displayActionRefused(action, reason));
-    }
-
-    @Override
-    public void actionCompleted(Action action) {
-        view.ifPresent(v -> v.displayActionCompleted(action));
-    }
-
-    @Override
-    public List<WagonCard> askWagonCardsForTunnel(int numberOfCards, Color acceptedColor) {
-        return playerModel.getWagonCardsOfColor(acceptedColor, numberOfCards);
-    }
-
-    @Override
-    public Optional<ActionDrawWagonCard> askDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
-        if(possibleActions.isEmpty()) return Optional.empty();
-        return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
-    }
-
-    @Override
-    public WagonCard askWagonCardFromShownCards() {
-        List<WagonCard> shownCards = gameModel.getListOfShownWagonCards();
+    protected WagonCard getWantedWagonCard(List<WagonCard> shownCards) {
         return shownCards.get(random.nextInt(shownCards.size()));
     }
 
     @Override
-    public RouteReadOnly askChooseRouteStation(CityReadOnly city) {
-        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAdjacentRoutes(city);
-        if(availableRoutes.isEmpty()) return null;
-        int randomIndex = random.nextInt(availableRoutes.size());
-        return availableRoutes.get(randomIndex);
-    }
-
-    private RouteReadOnly chooseRoute() {
-        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes().stream().filter(this::canTakeRoute).toList();
-        if(availableRoutes.isEmpty()) return null;
+    protected RouteReadOnly chooseRouteFromCity(List<RouteReadOnly> availableRoutes) {
         int randomIndex = random.nextInt(availableRoutes.size());
         return availableRoutes.get(randomIndex);
     }
@@ -160,11 +110,8 @@ public class EasyBotEngine implements IPlayerActionsControllable {
         else if (route.getType() == RouteType.TRAIN) {
             return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0).size() == route.getLength();
         }
-        else if (route.getType() == RouteType.TUNNEL) {
-            return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0).size() >= route.getLength();
-        }
-
-        return false;
+        // Tunnel
+        return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0).size() >= route.getLength();
     }
 
 

@@ -1,0 +1,134 @@
+package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
+
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
+
+import java.util.List;
+import java.util.Optional;
+
+public abstract class BotModelControllable extends BotModel {
+    protected final RandomGenerator random;
+
+    protected BotModelControllable(IPlayerGameModel gameModel, IPlayerModel playerModel, IPlayerEngineViewable view) {
+        super(gameModel, playerModel, view);
+        this.random = new RandomGenerator();
+    }
+
+    @Override
+    public ClaimRoute askClaimRoute() {
+        RouteReadOnly route = chooseRoute();
+
+        if (route == null) return null;
+
+        return new ClaimRoute(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getType() == RouteType.FERRY ? route.getNbLocomotives() : 0));
+    }
+
+    /**
+     * Chooses a city where the bot will place a station from the available cities.
+     *
+     * @return the claim station action for the chosen city.
+     */
+    @Override
+    public ClaimStation askClaimStation() {
+        List<CityReadOnly> availableCities = gameModel.getNonControllableAvailableCities();
+        if (availableCities.isEmpty()) {
+            return null;
+        }
+        CityReadOnly bestCity = chooseCityToPlaceStation(availableCities);
+        return new ClaimStation(bestCity, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft() - 1)));
+    }
+
+    /**
+     * Determines the destination cards the bot will keep based on their priority.
+     *
+     * @param cards the list of destination cards available to the bot.
+     * @return a list of selected destination cards.
+     */
+    @Override
+    public List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards) {
+        return chooseDestinationCards(cards);
+    }
+
+    @Override
+    public List<WagonCard> askWagonCardsForTunnel(int numberOfCards, Color acceptedColor) {
+        return playerModel.getWagonCardsOfColor(acceptedColor, numberOfCards);
+    }
+
+    @Override
+    public Optional<ActionDrawWagonCard> askDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
+        if (possibleActions.isEmpty()) return Optional.empty();
+        return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
+    }
+
+    @Override
+    public WagonCard askWagonCardFromShownCards() {
+        List<WagonCard> shownCards = gameModel.getListOfShownWagonCards();
+        return getWantedWagonCard(shownCards);
+    }
+
+    @Override
+    public RouteReadOnly askChooseRouteStation(CityReadOnly city) {
+        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAdjacentRoutes(city);
+        if (availableRoutes.isEmpty()) return null;
+        return chooseRouteFromCity(availableRoutes);
+    }
+
+    /**
+     * Determines the route the bot will take next.
+     *
+     * @return the next action for the bot to take
+     */
+    protected abstract RouteReadOnly chooseRoute();
+
+    /**
+     * Chooses the city for placing a station from a list of available cities.
+     *
+     * @param availableCities the list of cities where the bot can place a station.
+     * @return the city to place the station in.
+     */
+    protected abstract CityReadOnly chooseCityToPlaceStation(List<CityReadOnly> availableCities);
+
+    /**
+     * Chooses the destination cards the bot will keep.
+     *
+     * @param cards the list of destination cards available to the bot.
+     * @return a list of selected destination cards.
+     */
+    protected abstract List<ShortDestinationCard> chooseDestinationCards(List<ShortDestinationCard> cards);
+
+    /**
+     * Chooses the wagon card the bot wants from the shown cards.
+     *
+     * @param shownCards the list of shown wagon cards.
+     * @return the wagon card the bot wants.
+     */
+    protected abstract WagonCard getWantedWagonCard(List<WagonCard> shownCards);
+
+    /**
+     * Chooses the route the bot will take from a list of available routes,
+     * coming from a specific city.
+     *
+     * @param availableRoutes the list of available routes.
+     * @return the route the bot will take.
+     */
+    protected abstract RouteReadOnly chooseRouteFromCity(List<RouteReadOnly> availableRoutes);
+
+    @Override
+    public void actionRefused(Action action, ReasonActionRefused reason) {
+        view.ifPresent(iPlayerEngineViewable -> iPlayerEngineViewable.displayActionRefused(action, reason));
+    }
+
+    @Override
+    public void actionCompleted(Action action) {
+        view.ifPresent(iPlayerEngineViewable -> iPlayerEngineViewable.displayActionCompleted(action));
+    }
+}
