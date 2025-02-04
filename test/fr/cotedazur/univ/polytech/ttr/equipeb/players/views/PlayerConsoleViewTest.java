@@ -40,7 +40,7 @@ class PlayerConsoleViewTest {
     }
 
     @Test
-    void testDisplayReceivedDestinationCards() {
+    void testDisplayReceiveDestinationCards() {
         playerConsoleView.displayReceivedDestinationCards(List.of());
         verify(logger, times(1)).log(Level.FINE, String.format("Player %s: Received destination cards: ", PlayerIdentification.GREEN));
     }

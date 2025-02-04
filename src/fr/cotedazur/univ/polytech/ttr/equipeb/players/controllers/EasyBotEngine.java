@@ -2,6 +2,11 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
@@ -34,7 +39,7 @@ public class EasyBotEngine extends BotModelControllable {
     public Action askAction() {
         int action = random.nextInt(2);
 
-        if (action == 0 && !gameModel.isShortDestCardDeckEmpty() && playerModel.getDestinationCardsHand().size() < 3) {
+        if (action == 0 && !gameModel.isShortDestCardDeckEmpty() && playerModel.getDestinationCards().size() < 3) {
             return Action.PICK_DESTINATION_CARDS;
         } else if (canTakeARoute()) {
             return Action.CLAIM_ROUTE;
@@ -67,10 +72,11 @@ public class EasyBotEngine extends BotModelControllable {
     }
 
     @Override
+    public List<DestinationCard> askDestinationCards(List<DestinationCard> cards) {
     protected List<ShortDestinationCard> chooseDestinationCards(List<ShortDestinationCard> cards) {
         int maxCardsNumber = cards.size();
 
-        List<ShortDestinationCard> cardsToKeep = new ArrayList<>(cards);
+        List<DestinationCard> cardsToKeep = new ArrayList<>(cards);
 
         if (!cards.isEmpty() && maxCardsNumber > 1) {
             int nbCardsToRemove = random.nextInt(maxCardsNumber - 1);
@@ -82,6 +88,12 @@ public class EasyBotEngine extends BotModelControllable {
         }
 
         return cardsToKeep;
+    }
+
+    @Override
+    public List<DestinationCard> askInitialDestinationCards(List<DestinationCard> cards) {
+        //TODO implement
+        return List.of();
     }
 
     @Override

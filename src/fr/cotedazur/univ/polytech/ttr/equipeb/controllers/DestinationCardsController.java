@@ -1,11 +1,11 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IDestinationCardsControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +13,7 @@ public class DestinationCardsController extends Controller {
     private static final int STARTING_SHORT_DESTINATION_CARDS = 3;
     private static final int STARTING_LONG_DESTINATION_CARDS = 1;
     private static final int MAX_DESTINATION_CARDS = 3;
+    private static final int DESTINATION_CARD_TYPE_THRESHOLD = 20;
     private final IDestinationCardsControllerGameModel gameModel;
 
     public DestinationCardsController(IDestinationCardsControllerGameModel gameModel) {
@@ -28,18 +29,28 @@ public class DestinationCardsController extends Controller {
     public boolean initPlayer(Player player) {
         if(gameModel.isShortDestCardDeckEmpty() || gameModel.isLongDestCardDeckEmpty()) return false;
 
-        List<ShortDestinationCard> cards = gameModel.drawDestinationCards(STARTING_SHORT_DESTINATION_CARDS);
+        List<DestinationCard> shortDestinationCards = gameModel.drawDestinationCards(STARTING_SHORT_DESTINATION_CARDS);
 
-        if(cards == null || cards.isEmpty() || cards.size() != STARTING_SHORT_DESTINATION_CARDS) return false;
+        if(shortDestinationCards == null
+                || shortDestinationCards.isEmpty()
+                || shortDestinationCards.size() != STARTING_SHORT_DESTINATION_CARDS)
+            return false;
 
-        player.receivedDestinationCards(cards);
 
-        List<LongDestinationCard> longDestCards = gameModel.drawLongDestinationCards(STARTING_LONG_DESTINATION_CARDS);
+
+        List<DestinationCard> longDestCards = gameModel.drawLongDestinationCards(STARTING_LONG_DESTINATION_CARDS);
 
         if(longDestCards == null || longDestCards.isEmpty() || longDestCards.size() != STARTING_LONG_DESTINATION_CARDS) return false;
 
-        player.receiveLongDestCards(longDestCards);
+        List<DestinationCard> drawnCards = new ArrayList<>(shortDestinationCards);
+        drawnCards.addAll(longDestCards);
 
+        List<DestinationCard> chosenCards = player.askInitialDestinationCards(drawnCards);
+
+        player.receiveDestinationCards(chosenCards);
+        if (drawnCards.removeAll(chosenCards)) {
+            player.discardDestinationCard(drawnCards);
+        }
         return true;
     }
 
@@ -47,25 +58,27 @@ public class DestinationCardsController extends Controller {
     public Optional<ReasonActionRefused> doAction(Player player) {
         if(gameModel.isShortDestCardDeckEmpty()) return Optional.of(ReasonActionRefused.DESTINATION_CARDS_DECK_EMPTY);
 
-        List<ShortDestinationCard> cards = gameModel.drawDestinationCards(MAX_DESTINATION_CARDS);
-        List<ShortDestinationCard> chosenCards = player.askDestinationCards(cards);
+        List<DestinationCard> cards = gameModel.drawDestinationCards(MAX_DESTINATION_CARDS);
+        List<DestinationCard> chosenCards = player.askDestinationCards(cards);
 
         if (chosenCards == null || chosenCards.isEmpty()) {
             gameModel.returnShortDestinationCardsToTheBottom(cards);
             return Optional.of(ReasonActionRefused.DESTINATION_CARDS_CHOSEN_CARDS_EMPTY);
         }
 
-        player.receivedDestinationCards(chosenCards);
+        player.receiveDestinationCards(chosenCards);
 
         return Optional.empty();
     }
 
     @Override
     public boolean resetPlayer(Player player) {
-        List<ShortDestinationCard> cards = player.getShortDestinationCardsHand();
-        gameModel.returnShortDestinationCardsToTheBottom(cards);
-        List<LongDestinationCard> longCards = player.getLongDestinationCardsHand();
-        gameModel.returnLongDestinationCardsToTheBottom(longCards);
+        List<DestinationCard> cardsInHand = player.getDestinationCards();
+        List<DestinationCard> discardedCards = player.getDiscardDestinationCards();
+        List<DestinationCard> cards = cardsInHand;
+        cards.addAll(discardedCards);
+        gameModel.returnShortDestinationCardsToTheBottom(cards.stream().filter(card -> card.getPoints() < DESTINATION_CARD_TYPE_THRESHOLD).toList());
+        gameModel.returnLongDestinationCardsToTheBottom(cards.stream().filter(card -> card.getPoints() >= DESTINATION_CARD_TYPE_THRESHOLD).toList());
         return player.clearDestinationCards();
     }
 

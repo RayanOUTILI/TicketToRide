@@ -94,4 +94,25 @@ class ChooseRouteStationControllerTest {
         assertEquals(ReasonActionRefused.CHOSEN_ROUTE_NOT_CONNECTED_TO_STATION, result.get());
     }
 
+    @Test
+    void testResetPlayer() {
+        when(player.clearChosenRouteStations()).thenReturn(true);
+        assertTrue(controller.resetPlayer(player));
+
+        when(player.clearChosenRouteStations()).thenReturn(false);
+        assertFalse(controller.resetPlayer(player));
+    }
+
+    @Test
+    void testResetGame() {
+        assertTrue(controller.resetGame());
+    }
+
+    @Test
+    void testNoClaimCities() {
+        when(gameModel.getCitiesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(Collections.emptyList());
+        Optional<ReasonActionRefused> result = controller.doAction(player);
+        assertFalse(result.isPresent());
+    }
+
 }
