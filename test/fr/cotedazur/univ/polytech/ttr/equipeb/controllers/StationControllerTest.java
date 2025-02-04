@@ -1,11 +1,12 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimObject;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IStationControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ class StationControllerTest {
     private IStationControllerGameModel gameModel;
     private StationController stationController;
     private Player player;
-    private ClaimStation claimStation;
+    private ClaimObject<CityReadOnly> claimStation;
     private City city;
     private WagonCard wagonCard;
 
@@ -31,7 +32,7 @@ class StationControllerTest {
         gameModel = mock(IStationControllerGameModel.class);
         stationController = new StationController(gameModel);
         player = mock(Player.class);
-        claimStation = mock(ClaimStation.class);
+        claimStation = mock(ClaimObject.class);
         city = mock(City.class);
         wagonCard = mock(WagonCard.class);
     }
@@ -58,7 +59,7 @@ class StationControllerTest {
     void doActionReturnsStationCityNotValidWhenCityIsNull() {
         when(player.getStationsLeft()).thenReturn(1);
         when(player.askClaimStation()).thenReturn(claimStation);
-        when(claimStation.city()).thenReturn(null);
+        when(claimStation.getClaimable()).thenReturn(null);
         Optional<ReasonActionRefused> result = stationController.doAction(player);
         assertEquals(Optional.of(ReasonActionRefused.STATION_CITY_NOT_VALID), result);
     }
@@ -67,7 +68,7 @@ class StationControllerTest {
     void doActionReturnsStationWrongWagonCardsColorWhenCardsHaveDifferentColors() {
         when(player.getStationsLeft()).thenReturn(3);
         when(player.askClaimStation()).thenReturn(claimStation);
-        when(claimStation.city()).thenReturn(city);
+        when(claimStation.getClaimable()).thenReturn(city);
         when(gameModel.getCity(anyInt())).thenReturn(city);
         when(city.isClaimed()).thenReturn(false);
         when(claimStation.wagonCards()).thenReturn(List.of(wagonCard));

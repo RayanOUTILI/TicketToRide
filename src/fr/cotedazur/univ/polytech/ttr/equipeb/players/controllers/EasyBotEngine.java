@@ -1,10 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
@@ -67,22 +63,22 @@ public class EasyBotEngine implements IPlayerActionsControllable {
     }
 
     @Override
-    public ClaimRoute askClaimRoute() {
+    public ClaimObject<RouteReadOnly> askClaimRoute() {
         RouteReadOnly route = chooseRoute();
 
         if(route == null) return null;
 
-        return new ClaimRoute(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getType() == RouteType.FERRY ? route.getNbLocomotives() : 0));
+        return new ClaimObject<>(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getType() == RouteType.FERRY ? route.getNbLocomotives() : 0));
     }
 
     @Override
-    public ClaimStation askClaimStation() {
+    public ClaimObject<CityReadOnly> askClaimStation() {
         List<CityReadOnly> availableCities = gameModel.getNonControllableAvailableCities();
 
         int cityIndex = random.nextInt(availableCities.size());
         CityReadOnly city = availableCities.get(cityIndex);
 
-        return new ClaimStation(city, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft()-1)));
+        return new ClaimObject<>(city, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft()-1)));
     }
 
     @Override

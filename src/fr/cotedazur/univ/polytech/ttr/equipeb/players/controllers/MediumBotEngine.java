@@ -78,12 +78,12 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @return the claim route action, or null if no route is available.
      */
     @Override
-    public ClaimRoute askClaimRoute() {
+    public ClaimObject<RouteReadOnly> askClaimRoute() {
         RouteReadOnly bestRoute = findBestRouteToClaim();
         if (bestRoute == null) {
             return null;
         }
-        return new ClaimRoute(bestRoute, playerModel.getWagonCardsIncludingAnyColor(bestRoute.getColor(), bestRoute.getLength(), 0));
+        return new ClaimObject<>(bestRoute, playerModel.getWagonCardsIncludingAnyColor(bestRoute.getColor(), bestRoute.getLength(), 0));
     }
 
     /**
@@ -92,13 +92,13 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @return the claim station action for the chosen city.
      */
     @Override
-    public ClaimStation askClaimStation() {
+    public ClaimObject<CityReadOnly> askClaimStation() {
         List<CityReadOnly> availableCities = gameModel.getNonControllableAvailableCities();
         if (availableCities.isEmpty()) {
             return null;
         }
         CityReadOnly bestCity = chooseCityToPlaceStation(availableCities);
-        return new ClaimStation(bestCity, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft() - 1)));
+        return new ClaimObject<>(bestCity, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft() - 1)));
     }
 
     /**

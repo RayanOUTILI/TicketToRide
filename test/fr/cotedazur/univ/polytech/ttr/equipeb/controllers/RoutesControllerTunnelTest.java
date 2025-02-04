@@ -1,11 +1,12 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimObject;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IRoutesControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
@@ -23,7 +24,7 @@ class RoutesControllerTunnelTest {
     private RoutesController routesController;
     private IRoutesControllerGameModel gameModel;
     private Player player;
-    private ClaimRoute claimRoute;
+    private ClaimObject<RouteReadOnly> claimRoute;
     private Route route;
 
     @BeforeEach
@@ -38,8 +39,8 @@ class RoutesControllerTunnelTest {
         when(route.getNbLocomotives()).thenReturn(0);
         when(route.getType()).thenReturn(RouteType.TUNNEL);
         when(gameModel.getRoute(1)).thenReturn(route);
-        claimRoute = mock(ClaimRoute.class);
-        when(claimRoute.route()).thenReturn(route);
+        claimRoute = mock(ClaimObject.class);
+        when(claimRoute.getClaimable()).thenReturn(route);
         routesController = new RoutesController(gameModel);
         player = mock(Player.class);
         when(player.getIdentification()).thenReturn(PlayerIdentification.RED);
