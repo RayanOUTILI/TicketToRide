@@ -12,10 +12,6 @@ public class DestinationCardDeck<T extends DestinationCard>{
         this.stack.addAll(cards);
     }
 
-    public DestinationCardDeck() {
-        this.stack = new Stack<>();
-    }
-
     public List<T> drawCard(int maximumDraw) {
         List<T> cards = new ArrayList<>();
 
