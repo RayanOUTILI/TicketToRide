@@ -95,4 +95,9 @@ public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineV
     public void displayActionCompleted(Action action) {
         log(Level.INFO,  "Action completed: " + action);
     }
+
+    @Override
+    public void displayActionStop() {
+        log(Level.INFO, "Action Ask Stop Game");
+    }
 }

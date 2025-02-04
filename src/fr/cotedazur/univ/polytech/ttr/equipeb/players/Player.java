@@ -67,6 +67,11 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
+    public void actionStop() {
+        actionsController.actionStop();
+    }
+
+    @Override
     public List<WagonCard> askWagonCardsForTunnel(int numberOfCards, Color acceptedColor) {
         return actionsController.askWagonCardsForTunnel(numberOfCards, acceptedColor);
     }

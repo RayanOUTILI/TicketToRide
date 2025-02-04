@@ -16,6 +16,10 @@ public enum PlayerIdentification {
         this.code = code;
     }
 
+    public String getLabel() {
+        return super.toString();
+    }
+
     @Override
     public String toString() {
         return code + super.toString() + "\u001B[0m";

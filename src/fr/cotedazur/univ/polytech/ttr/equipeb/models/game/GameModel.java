@@ -26,7 +26,8 @@ public class GameModel implements
         IScoreControllerGameModel,
         IStationControllerGameModel,
         IChooseRouteStationControllerGameModel,
-        ICurrentPlayerScoreControllerGameModel
+        ICurrentPlayerScoreControllerGameModel,
+        IStatsGameModel
 {
 
     private final List<PlayerModel> playerModels;

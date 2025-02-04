@@ -18,14 +18,28 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.PlayerConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.simulations.GameSimulator;
+import fr.cotedazur.univ.polytech.ttr.equipeb.stats.PlayerStatsLine;
+import fr.cotedazur.univ.polytech.ttr.equipeb.stats.StatsWriter;
+import fr.cotedazur.univ.polytech.ttr.equipeb.stats.views.GameStatisticsView;
+import fr.cotedazur.univ.polytech.ttr.equipeb.stats.views.PlayerStatisticsView;
+import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
+import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Main {
+
+    private static final String FILE_PATH = "resources/stats/gameResult.csv";
+
     public static void main(String[] args) {
         try {
+
             List<Route> routes = (new MapFactory()).getMapFromJson();
             WagonCardDeck wagonCardDeck = new WagonCardDeck((new WagonCardsFactory()).getWagonCards());
 
@@ -35,14 +49,54 @@ public class Main {
 
             PlayerFactory playerFactory = new PlayerFactory();
 
+            PlayerModel playerModelBlue = new PlayerModel(PlayerIdentification.BLUE, PlayerType.EASY_BOT, null);
+            PlayerModel playerModelRed = new PlayerModel(PlayerIdentification.RED, PlayerType.EASY_BOT, null);
+            PlayerModel playerModelGreen = new PlayerModel(PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT, null);
+
             List<PlayerModel> playerModels = List.of(
-                    new PlayerModel(PlayerIdentification.BLUE, PlayerType.EASY_BOT, null /*new PlayerConsoleView(PlayerIdentification.BLUE)*/),
-                    new PlayerModel(PlayerIdentification.RED, PlayerType.EASY_BOT, null /* new PlayerConsoleView(PlayerIdentification.RED)*/),
-                    new PlayerModel(PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT, null /*new PlayerConsoleView(PlayerIdentification.GREEN)*/)
+                    playerModelBlue,
+                    playerModelRed,
+                    playerModelGreen
             );
 
+            IGameViewable gameView = new GameConsoleView();
+
+            //TODO: Find a proper way for the views here
+            List<IPlayerEngineViewable> playerEngineViewables = List.of(
+                    new PlayerConsoleView(PlayerIdentification.BLUE),
+                    new PlayerConsoleView(PlayerIdentification.RED),
+                    new PlayerConsoleView(PlayerIdentification.GREEN)
+            );
+
+            // TODO: FOR CSV
+            StatsWriter statsWriter = new StatsWriter(FILE_PATH, PlayerStatsLine.headers, true);
+
             GameModel gameModel = new GameModel(playerModels, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
-            List<Player> players = playerFactory.createThreeEasyBotsWithoutViews(playerModels, gameModel);
+
+            // TODO: ADD THE CONDITION AND READ OF ARGS
+            if (true) {
+
+                PlayerStatsLine statsLineBlue = new PlayerStatsLine(UUID.randomUUID(), PlayerIdentification.BLUE, PlayerType.EASY_BOT);
+                PlayerStatsLine statsLineRed = new PlayerStatsLine(UUID.randomUUID(), PlayerIdentification.RED, PlayerType.EASY_BOT);
+                PlayerStatsLine statsLineGreen = new PlayerStatsLine(UUID.randomUUID(), PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT);
+
+                PlayerStatisticsView statViewBlue = new PlayerStatisticsView(statsLineBlue, statsWriter);
+                PlayerStatisticsView statViewRed = new PlayerStatisticsView(statsLineRed, statsWriter);
+                PlayerStatisticsView statViewGreen = new PlayerStatisticsView(statsLineGreen, statsWriter);
+
+                gameView = new GameStatisticsView(List.of(statViewBlue, statViewRed, statViewGreen));
+
+                statViewBlue.setPlayerModel(playerModelBlue);
+                statViewBlue.setGameModel(gameModel);
+                statViewRed.setPlayerModel(playerModelRed);
+                statViewRed.setGameModel(gameModel);
+                statViewGreen.setPlayerModel(playerModelGreen);
+                statViewGreen.setGameModel(gameModel);
+
+                playerEngineViewables = List.of(statViewBlue, statViewRed, statViewGreen);
+            }
+
+            List<Player> players = playerFactory.createTwoEasyOneMediumBots(playerModels, gameModel, playerEngineViewables);
 
             Map<Action, Controller> gameControllers = Map.of(
                     Action.PICK_WAGON_CARD, new WagonCardsController(gameModel),
@@ -60,12 +114,16 @@ public class Main {
                     new EndGameScoreController(gameModel)
             );
 
-            GameEngine gameEngine = new GameEngine(gameModel, gameControllers, endPlayerTurnControllers, endGameControllers, players);
+            GameEngine gameEngine = new GameEngine(gameModel, gameControllers, endPlayerTurnControllers, endGameControllers, players, gameView);
             GameSimulator gameSimulator = new GameSimulator(gameEngine);
-            gameSimulator.simulateGame(1000);
+            gameSimulator.simulateGame(2000);
+
+            statsWriter.close();
 
         } catch (JsonParseException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
