@@ -1,9 +1,8 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
@@ -20,9 +19,9 @@ import java.util.Optional;
 public interface IPlayerActionsControllable {
     Action askAction();
 
-    ClaimRoute askClaimRoute();
+    ClaimObject<RouteReadOnly> askClaimRoute();
 
-    ClaimStation askClaimStation();
+    ClaimObject<CityReadOnly> askClaimStation();
 
     List<DestinationCard> askDestinationCards(List<DestinationCard> cards);
 

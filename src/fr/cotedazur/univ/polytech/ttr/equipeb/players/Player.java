@@ -1,10 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
@@ -30,22 +26,18 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
         this.modelController = modelController;
     }
 
-    public IPlayerModelControllable getModelController() {
-        return modelController;
-    }
-
     @Override
     public Action askAction() {
         return actionsController.askAction();
     }
 
     @Override
-    public ClaimRoute askClaimRoute() {
+    public ClaimObject<RouteReadOnly> askClaimRoute() {
         return actionsController.askClaimRoute();
     }
 
     @Override
-    public ClaimStation askClaimStation() {
+    public ClaimObject<CityReadOnly> askClaimStation() {
         return actionsController.askClaimStation();
     }
 
@@ -181,13 +173,23 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
-    public boolean discardDestinationCard(List<DestinationCard> destinationCards) {
-        return modelController.discardDestinationCard(destinationCards);
+    public void setNumberOfCompletedObjectiveCards(int numberOfCompletedObjectiveCards) {
+        modelController.setNumberOfCompletedObjectiveCards(numberOfCompletedObjectiveCards);
+    }
+
+    @Override
+    public void setLongestContinuousRouteLength(int length) {
+        modelController.setLongestContinuousRouteLength(length);
     }
 
     @Override
     public void receiveDestinationCards(List<DestinationCard> destinationCards) {
         modelController.receiveDestinationCards(destinationCards);
+    }
+
+    @Override
+    public boolean discardDestinationCard(List<DestinationCard> destinationCards) {
+        return modelController.discardDestinationCard(destinationCards);
     }
 
     @Override

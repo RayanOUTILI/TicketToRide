@@ -9,6 +9,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.ScoreComparator;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
@@ -249,8 +250,10 @@ public class GameModel implements
     }
 
     @Override
-    public List<IPlayerModelControllable> getPlayers() {
-        return new ArrayList<>(playerModels);
+    public List<PlayerIdentification> getPlayersIdentification() {
+        return playerModels.stream()
+                .map(IPlayerModelControllable::getIdentification)
+                .toList();
     }
 
     public PlayerModel getWinner() {
@@ -258,13 +261,9 @@ public class GameModel implements
             return null;
         }
 
-        PlayerModel winner = playerModels.get(0);
-        for (PlayerModel player : playerModels) {
-            if (player.getScore() > winner.getScore()) {
-                winner = player;
-            }
-        }
-        return winner;
+        return playerModels.stream()
+                .min(new ScoreComparator())
+                .orElse(null);
     }
 
 

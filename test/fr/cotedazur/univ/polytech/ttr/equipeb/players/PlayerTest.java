@@ -41,14 +41,14 @@ class PlayerTest {
 
     @Test
     void askClaimRouteReturnsClaimRoute() {
-        ClaimRoute claimRoute = mock(ClaimRoute.class);
+        ClaimObject<RouteReadOnly> claimRoute = mock(ClaimObject.class);
         when(actionsController.askClaimRoute()).thenReturn(claimRoute);
         assertEquals(claimRoute, player.askClaimRoute());
     }
 
     @Test
     void askClaimStationReturnsClaimStation() {
-        ClaimStation claimStation = mock(ClaimStation.class);
+        ClaimObject<CityReadOnly> claimStation = mock(ClaimObject.class);
         when(actionsController.askClaimStation()).thenReturn(claimStation);
         assertEquals(claimStation, player.askClaimStation());
     }
