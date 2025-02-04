@@ -75,7 +75,7 @@ public class EndGameScoreController extends Controller {
     private int calculateDestinationCardsScore(Player player) {
         // Its necessary to remove the length of routes that is "claimed" with stations
         // Please note that the station implementation is not yet implemented here
-        List<DestinationCard> destinationCards = player.getDestinationCardsHand();
+        List<DestinationCard> destinationCards = player.getDestinationCards();
         List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification());
         List<RouteReadOnly> claimedRoutesWithStations = player.getSelectedStationRoutes();
 

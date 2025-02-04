@@ -1,6 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IScoreControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
@@ -66,13 +66,13 @@ class EndGameScoreControllerTest {
         Route routeRigaToPetrograd = new Route(riga, petrograd, 4, RouteType.TRAIN, Color.BLACK, 5);
         routeRigaToPetrograd.setClaimerPlayer(PlayerIdentification.GREEN);
 
-        ShortDestinationCard danzicToPetrograd = new ShortDestinationCard(danzic, petrograd, 10);
-        ShortDestinationCard rigaToBerlin = new ShortDestinationCard(riga, berlin, 5);
+        DestinationCard danzicToPetrograd = new DestinationCard(danzic, petrograd, 10);
+        DestinationCard rigaToBerlin = new DestinationCard(riga, berlin, 5);
         Player playerWithLoop = new Player(null, playerWithLoopingRoute);
-        playerWithLoop.receivedDestinationCards(List.of(rigaToBerlin));
+        playerWithLoop.receiveDestinationCards(List.of(rigaToBerlin));
 
         Player otherPlayerExcluded = new Player(null, otherPlayer);
-        otherPlayerExcluded.receivedDestinationCards(List.of(danzicToPetrograd));
+        otherPlayerExcluded.receiveDestinationCards(List.of(danzicToPetrograd));
 
         when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMunchenToWien, routeWienToBerlin, routeBerlinToMunchen, routeMunchenToZurich));
         when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.GREEN)).thenReturn(List.of(routeDanzicToRiga, routeRigaToPetrograd));
