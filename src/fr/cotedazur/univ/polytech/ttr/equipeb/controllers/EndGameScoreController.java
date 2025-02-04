@@ -24,7 +24,7 @@ public class EndGameScoreController extends Controller {
 
     public EndGameScoreController(IScoreControllerGameModel gameModel, IScoreView scoreView) {
         this.gameModel = gameModel;
-        this.scoreView = scoreView != null ? Optional.of(scoreView) : Optional.empty();
+        this.scoreView = Optional.ofNullable(scoreView);
     }
 
     public EndGameScoreController(IScoreControllerGameModel gameModel) {
@@ -50,7 +50,7 @@ public class EndGameScoreController extends Controller {
             this.playersWithLongestPath.addAll(calculatePlayerWithTheLongestContinuousRoute());
         }
 
-        if(this.playersWithLongestPath.contains(player)) {
+        if(this.playersWithLongestPath.contains(player.getModelController())) {
             finalScore += LONGEST_PATH_BONUS;
         }
 
@@ -70,7 +70,7 @@ public class EndGameScoreController extends Controller {
         return true;
     }
 
-    private int calculateDestinationCardsScore(IPlayerModelControllable player) {
+    private int calculateDestinationCardsScore(Player player) {
         // Its necessary to remove the length of routes that is "claimed" with stations
         // Please note that the station implementation is not yet implemented here
         List<DestinationCard> destinationCards = player.getDestinationCardsHand();
@@ -101,7 +101,7 @@ public class EndGameScoreController extends Controller {
                 .sum();
     }
 
-    private int calculateRemainingStationsScore(IPlayerModelControllable player) {
+    private int calculateRemainingStationsScore(Player player) {
         int score = player.getScore() + player.getStationsLeft() * 4;
         scoreView.ifPresent(v -> v.displayRemainingStationsScore(player.getIdentification(), score));
         return score;
@@ -135,7 +135,7 @@ public class EndGameScoreController extends Controller {
         return playersWithLongestPath;
     }
 
-    private int getFinalScore(IPlayerModelControllable player){
+    private int getFinalScore(Player player){
         int score = player.getScore();
 
         score += calculateDestinationCardsScore(player);

@@ -7,15 +7,13 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
-import fr.cotedazur.univ.polytech.ttr.equipeb.views.ScoreConsoleView;
 
 import java.util.*;
 
 public class GameEngine {
     private final GameModel gameModel;
-    private final IGameViewable gameView;
+    private final Optional<IGameViewable> gameView;
     private final Map<Action, Controller> gameControllers;
     private final List<Controller> endPlayerTurnControllers;
     private final List<Controller> endGameControllers;
@@ -24,35 +22,43 @@ public class GameEngine {
     private Optional<PlayerIdentification> lastTurnPlayer;
 
     private Player currentPlayer;
-    public GameEngine(GameModel gameModel, List<Player> players) {
+
+    public GameEngine(
+            GameModel gameModel,
+            Map<Action, Controller> gameControllers,
+            List<Controller> endPlayerTurnControllers,
+            List<Controller> endGameControllers,
+            List<Player> players,
+            IGameViewable view
+    ) {
         this.gameModel = gameModel;
         this.players = players;
 
-        this.gameView = new GameConsoleView();
-        this.gameControllers = Map.of(
-            Action.PICK_WAGON_CARD, new WagonCardsController(gameModel),
-            Action.CLAIM_ROUTE, new RoutesController(gameModel),
-            Action.PICK_DESTINATION_CARDS, new DestinationCardsController(gameModel),
-            Action.PLACE_STATION, new StationController(gameModel)
-        );
+        this.gameControllers = gameControllers;
+        this.endPlayerTurnControllers = endPlayerTurnControllers;
+        this.endGameControllers = endGameControllers;
 
-        this.endPlayerTurnControllers = List.of(
-            new CurrentPlayerScoreController(gameModel)
-        );
-
-        this.endGameControllers = List.of(
-            new ChooseRouteStationController(gameModel),
-            new EndGameScoreController(gameModel, new ScoreConsoleView())
-        );
-
-        this.playerIterator = players.iterator();
-        this.currentPlayer = playerIterator.next();
+        this.gameView = Optional.ofNullable(view);
 
         this.lastTurnPlayer = Optional.empty();
     }
 
+    public GameEngine(GameModel gameModel, Map<Action, Controller> gameControllers, List<Controller> endPlayerTurnControllers, List<Controller> endGameControllers, List<Player> players) {
+        this(gameModel, gameControllers, endPlayerTurnControllers, endGameControllers, players, null);
+    }
+
+    private List<Controller> getAllControllers() {
+        List<Controller> controllers = new ArrayList<>(gameControllers.values());
+        controllers.addAll(endPlayerTurnControllers);
+        controllers.addAll(endGameControllers);
+        return controllers;
+    }
+
     public boolean initGame() {
         boolean success;
+
+        this.playerIterator = players.iterator();
+        this.currentPlayer = playerIterator.next();
 
         Set<Map.Entry<Action, Controller>> entries = gameControllers.entrySet();
         Iterator<Map.Entry<Action, Controller>> iterator = entries.iterator();
@@ -120,13 +126,29 @@ public class GameEngine {
 
         askForEndGameActions();
 
-        lastTurnPlayer.ifPresent(playerIdentification -> gameView.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons()));
+        lastTurnPlayer.ifPresent(playerIdentification ->
+            gameView.ifPresent(v -> v.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons()))
+        );
 
         PlayerModel winner = gameModel.getWinner();
 
-        if(winner != null) gameView.displayWinner(winner.getIdentification(), winner.getScore());
+        if(winner != null && gameView.isPresent()) gameView.get().displayWinner(winner.getIdentification(), winner.getScore());
 
         return nbTurn;
+    }
+
+    public boolean reset() {
+        lastTurnPlayer = Optional.empty();
+        boolean success = true;
+        for(Controller controller : getAllControllers()) {
+            for (Player player : players) {
+                success = controller.resetPlayer(player);
+                if (!success) return false;
+            }
+            success = controller.resetGame();
+            if(!success) return false;
+        }
+        return success;
     }
 
     private void askForEndGameActions() {

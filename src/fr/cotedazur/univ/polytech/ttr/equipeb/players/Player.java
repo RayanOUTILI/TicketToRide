@@ -32,6 +32,10 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
         this.modelController = modelController;
     }
 
+    public IPlayerModelControllable getModelController() {
+        return modelController;
+    }
+
     @Override
     public Action askAction() {
         return actionsController.askAction();

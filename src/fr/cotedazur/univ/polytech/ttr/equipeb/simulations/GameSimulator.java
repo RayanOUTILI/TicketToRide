@@ -10,6 +10,13 @@ public class GameSimulator {
     }
 
     public int simulateGame(int nbOfParties) {
-        return 0;
+        for (int i = 0; i < nbOfParties; i++) {
+            gameEngine.initGame();
+            gameEngine.initPlayers();
+            gameEngine.startGame();
+            gameEngine.reset();
+        }
+
+        return nbOfParties;
     }
 }

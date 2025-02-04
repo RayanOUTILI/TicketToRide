@@ -11,7 +11,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,31 +31,20 @@ class GameEngineTest {
     private List<Player> players;
 
     @BeforeEach
-    void setUp() throws NoSuchFieldException, IllegalAccessException {
+    void setUp() {
         gameModel = mock(GameModel.class);
         gameView = mock(IGameViewable.class);
         controller = mock(Controller.class);
         player1 = mock(Player.class);
         player2 = mock(Player.class);
         players = List.of(player1, player2);
-        gameEngine = new GameEngine(gameModel, players);
-
-        Field gameViewField = GameEngine.class.getDeclaredField("gameView");
-        gameViewField.setAccessible(true);
-        gameViewField.set(gameEngine, gameView);
 
         List<Controller> endGameControllers = List.of(
-            mock(EndGameScoreController.class)
+                mock(EndGameScoreController.class)
         );
 
-        Field endGameControllersField = GameEngine.class.getDeclaredField("endGameControllers");
-        endGameControllersField.setAccessible(true);
-        endGameControllersField.set(gameEngine, endGameControllers);
+        gameEngine = new GameEngine(gameModel, Map.of(Action.PICK_WAGON_CARD, controller), new ArrayList<>(), endGameControllers, players, gameView);
 
-
-        Field controllerField = GameEngine.class.getDeclaredField("gameControllers");
-        controllerField.setAccessible(true);
-        controllerField.set(gameEngine, Map.of(Action.PICK_WAGON_CARD, controller));
     }
 
     @Test
