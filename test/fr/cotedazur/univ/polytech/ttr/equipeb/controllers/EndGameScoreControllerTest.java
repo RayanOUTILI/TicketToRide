@@ -17,8 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class EndGameScoreControllerTest {
     EndGameScoreController endGameScoreController;
@@ -83,5 +82,12 @@ class EndGameScoreControllerTest {
         endGameScoreController.doAction(otherPlayerExcluded);
         assertEquals(17, playerWithLoopingRoute.getScore());
         assertEquals(22, otherPlayerExcluded.getScore());
+
+        assertEquals(12, playerWithLoopingRoute.getLongestContinuousRouteLength());
+        assertEquals(0, otherPlayer.getLongestContinuousRouteLength());
+
+        assertEquals(0, playerWithLoopingRoute.getNumberOfCompletedObjectiveCards());
+        assertEquals(1, otherPlayer.getNumberOfCompletedObjectiveCards());
+
     }
 }

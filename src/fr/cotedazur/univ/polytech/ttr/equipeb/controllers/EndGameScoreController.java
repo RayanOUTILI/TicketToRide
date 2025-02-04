@@ -94,7 +94,7 @@ public class EndGameScoreController extends Controller {
                     CityPair pair = new CityPair(card.getStartCity(), card.getEndCity());
                     if (allCityPairs.contains(pair)) {
                         scoreView.ifPresent(v -> v.displayCompletedDestination(player.getIdentification(), card));
-                        player.setNumberOfCompletedObjectiveCards(1);
+                        player.incrementNumberOfCompletedObjectiveCards(1);
                         return card.getPoints();
                     } else {
                         scoreView.ifPresent(v -> v.displayFailedDestination(player.getIdentification(), card));
@@ -119,6 +119,7 @@ public class EndGameScoreController extends Controller {
                             .mapToInt(CityPair::getMaxLength)
                             .max()
                             .orElse(0);
+
                     return new AbstractMap.SimpleEntry<>(player, longestPath);
                 })
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

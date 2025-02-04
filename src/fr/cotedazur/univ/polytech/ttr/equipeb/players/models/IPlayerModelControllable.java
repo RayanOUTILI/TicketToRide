@@ -49,7 +49,7 @@ public interface IPlayerModelControllable {
     boolean clearStationsLeft();
     boolean clearNumberOfWagons();
 
-    void setNumberOfCompletedObjectiveCards(int numberOfCompletedObjectiveCards);
+    void incrementNumberOfCompletedObjectiveCards(int numberOfCompletedObjectiveCards);
     void setLongestContinuousRouteLength(int length);
 
     boolean discardDestinationCard(List<DestinationCard> destinationCards);

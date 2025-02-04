@@ -258,7 +258,7 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      */
     private int evaluateDestinationCardPriority(DestinationCard card) {
         int priority = card.getPoints();
-        for (RouteReadOnly route : gameModel.getAllRoutesClaimedByPlayer(playerModel.getPlayerIdentification())) {
+        for (RouteReadOnly route : gameModel.getAllRoutesClaimedByPlayer(playerModel.getIdentification())) {
             if (card.getCities().contains(route.getFirstCity()) || card.getCities().contains(route.getSecondCity())) {
                 priority += 10;
             }

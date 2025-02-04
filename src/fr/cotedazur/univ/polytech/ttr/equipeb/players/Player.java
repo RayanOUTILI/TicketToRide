@@ -173,8 +173,8 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
-    public void setNumberOfCompletedObjectiveCards(int numberOfCompletedObjectiveCards) {
-        modelController.setNumberOfCompletedObjectiveCards(numberOfCompletedObjectiveCards);
+    public void incrementNumberOfCompletedObjectiveCards(int numberOfCompletedObjectiveCards) {
+        modelController.incrementNumberOfCompletedObjectiveCards(numberOfCompletedObjectiveCards);
     }
 
     @Override

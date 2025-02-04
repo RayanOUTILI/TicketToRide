@@ -191,6 +191,8 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
 
     @Override
     public boolean clearScore() {
+        this.longestContinuousRoute = 0;
+        this.completedObjectiveCards = 0;
         this.score = 0;
         return true;
     }
@@ -208,8 +210,8 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     }
 
     @Override
-    public void setNumberOfCompletedObjectiveCards(int numberOfCompletedObjectiveCards) {
-        this.completedObjectiveCards = numberOfCompletedObjectiveCards;
+    public void incrementNumberOfCompletedObjectiveCards(int numberOfCompletedObjectiveCards) {
+        this.completedObjectiveCards += numberOfCompletedObjectiveCards;
     }
 
     @Override
@@ -319,10 +321,6 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     @Override
     public int getNumberOfWagonCardsIncludingAnyColor(Color color) {
         return (int) wagonCards.stream().filter(c -> c.getColor().equals(color) || c.getColor().equals(Color.ANY)).count();
-    }
-
-    public PlayerIdentification getPlayerIdentification(){
-        return this.playerIdentification;
     }
 
     public PlayerType getPlayerType(){
