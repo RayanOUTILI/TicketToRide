@@ -5,7 +5,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
@@ -24,7 +24,9 @@ public interface IPlayerActionsControllable {
 
     ClaimStation askClaimStation();
 
-    List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards);
+    List<DestinationCard> askDestinationCards(List<DestinationCard> cards);
+
+    List<DestinationCard> askInitialDestinationCards(List<DestinationCard> cards);
 
     void actionRefused(Action action, ReasonActionRefused reason);
 

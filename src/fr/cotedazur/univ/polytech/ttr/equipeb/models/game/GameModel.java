@@ -1,7 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
@@ -32,12 +31,12 @@ public class GameModel implements
 
     private final List<PlayerModel> playerModels;
     private final WagonCardDeck wagonCardDeck;
-    private final DestinationCardDeck<ShortDestinationCard> shortDestinationCardDeck;
-    private final DestinationCardDeck<LongDestinationCard> longDestinationCardDeck;
+    private final DestinationCardDeck<DestinationCard> shortDestinationCardDeck;
+    private final DestinationCardDeck<DestinationCard> longDestinationCardDeck;
     private final List<Route> routes;
     private final List<Route> removedRoutes;
 
-    public GameModel(List<PlayerModel> playerModels, WagonCardDeck wagonCardDeck, DestinationCardDeck<ShortDestinationCard> shortDestCardDeck, DestinationCardDeck<LongDestinationCard> longDestCardDeck, List<Route> routes) {
+    public GameModel(List<PlayerModel> playerModels, WagonCardDeck wagonCardDeck, DestinationCardDeck<DestinationCard> shortDestCardDeck, DestinationCardDeck<DestinationCard> longDestCardDeck, List<Route> routes) {
         this.playerModels = playerModels;
         this.wagonCardDeck = wagonCardDeck;
         this.shortDestinationCardDeck = shortDestCardDeck;
@@ -223,22 +222,22 @@ public class GameModel implements
     }
 
     @Override
-    public List<ShortDestinationCard> drawDestinationCards(int maximumCards) {
+    public List<DestinationCard> drawDestinationCards(int maximumCards) {
         return shortDestinationCardDeck.drawCard(maximumCards);
     }
 
     @Override
-    public List<LongDestinationCard> drawLongDestinationCards(int maximumCards) {
+    public List<DestinationCard> drawLongDestinationCards(int maximumCards) {
         return longDestinationCardDeck.drawCard(maximumCards);
     }
 
     @Override
-    public void returnShortDestinationCardsToTheBottom(List<ShortDestinationCard> cards) {
+    public void returnShortDestinationCardsToTheBottom(List<DestinationCard> cards) {
         shortDestinationCardDeck.addCardsAtBottom(cards);
     }
 
     @Override
-    public void returnLongDestinationCardsToTheBottom(List<LongDestinationCard> cards) {
+    public void returnLongDestinationCardsToTheBottom(List<DestinationCard> cards) {
         longDestinationCardDeck.addCardsAtBottom(cards);
     }
 

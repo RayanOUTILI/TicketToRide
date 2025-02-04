@@ -1,7 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
@@ -24,8 +23,8 @@ class GameModelTest {
     private GameModel gameModel;
     private List<PlayerModel> players;
     private WagonCardDeck wagonCardDeck;
-    private DestinationCardDeck<ShortDestinationCard> shortDestinationCardDeck;
-    private DestinationCardDeck<LongDestinationCard> longDestinationCardDeck;
+    private DestinationCardDeck<DestinationCard> shortDestinationCardDeck;
+    private DestinationCardDeck<DestinationCard> longDestinationCardDeck;
     private Route route;
     private List<Route> routes;
 
@@ -96,7 +95,7 @@ class GameModelTest {
 
     @Test
     void testDrawDestinationCards() {
-        List<ShortDestinationCard> destinationCards = List.of(mock(ShortDestinationCard.class));
+        List<DestinationCard> destinationCards = List.of(mock(DestinationCard.class));
         when(shortDestinationCardDeck.drawCard(1)).thenReturn(destinationCards);
         when(shortDestinationCardDeck.drawCard(3)).thenReturn(destinationCards);
         assertEquals(gameModel.drawDestinationCards(1), destinationCards);
@@ -105,7 +104,7 @@ class GameModelTest {
 
     @Test
     void testReturnShortDestinationCardsToTheBottom() {
-        List<ShortDestinationCard> destinationCards = List.of(mock(ShortDestinationCard.class));
+        List<DestinationCard> destinationCards = List.of(mock(DestinationCard.class));
         gameModel.returnShortDestinationCardsToTheBottom(destinationCards);
         verify(shortDestinationCardDeck).addCardsAtBottom(destinationCards);
     }
