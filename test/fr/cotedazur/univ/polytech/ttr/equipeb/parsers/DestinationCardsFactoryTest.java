@@ -3,8 +3,6 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.parsers;
 import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.DestinationCardsFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,8 +30,8 @@ class DestinationCardsFactoryTest {
             List<DestinationCard> cards = destinationCardsFactory.getAllDestinationCards();
             assertNotNull(cards);
             assertEquals(46, cards.size());
-            assertInstanceOf(ShortDestinationCard.class, cards.get(0));
-            assertInstanceOf(LongDestinationCard.class, cards.get(41));
+            assertInstanceOf(DestinationCard.class, cards.get(0));
+            assertInstanceOf(DestinationCard.class, cards.get(41));
 
         } catch (JsonParseException e) {
             fail("A parsing exception was thrown: " + e.getMessage());
@@ -46,10 +44,10 @@ class DestinationCardsFactoryTest {
     @Test
     void testGetShortDestinationCards() {
         try {
-            List<ShortDestinationCard> cards = destinationCardsFactory.getShortDestinationCards();
+            List<DestinationCard> cards = destinationCardsFactory.getShortDestinationCards();
             assertNotNull(cards);
             assertEquals(40, cards.size());
-            assertInstanceOf(ShortDestinationCard.class, cards.get(0));
+            assertInstanceOf(DestinationCard.class, cards.get(0));
 
         } catch (JsonParseException e) {
             fail("A parsing exception was thrown: " + e.getMessage());
@@ -62,10 +60,10 @@ class DestinationCardsFactoryTest {
     @Test
     void testGetLongDestinationCards() {
         try {
-            List<LongDestinationCard> cards = destinationCardsFactory.getLongDestinationCards();
+            List<DestinationCard> cards = destinationCardsFactory.getLongDestinationCards();
             assertNotNull(cards);
             assertEquals(6, cards.size());
-            assertInstanceOf(LongDestinationCard.class, cards.get(0));
+            assertInstanceOf(DestinationCard.class, cards.get(0));
 
         } catch (JsonParseException e) {
             fail("A parsing exception was thrown: " + e.getMessage());

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface IPlayerModel {
     int getNumberOfWagonCards();
-    List<DestinationCard> getDestinationCardsHand();
+    List<DestinationCard> getDestinationCards();
     int getStationsLeft();
     List<WagonCard> getWagonCards(int numberOfCards);
     List<WagonCard> getWagonCardsIncludingAnyColor(int numberOfCards);

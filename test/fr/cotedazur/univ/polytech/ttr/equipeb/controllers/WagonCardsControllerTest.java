@@ -38,6 +38,7 @@ class WagonCardsControllerTest {
         shownCards.forEach(card -> when(card.getColor()).thenReturn(Color.BLUE));
         shownCards.add(locomotive);
 
+        when(gameModel.placeShownWagonCards(anyList())).thenReturn(true);
         when(gameModel.drawCardsFromWagonCardDeck(5)).thenReturn(shownCards);
         when(gameModel.shuffleWagonCardDeck()).thenReturn(true);
         when(gameModel.getListOfShownWagonCards()).thenReturn(shownCards);
@@ -133,4 +134,32 @@ class WagonCardsControllerTest {
         assertEquals(ReasonActionRefused.WAGON_CARDS_ACTION_INVALID, actionRefused.get());
     }
 
+    @Test
+    void testResetPlayer() {
+        when(player.getWagonCardsHand()).thenReturn(List.of(wagonCard, wagonCard, wagonCard));
+        when(player.removeWagonCards(anyList())).thenReturn(List.of(wagonCard, wagonCard, wagonCard));
+        when(gameModel.discardWagonCards(anyList())).thenReturn(true);
+        assertTrue(wagonCardsController.resetPlayer(player));
+        verify(player).getWagonCardsHand();
+        verify(player).removeWagonCards(List.of(wagonCard, wagonCard, wagonCard));
+        verify(gameModel).discardWagonCards(List.of(wagonCard, wagonCard, wagonCard));
+
+
+        when(gameModel.discardWagonCards(anyList())).thenReturn(false);
+        assertFalse(wagonCardsController.resetPlayer(player));
+        verify(player, times(2)).getWagonCardsHand();
+        verify(player, times(2)).removeWagonCards(List.of(wagonCard, wagonCard, wagonCard));
+        verify(gameModel, times(2)).discardWagonCards(List.of(wagonCard, wagonCard, wagonCard));
+    }
+
+    @Test
+    void testResetGame() {
+        when(gameModel.clearWagonCardsDeck()).thenReturn(true);
+        assertTrue(wagonCardsController.resetGame());
+        verify(gameModel).clearWagonCardsDeck();
+
+        when(gameModel.clearWagonCardsDeck()).thenReturn(false);
+        assertFalse(wagonCardsController.resetGame());
+        verify(gameModel, times(2)).clearWagonCardsDeck();
+    }
 }

@@ -24,8 +24,7 @@ public class WagonCardsController extends Controller {
     @Override
     public boolean initGame() {
         List<WagonCard> newShownCards = gameModel.drawCardsFromWagonCardDeck(MAX_SHOWN_WAGON_CARDS);
-        gameModel.replaceShownWagonCards(newShownCards);
-        return gameModel.shuffleWagonCardDeck() && gameModel.getListOfShownWagonCards().size() == MAX_SHOWN_WAGON_CARDS;
+        return gameModel.placeShownWagonCards(newShownCards) && gameModel.shuffleWagonCardDeck() && gameModel.getListOfShownWagonCards().size() == MAX_SHOWN_WAGON_CARDS;
     }
 
     @Override
@@ -115,10 +114,7 @@ public class WagonCardsController extends Controller {
 
             gameModel.placeNewWagonCardOnShownCards(card);
 
-            while (gameModel.getListOfShownWagonCards().stream().filter(c -> c.getColor() == Color.ANY).count() >= MIN_LOCOMOTIVES_FOR_REPLACE) {
-                List<WagonCard> newShownCards = gameModel.drawCardsFromWagonCardDeck(5);
-                gameModel.replaceShownWagonCards(newShownCards);
-            }
+            gameModel.replaceShownWagonCardsInCaseOfLocomotives(MIN_LOCOMOTIVES_FOR_REPLACE);
         }
     }
 }
