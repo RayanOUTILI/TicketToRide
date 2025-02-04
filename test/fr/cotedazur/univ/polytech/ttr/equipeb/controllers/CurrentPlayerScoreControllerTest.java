@@ -30,7 +30,7 @@ class CurrentPlayerScoreControllerTest {
     void setUp() {
         gameModel = mock(ICurrentPlayerScoreControllerGameModel.class);
         currentPlayerScoreController = new CurrentPlayerScoreController(gameModel);
-        player = new Player(null, new PlayerModel(PLAYER_IDENTIFICATION, null));
+        player = new Player(null, new PlayerModel(PLAYER_IDENTIFICATION));
         route = mock(RouteReadOnly.class);
         claimedRoutes = new ArrayList<>(List.of(route));
         when(gameModel.getAllRoutesClaimedByPlayer(PLAYER_IDENTIFICATION)).thenReturn(claimedRoutes);

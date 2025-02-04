@@ -28,10 +28,6 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
         this.modelController = modelController;
     }
 
-    public IPlayerModelControllable getModelController() {
-        return modelController;
-    }
-
     @Override
     public Action askAction() {
         return actionsController.askAction();
@@ -170,6 +166,16 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     @Override
     public boolean clearNumberOfWagons() {
         return modelController.clearNumberOfWagons();
+    }
+
+    @Override
+    public void setNumberOfCompletedObjectiveCards(int numberOfCompletedObjectiveCards) {
+        modelController.setNumberOfCompletedObjectiveCards(numberOfCompletedObjectiveCards);
+    }
+
+    @Override
+    public void setLongestContinuousRouteLength(int length) {
+        modelController.setLongestContinuousRouteLength(length);
     }
 
     @Override

@@ -188,11 +188,47 @@ class GameModelTest {
     }
 
     @Test
-    void testGetWinner() {
+    void testGetWinnerScore() {
         PlayerModel player1 = mock(PlayerModel.class);
         PlayerModel player2 = mock(PlayerModel.class);
         when(player1.getScore()).thenReturn(10);
         when(player2.getScore()).thenReturn(20);
+
+        gameModel = new GameModel(List.of(player1, player2), wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
+
+        PlayerModel winner = gameModel.getWinner();
+        assertEquals(player2, winner);
+    }
+
+    @Test
+    void testGetWinnerNumberOfObjectiveCardsCompleted() {
+        PlayerModel player1 = mock(PlayerModel.class);
+        PlayerModel player2 = mock(PlayerModel.class);
+        when(player1.getScore()).thenReturn(20);
+        when(player2.getScore()).thenReturn(20);
+
+        when(player1.getNumberOfCompletedObjectiveCards()).thenReturn(5);
+        when(player2.getNumberOfCompletedObjectiveCards()).thenReturn(3);
+
+        gameModel = new GameModel(List.of(player1, player2), wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
+
+        PlayerModel winner = gameModel.getWinner();
+        assertEquals(player1, winner);
+    }
+
+    @Test
+    void testGetWinnerRouteLength() {
+        PlayerModel player1 = mock(PlayerModel.class);
+        PlayerModel player2 = mock(PlayerModel.class);
+        when(player1.getScore()).thenReturn(20);
+        when(player2.getScore()).thenReturn(20);
+
+        when(player1.getNumberOfCompletedObjectiveCards()).thenReturn(5);
+        when(player2.getNumberOfCompletedObjectiveCards()).thenReturn(5);
+
+        when(player1.getLongestContinuousRouteLength()).thenReturn(10);
+        when(player2.getLongestContinuousRouteLength()).thenReturn(15);
+
         gameModel = new GameModel(List.of(player1, player2), wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
 
         PlayerModel winner = gameModel.getWinner();

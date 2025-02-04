@@ -76,7 +76,8 @@ class EndGameScoreControllerTest {
 
         when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.BLACK)).thenReturn(List.of(routeMunchenToWien, routeWienToBerlin, routeBerlinToMunchen, routeMunchenToZurich));
         when(gameModel.getAllRoutesClaimedByPlayer(PlayerIdentification.GREEN)).thenReturn(List.of(routeDanzicToRiga, routeRigaToPetrograd));
-        when(gameModel.getPlayers()).thenReturn(List.of(playerWithLoopingRoute, otherPlayer));
+
+        when(gameModel.getPlayersIdentification()).thenReturn(List.of(PlayerIdentification.BLACK, PlayerIdentification.GREEN));
 
         endGameScoreController.doAction(playerWithLoop);
         endGameScoreController.doAction(otherPlayerExcluded);

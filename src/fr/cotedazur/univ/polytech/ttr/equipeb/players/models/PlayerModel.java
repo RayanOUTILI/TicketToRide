@@ -29,6 +29,8 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     private int stationsLeft;
     private int score;
     private int numberOfWagons;
+    private int longestContinuousRoute;
+    private int completedObjectiveCards;
 
     public PlayerModel(PlayerIdentification playerIdentification, PlayerType playerType, IPlayerViewable view) {
         this.playerIdentification = playerIdentification;
@@ -41,6 +43,8 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         this.score = 0;
         this.stationsLeft = 0;
         this.numberOfWagons = 0;
+        this.longestContinuousRoute = 0;
+        this.completedObjectiveCards = 0;
     }
 
     public PlayerModel(PlayerIdentification playerIdentification, IPlayerViewable view) {
@@ -53,6 +57,14 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
 
     public PlayerIdentification getIdentification() {
         return playerIdentification;
+    }
+
+    public int getLongestContinuousRouteLength() {
+        return longestContinuousRoute;
+    }
+
+    public int getNumberOfCompletedObjectiveCards() {
+        return completedObjectiveCards;
     }
 
     @Override
@@ -211,6 +223,16 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     public boolean clearNumberOfWagons() {
         this.numberOfWagons = 0;
         return true;
+    }
+
+    @Override
+    public void setNumberOfCompletedObjectiveCards(int numberOfCompletedObjectiveCards) {
+        this.completedObjectiveCards = numberOfCompletedObjectiveCards;
+    }
+
+    @Override
+    public void setLongestContinuousRouteLength(int length) {
+        this.longestContinuousRoute = length;
     }
 
     @Override
