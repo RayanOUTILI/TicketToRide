@@ -3,6 +3,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
@@ -76,8 +77,16 @@ public class GameModel implements
     }
 
     @Override
-    public boolean replaceShownWagonCards(List<WagonCard> wagonCards) {
+    public boolean placeShownWagonCards(List<WagonCard> wagonCards) {
         return wagonCardDeck.replaceShownCards(wagonCards);
+    }
+    @Override
+    public boolean replaceShownWagonCardsInCaseOfLocomotives(int minimumLocomotives) {
+        while (getListOfShownWagonCards().stream().filter(c -> c.getColor() == Color.ANY).count() >= minimumLocomotives) {
+            List<WagonCard> newShownCards = drawCardsFromWagonCardDeck(5);
+            wagonCardDeck.replaceShownCards(newShownCards);
+        }
+        return true;
     }
 
     @Override

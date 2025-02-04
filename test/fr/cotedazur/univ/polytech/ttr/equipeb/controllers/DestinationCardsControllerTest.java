@@ -86,4 +86,41 @@ class DestinationCardsControllerTest {
         verify(player).receivedDestinationCards(cards);
     }
 
+    @Test
+    void testResetPlayer() {
+        when(player.clearDestinationCards()).thenReturn(true);
+        assertTrue(destinationCardsController.resetPlayer(player));
+
+        when(player.clearDestinationCards()).thenReturn(false);
+        assertFalse(destinationCardsController.resetPlayer(player));
+    }
+
+    @Test
+    void testResetGame() {
+        when(gameModel.isShortDestCardDeckEmpty()).thenReturn(true);
+        when(gameModel.isLongDestCardDeckEmpty()).thenReturn(true);
+        assertFalse(destinationCardsController.resetGame());
+
+        when(gameModel.isShortDestCardDeckEmpty()).thenReturn(false);
+        when(gameModel.isLongDestCardDeckEmpty()).thenReturn(true);
+        assertFalse(destinationCardsController.resetGame());
+
+        when(gameModel.isShortDestCardDeckEmpty()).thenReturn(true);
+        when(gameModel.isLongDestCardDeckEmpty()).thenReturn(false);
+        assertFalse(destinationCardsController.resetGame());
+
+        when(gameModel.isShortDestCardDeckEmpty()).thenReturn(false);
+        when(gameModel.isLongDestCardDeckEmpty()).thenReturn(false);
+        assertTrue(destinationCardsController.resetGame());
+    }
+
+    @Test
+    void testInitGame() {
+        when(gameModel.shuffleDestinationCardsDecks()).thenReturn(true);
+        assertTrue(destinationCardsController.initGame());
+
+        when(gameModel.shuffleDestinationCardsDecks()).thenReturn(false);
+        assertFalse(destinationCardsController.initGame());
+    }
+
 }
