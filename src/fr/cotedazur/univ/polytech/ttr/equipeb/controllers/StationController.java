@@ -84,4 +84,14 @@ public class StationController extends Controller{
 
         return Optional.empty();
     }
+
+    @Override
+    public boolean resetPlayer(Player player) {
+        return player.clearStationsLeft();
+    }
+
+    @Override
+    public boolean resetGame() {
+        return gameModel.setAllStationsNotClaimed();
+    }
 }

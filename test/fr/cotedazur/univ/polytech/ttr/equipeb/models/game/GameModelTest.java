@@ -1,5 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
@@ -23,7 +24,8 @@ class GameModelTest {
     private GameModel gameModel;
     private List<PlayerModel> players;
     private WagonCardDeck wagonCardDeck;
-    private DestinationCardDeck destinationCardDeck;
+    private DestinationCardDeck<ShortDestinationCard> shortDestinationCardDeck;
+    private DestinationCardDeck<LongDestinationCard> longDestinationCardDeck;
     private Route route;
     private List<Route> routes;
 
@@ -32,11 +34,12 @@ class GameModelTest {
     void setUp() {
         this.players = List.of(mock(PlayerModel.class));
         this.wagonCardDeck = mock(WagonCardDeck.class);
-        this.destinationCardDeck = mock(DestinationCardDeck.class);
+        this.shortDestinationCardDeck = mock(DestinationCardDeck.class);
+        this.longDestinationCardDeck = mock(DestinationCardDeck.class);
         this.route = mock(Route.class);
         this.routes = new ArrayList<>();
         this.routes.add(route);
-        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
     }
 
     @Test
@@ -87,24 +90,24 @@ class GameModelTest {
 
     @Test
     void testIsDestinationCardDeckEmpty() {
-        when(destinationCardDeck.isEmpty()).thenReturn(true);
-        assertTrue(gameModel.isDestinationCardDeckEmpty());
+        when(shortDestinationCardDeck.isEmpty()).thenReturn(true);
+        assertTrue(gameModel.isShortDestCardDeckEmpty());
     }
 
     @Test
     void testDrawDestinationCards() {
         List<ShortDestinationCard> destinationCards = List.of(mock(ShortDestinationCard.class));
-        when(destinationCardDeck.drawCard(1)).thenReturn(destinationCards);
-        when(destinationCardDeck.drawCard(3)).thenReturn(destinationCards);
+        when(shortDestinationCardDeck.drawCard(1)).thenReturn(destinationCards);
+        when(shortDestinationCardDeck.drawCard(3)).thenReturn(destinationCards);
         assertEquals(gameModel.drawDestinationCards(1), destinationCards);
         assertEquals(gameModel.drawDestinationCards(3), destinationCards);
     }
 
     @Test
-    void testReturnDestinationCardsToTheBottom() {
+    void testReturnShortDestinationCardsToTheBottom() {
         List<ShortDestinationCard> destinationCards = List.of(mock(ShortDestinationCard.class));
-        gameModel.returnDestinationCardsToTheBottom(destinationCards);
-        verify(destinationCardDeck).addCardsAtBottom(destinationCards);
+        gameModel.returnShortDestinationCardsToTheBottom(destinationCards);
+        verify(shortDestinationCardDeck).addCardsAtBottom(destinationCards);
     }
 
     @Test
@@ -123,7 +126,7 @@ class GameModelTest {
         when(route2.getId()).thenReturn(2);
 
         routes = List.of(route1, route2);
-        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
         assertEquals(gameModel.getDoubleRouteOf(2), route1);
         assertEquals(gameModel.getDoubleRouteOf(1), route2);
     }
@@ -145,8 +148,9 @@ class GameModelTest {
 
     @Test
     void testShuffleDestinationCardDeck() {
-        when(destinationCardDeck.shuffle()).thenReturn(true);
-        assertTrue(gameModel.shuffleDestinationCardDeck());
+        when(shortDestinationCardDeck.shuffle()).thenReturn(true);
+        when(longDestinationCardDeck.shuffle()).thenReturn(true);
+        assertTrue(gameModel.shuffleDestinationCardsDecks());
     }
 
     @Test
@@ -176,7 +180,7 @@ class GameModelTest {
         when(route1.getClaimerPlayer()).thenReturn(player);
         when(route2.isClaimed()).thenReturn(false);
         routes = List.of(route1, route2);
-        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
 
         List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player);
         assertEquals(1, claimedRoutes.size());
@@ -189,7 +193,7 @@ class GameModelTest {
         PlayerModel player2 = mock(PlayerModel.class);
         when(player1.getScore()).thenReturn(10);
         when(player2.getScore()).thenReturn(20);
-        gameModel = new GameModel(List.of(player1, player2), wagonCardDeck, destinationCardDeck, routes);
+        gameModel = new GameModel(List.of(player1, player2), wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
 
         PlayerModel winner = gameModel.getWinner();
         assertEquals(player2, winner);
@@ -203,7 +207,7 @@ class GameModelTest {
         when(route1.getFirstCity()).thenReturn(city1);
         when(route1.getSecondCity()).thenReturn(city2);
         routes = List.of(route1);
-        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
 
         List<City> cities = gameModel.getAllCities();
         assertEquals(2, cities.size());
@@ -219,7 +223,7 @@ class GameModelTest {
         when(routeMocked.getFirstCity()).thenReturn(city);
         when(routeMocked.getSecondCity()).thenReturn(mock(City.class));
         routes = List.of(routeMocked);
-        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
         City result = gameModel.getCity(1);
         assertEquals(city, result);
     }
@@ -235,7 +239,7 @@ class GameModelTest {
         when(route1.getFirstCity()).thenReturn(city1);
         when(route1.getSecondCity()).thenReturn(city2);
         routes = List.of(route1);
-        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
 
         List<City> cities = gameModel.getCitiesClaimedByPlayer(player);
         assertEquals(1, cities.size());
@@ -252,7 +256,7 @@ class GameModelTest {
         when(route2.getFirstCity()).thenReturn(mock(City.class));
         when(route2.getSecondCity()).thenReturn(city);
         routes = List.of(route1, route2);
-        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
 
         List<RouteReadOnly> adjacentRoutes = gameModel.getNonControllableAdjacentRoutes(city);
         assertEquals(2, adjacentRoutes.size());
@@ -270,7 +274,7 @@ class GameModelTest {
         when(route2.getFirstCity()).thenReturn(mock(City.class));
         when(route2.getSecondCity()).thenReturn(city);
         routes = List.of(route1, route2);
-        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
 
         List<Route> adjacentRoutes = gameModel.getAdjacentRoutes(city);
         assertEquals(2, adjacentRoutes.size());
@@ -285,7 +289,7 @@ class GameModelTest {
         when(route1.isClaimed()).thenReturn(false);
         when(route2.isClaimed()).thenReturn(true);
         routes = List.of(route1, route2);
-        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
 
         List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes();
         assertEquals(1, availableRoutes.size());
@@ -301,7 +305,7 @@ class GameModelTest {
         when(route2.isClaimed()).thenReturn(false);
         when(route2.getLength()).thenReturn(5);
         routes = List.of(route1, route2);
-        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
 
         List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes(4);
         assertEquals(1, availableRoutes.size());
@@ -317,7 +321,7 @@ class GameModelTest {
         when(route1.getFirstCity()).thenReturn(city1);
         when(route1.getSecondCity()).thenReturn(city2);
         routes = List.of(route1);
-        gameModel = new GameModel(players, wagonCardDeck, destinationCardDeck, routes);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
 
         List<CityReadOnly> availableCities = gameModel.getNonControllableAvailableCities();
         assertEquals(2, availableCities.size());

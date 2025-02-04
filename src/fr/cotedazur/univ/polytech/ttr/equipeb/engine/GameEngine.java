@@ -1,53 +1,64 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.engine;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.EndGameAction;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
-import fr.cotedazur.univ.polytech.ttr.equipeb.views.ScoreConsoleView;
 
 import java.util.*;
 
 public class GameEngine {
-    private final ScoreController scoreController;
     private final GameModel gameModel;
-    private final IGameViewable gameView;
+    private final Optional<IGameViewable> gameView;
     private final Map<Action, Controller> gameControllers;
-    private final Map<EndGameAction, Controller> endGameControllers;
+    private final List<Controller> endPlayerTurnControllers;
+    private final List<Controller> endGameControllers;
     private final List<Player> players;
     private Iterator<Player> playerIterator;
     private Optional<PlayerIdentification> lastTurnPlayer;
 
     private Player currentPlayer;
-    public GameEngine(GameModel gameModel, List<Player> players) {
+
+    public GameEngine(
+            GameModel gameModel,
+            Map<Action, Controller> gameControllers,
+            List<Controller> endPlayerTurnControllers,
+            List<Controller> endGameControllers,
+            List<Player> players,
+            IGameViewable view
+    ) {
         this.gameModel = gameModel;
         this.players = players;
 
-        this.gameView = new GameConsoleView();
-        this.gameControllers = Map.of(
-            Action.PICK_WAGON_CARD, new WagonCardsController(gameModel),
-            Action.CLAIM_ROUTE, new RoutesController(gameModel),
-            Action.PICK_DESTINATION_CARDS, new DestinationCardsController(gameModel),
-            Action.PLACE_STATION, new StationController(gameModel)
-        );
-        this.endGameControllers = Map.of(
-            EndGameAction.CHOOSE_ROUTE_STATION, new ChooseRouteStationController(gameModel)
-        );
-        this.scoreController = new ScoreController(gameModel, new ScoreConsoleView());
-        this.playerIterator = players.iterator();
-        this.currentPlayer = playerIterator.next();
+        this.gameControllers = gameControllers;
+        this.endPlayerTurnControllers = endPlayerTurnControllers;
+        this.endGameControllers = endGameControllers;
+
+        this.gameView = Optional.ofNullable(view);
 
         this.lastTurnPlayer = Optional.empty();
     }
 
+    public GameEngine(GameModel gameModel, Map<Action, Controller> gameControllers, List<Controller> endPlayerTurnControllers, List<Controller> endGameControllers, List<Player> players) {
+        this(gameModel, gameControllers, endPlayerTurnControllers, endGameControllers, players, null);
+    }
+
+    private List<Controller> getAllControllers() {
+        List<Controller> controllers = new ArrayList<>(gameControllers.values());
+        controllers.addAll(endPlayerTurnControllers);
+        controllers.addAll(endGameControllers);
+        return controllers;
+    }
+
     public boolean initGame() {
         boolean success;
+
+        this.playerIterator = players.iterator();
+        this.currentPlayer = playerIterator.next();
 
         Set<Map.Entry<Action, Controller>> entries = gameControllers.entrySet();
         Iterator<Map.Entry<Action, Controller>> iterator = entries.iterator();
@@ -102,11 +113,11 @@ public class GameEngine {
                 nbPlayersWantStop = 0;
             }
 
+            this.endPlayerTurnControllers.forEach(controller -> controller.doAction(currentPlayer));
+
             boolean newTurn = nextPlayer();
 
             if (newTurn){
-                scoreController.calculatePlacedRoutesScore(currentPlayer);
-
                 if(gameModel.isWagonCardDeckEmpty()) gameModel.fillWagonCardDeck();
 
                 nbTurn++;
@@ -115,24 +126,38 @@ public class GameEngine {
 
         askForEndGameActions();
 
-        scoreController.setFinalScores();
-
-        lastTurnPlayer.ifPresent(playerIdentification -> gameView.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons()));
+        lastTurnPlayer.ifPresent(playerIdentification ->
+            gameView.ifPresent(v -> v.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons()))
+        );
 
         PlayerModel winner = gameModel.getWinner();
 
-        if(winner != null) gameView.displayWinner(winner.getIdentification(), winner.getScore());
+        if(winner != null && gameView.isPresent()) gameView.get().displayWinner(winner.getIdentification(), winner.getScore());
 
         return nbTurn;
     }
 
+    public boolean reset() {
+        lastTurnPlayer = Optional.empty();
+        boolean success = true;
+        for(Controller controller : getAllControllers()) {
+            for (Player player : players) {
+                success = controller.resetPlayer(player);
+                if (!success) return false;
+            }
+            success = controller.resetGame();
+            if(!success) return false;
+        }
+        return success;
+    }
+
     private void askForEndGameActions() {
-        for(Map.Entry<EndGameAction, Controller> entry : endGameControllers.entrySet()) {
+        for(Controller controller : endGameControllers) {
 
             for (Player player : players) {
                 Optional<ReasonActionRefused> endGameAction;
                 do {
-                    endGameAction = entry.getValue().doAction(player);
+                    endGameAction = controller.doAction(player);
                 } while (endGameAction.isPresent());
             }
         }

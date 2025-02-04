@@ -12,12 +12,12 @@ import static org.mockito.Mockito.mock;
 
 class DestinationCardDeckTest {
 
-    private DestinationCardDeck destinationCardDeck;
+    private DestinationCardDeck<ShortDestinationCard> destinationCardDeck;
 
     @BeforeEach
     void setup() {
         List<ShortDestinationCard> cards = new ArrayList<>(List.of(mock(ShortDestinationCard.class), mock(ShortDestinationCard.class), mock(ShortDestinationCard.class)));
-        destinationCardDeck = new DestinationCardDeck(cards);
+        destinationCardDeck = new DestinationCardDeck<>(cards);
     }
 
     @Test

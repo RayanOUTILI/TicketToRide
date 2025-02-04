@@ -57,4 +57,14 @@ public class ChooseRouteStationController extends Controller{
 
         return Optional.empty();
     }
+
+    @Override
+    public boolean resetGame() {
+        return true;
+    }
+
+    @Override
+    public boolean resetPlayer(Player player) {
+        return player.clearChosenRouteStations();
+    }
 }

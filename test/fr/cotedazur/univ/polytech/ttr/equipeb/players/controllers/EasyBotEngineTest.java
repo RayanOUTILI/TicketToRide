@@ -51,7 +51,7 @@ class EasyBotEngineTest {
     @Test
     void testAskActionPickDestinationCards() {
         when(random.nextInt(anyInt())).thenReturn(0);
-        when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
+        when(gameModel.isShortDestCardDeckEmpty()).thenReturn(false);
 
         assertEquals(Action.PICK_DESTINATION_CARDS, easyBotEngine.askAction());
     }

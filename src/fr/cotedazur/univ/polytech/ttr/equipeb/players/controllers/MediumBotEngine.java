@@ -1,6 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
@@ -50,7 +50,7 @@ public class MediumBotEngine extends BotModelControllable {
         if (shouldPickDestinationCards()) {
             return Action.PICK_DESTINATION_CARDS;
         }
-        if (gameModel.isWagonCardDeckEmpty() && !gameModel.isDestinationCardDeckEmpty()) {
+        if (gameModel.isWagonCardDeckEmpty() && !gameModel.isShortDestCardDeckEmpty()) {
             return Action.PICK_DESTINATION_CARDS;
         }
         if (!gameModel.isWagonCardDeckEmpty()) {
@@ -88,7 +88,7 @@ public class MediumBotEngine extends BotModelControllable {
      * @return true if the bot has fewer than 3 destination cards and the destination deck is not empty, otherwise false.
      */
     private boolean shouldPickDestinationCards() {
-        return playerModel.getDestinationCards().size() < 3 && !gameModel.isDestinationCardDeckEmpty();
+        return playerModel.getDestinationCardsHand().size() < 3 && !gameModel.isShortDestCardDeckEmpty();
     }
 
     ////// Methods to determine what the bot asks for //////

@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
@@ -11,6 +12,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -20,8 +22,9 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     private final PlayerIdentification playerIdentification;
     private final PlayerType playerType;
     private final List<WagonCard> wagonCards;
-    private final List<DestinationCard> destinationCards;
-    private final IPlayerViewable view;
+    private final List<ShortDestinationCard> shortDestinationCards;
+    private final List<LongDestinationCard> longDestinationCards;
+    private final Optional<IPlayerViewable> view;
     private final List<RouteReadOnly> chosenRouteStations;
     private int stationsLeft;
     private int score;
@@ -31,9 +34,10 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         this.playerIdentification = playerIdentification;
         this.playerType = playerType;
         this.wagonCards = new ArrayList<>();
-        this.destinationCards = new ArrayList<>();
+        this.shortDestinationCards = new ArrayList<>();
+        this.longDestinationCards = new ArrayList<>();
         this.chosenRouteStations = new ArrayList<>();
-        this.view = view;
+        this.view = Optional.ofNullable(view);
         this.score = 0;
         this.stationsLeft = 0;
         this.numberOfWagons = 0;
@@ -43,6 +47,10 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
         this(playerIdentification, PlayerType.EASY_BOT, view);
     }
 
+    public PlayerModel(PlayerIdentification playerIdentification) {
+        this(playerIdentification, null);
+    }
+
     public PlayerIdentification getIdentification() {
         return playerIdentification;
     }
@@ -50,13 +58,13 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     @Override
     public void receivedWagonCard(WagonCard wagonCard) {
         wagonCards.add(wagonCard);
-        if(view != null) this.view.displayReceivedWagonCards(wagonCard);
+        this.view.ifPresent(v -> v.displayReceivedWagonCards(wagonCard));
     }
 
     @Override
     public void receivedWagonCards(List<WagonCard> wagonCards) {
         this.wagonCards.addAll(wagonCards);
-        if(view != null) this.view.displayReceivedWagonCards(wagonCards);
+        this.view.ifPresent(v -> v.displayReceivedWagonCards(wagonCards));
     }
 
     @Override
@@ -72,20 +80,25 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     }
 
     @Override
+    public List<WagonCard> getWagonCardsHand() {
+        return new ArrayList<>(wagonCards);
+    }
+
+    @Override
     public void replaceRemovedWagonCards(List<WagonCard> wagonCards) {
         this.wagonCards.addAll(wagonCards);
     }
 
     @Override
     public void notifyClaimedRoute(RouteReadOnly route) {
-        if(view != null) this.view.displayClaimedRoute(route);
+        this.view.ifPresent(v -> v.displayClaimedRoute(route));
     }
 
     @Override
     public void setScore(int score) {
         if(this.score != score) {
             this.score = score;
-            if(view != null) this.view.displayNewScore(score);
+            this.view.ifPresent(v -> v.displayNewScore(score));
         }
 
     }
@@ -96,13 +109,32 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     }
 
     public void receivedDestinationCards(List<ShortDestinationCard> destinationCards) {
-        this.destinationCards.addAll(destinationCards);
-        if(view != null) this.view.displayReceivedDestinationCards(destinationCards);
+        this.shortDestinationCards.addAll(destinationCards);
+        this.view.ifPresent(v -> v.displayReceivedDestinationCards(new ArrayList<>(destinationCards)));
+    }
+
+    @Override
+    public void receiveLongDestCards(List<LongDestinationCard> destinationCards) {
+        this.longDestinationCards.addAll(destinationCards);
+        this.view.ifPresent(v -> v.displayReceivedDestinationCards(new ArrayList<>(destinationCards)));
     }
 
     @Override
     public List<DestinationCard> getDestinationCardsHand() {
+        List<DestinationCard> destinationCards = new ArrayList<>();
+        destinationCards.addAll(shortDestinationCards);
+        destinationCards.addAll(longDestinationCards);
         return destinationCards;
+    }
+
+    @Override
+    public List<ShortDestinationCard> getShortDestinationCardsHand() {
+        return new ArrayList<>(shortDestinationCards);
+    }
+
+    @Override
+    public List<LongDestinationCard> getLongDestinationCardsHand() {
+        return new ArrayList<>(longDestinationCards);
     }
 
     @Override
@@ -122,7 +154,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
 
     @Override
     public void notifyClaimedStation(CityReadOnly city, List<WagonCard> wagonCards) {
-        if(view != null) this.view.displayClaimedStation(city, wagonCards, stationsLeft);
+        this.view.ifPresent(v -> v.displayClaimedStation(city, wagonCards, stationsLeft));
     }
 
     @Override
@@ -152,13 +184,38 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
     }
 
     @Override
-    public int getNumberOfWagonCards() {
-        return wagonCards.size();
+    public boolean clearDestinationCards() {
+        this.shortDestinationCards.clear();
+        return true;
     }
 
     @Override
-    public List<DestinationCard> getDestinationCards() {
-        return destinationCards;
+    public boolean clearChosenRouteStations() {
+        this.chosenRouteStations.clear();
+        return true;
+    }
+
+    @Override
+    public boolean clearScore() {
+        this.score = 0;
+        return true;
+    }
+
+    @Override
+    public boolean clearStationsLeft() {
+        this.stationsLeft = 0;
+        return true;
+    }
+
+    @Override
+    public boolean clearNumberOfWagons() {
+        this.numberOfWagons = 0;
+        return true;
+    }
+
+    @Override
+    public int getNumberOfWagonCards() {
+        return wagonCards.size();
     }
 
     @Override

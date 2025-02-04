@@ -74,6 +74,17 @@ public class WagonCardsController extends Controller {
         return Optional.empty();
     }
 
+    @Override
+    public boolean resetPlayer(Player player) {
+        List<WagonCard> cards = player.removeWagonCards(player.getWagonCardsHand());
+        return gameModel.discardWagonCards(cards);
+    }
+
+    @Override
+    public boolean resetGame() {
+        return gameModel.clearWagonCardsDeck();
+    }
+
     private boolean isActionDrawFromDeckAllowed(Optional<ActionDrawWagonCard> action, List<ActionDrawWagonCard> possibleActions) {
         return action.isPresent() && action.get() == ActionDrawWagonCard.DRAW_FROM_DECK && possibleActions.contains(ActionDrawWagonCard.DRAW_FROM_DECK);
     }
@@ -107,7 +118,7 @@ public class WagonCardsController extends Controller {
             while (gameModel.getListOfShownWagonCards().stream().filter(c -> c.getColor() == Color.ANY).count() >= MIN_LOCOMOTIVES_FOR_REPLACE) {
                 List<WagonCard> newShownCards = gameModel.drawCardsFromWagonCardDeck(5);
                 gameModel.replaceShownWagonCards(newShownCards);
-        }
+            }
         }
     }
 }

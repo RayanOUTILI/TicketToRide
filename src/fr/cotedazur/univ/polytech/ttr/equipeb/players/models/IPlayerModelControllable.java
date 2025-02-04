@@ -1,6 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
@@ -17,6 +18,7 @@ public interface IPlayerModelControllable {
     void receivedWagonCard(WagonCard wagonCard);
     void receivedWagonCards(List<WagonCard> wagonCards);
     List<WagonCard> removeWagonCards(List<WagonCard> wagonCards);
+    List<WagonCard> getWagonCardsHand();
 
     /**
      * Replace the removed wagon cards to the player in case of failure to claim a route
@@ -26,8 +28,11 @@ public interface IPlayerModelControllable {
     void setScore(int score);
     int getScore();
     void receivedDestinationCards(List<ShortDestinationCard> destinationCards);
+    void receiveLongDestCards(List<LongDestinationCard> destinationCards);
 
     List<DestinationCard> getDestinationCardsHand();
+    List<ShortDestinationCard> getShortDestinationCardsHand();
+    List<LongDestinationCard> getLongDestinationCardsHand();
 
     void defineStartingStationsNumber(int size);
     int getStationsLeft();
@@ -41,4 +46,10 @@ public interface IPlayerModelControllable {
     void removeWagons(int numberOfWagons);
     void addChosenRouteStation(RouteReadOnly route);
     List<RouteReadOnly> getSelectedStationRoutes();
+
+    boolean clearDestinationCards();
+    boolean clearChosenRouteStations();
+    boolean clearScore();
+    boolean clearStationsLeft();
+    boolean clearNumberOfWagons();
 }

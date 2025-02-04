@@ -11,6 +11,7 @@ public class WagonCardDeck {
     private final Deque<WagonCard> stack;
     private final List<WagonCard> shownCards = new ArrayList<>();
     private final Deque<WagonCard> discardPile = new ArrayDeque<>();
+    private final List<WagonCard> maskedCards = new ArrayList<>();
 
 
     public WagonCardDeck(List<WagonCard> cards) {
@@ -70,7 +71,16 @@ public class WagonCardDeck {
     }
 
     public boolean replaceShownCards(List<WagonCard> cards) {
+        maskedCards.addAll(shownCards);
         shownCards.clear();
         return shownCards.addAll(cards);
+    }
+
+    public boolean clearDeck() {
+        boolean added = stack.addAll(shownCards) && stack.addAll(maskedCards) && stack.addAll(discardPile);
+        shownCards.clear();
+        maskedCards.clear();
+        discardPile.clear();
+        return added;
     }
 }
