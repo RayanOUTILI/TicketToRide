@@ -1,11 +1,12 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimObject;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IStationControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
 import java.util.List;
@@ -22,9 +23,9 @@ public class StationController extends Controller{
 
     // Get the city from the Claim Station Object
     // If the city is null or already claimed, return null
-    private City checkCityAvailable(ClaimStation wantedCity) {
-        if(wantedCity == null || wantedCity.city() == null) return null;
-        City city = gameModel.getCity(wantedCity.city().getId());
+    private City checkCityAvailable(ClaimObject<CityReadOnly> wantedCity) {
+        if(wantedCity == null || wantedCity.getClaimable() == null) return null;
+        City city = gameModel.getCity(wantedCity.getClaimable().getId());
         return city != null && !city.isClaimed() ? city : null;
     }
 
@@ -45,7 +46,7 @@ public class StationController extends Controller{
         int stationsLeft = player.getStationsLeft();
         if (stationsLeft <= 0) return Optional.of(ReasonActionRefused.STATION_NOT_ENOUGH_STATIONS_LEFT);
 
-        ClaimStation claimStation = player.askClaimStation();
+        ClaimObject<CityReadOnly> claimStation = player.askClaimStation();
         City city = checkCityAvailable(claimStation);
 
         if (city == null) return Optional.of(ReasonActionRefused.STATION_CITY_NOT_VALID);
@@ -58,13 +59,13 @@ public class StationController extends Controller{
         // Basically, when it's your first time claiming, you must select 1 card
         // Then, you must select 2 cards, and so on
         // The cards has to be the same color
-        if (removedCards.size() != (STARTING_STATIONS - (stationsLeft-1))) {
+        if (removedCards.size() != getNumberOfRequiredCards(stationsLeft)) {
             player.replaceRemovedWagonCards(removedCards);
             return Optional.of(ReasonActionRefused.STATION_NOT_ENOUGH_WAGON_CARDS);
         }
 
         // Check if the cards are the same color
-        WagonCard firstCard = removedCards.get(0);
+        WagonCard firstCard = removedCards.getFirst();
         boolean allCardsHaveSameColor = removedCards.stream().allMatch(
                 card -> card.getColor() == firstCard.getColor()
                         || card.getColor() == Color.ANY
@@ -93,5 +94,9 @@ public class StationController extends Controller{
     @Override
     public boolean resetGame() {
         return gameModel.setAllStationsNotClaimed();
+    }
+
+    private int getNumberOfRequiredCards(int stationsLeft) {
+        return STARTING_STATIONS - (stationsLeft - 1);
     }
 }

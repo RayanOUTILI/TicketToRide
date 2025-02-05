@@ -1,14 +1,15 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.ScoreComparator;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
@@ -32,12 +33,12 @@ public class GameModel implements
 
     private final List<PlayerModel> playerModels;
     private final WagonCardDeck wagonCardDeck;
-    private final DestinationCardDeck<ShortDestinationCard> shortDestinationCardDeck;
-    private final DestinationCardDeck<LongDestinationCard> longDestinationCardDeck;
+    private final DestinationCardDeck<DestinationCard> shortDestinationCardDeck;
+    private final DestinationCardDeck<DestinationCard> longDestinationCardDeck;
     private final List<Route> routes;
     private final List<Route> removedRoutes;
 
-    public GameModel(List<PlayerModel> playerModels, WagonCardDeck wagonCardDeck, DestinationCardDeck<ShortDestinationCard> shortDestCardDeck, DestinationCardDeck<LongDestinationCard> longDestCardDeck, List<Route> routes) {
+    public GameModel(List<PlayerModel> playerModels, WagonCardDeck wagonCardDeck, DestinationCardDeck<DestinationCard> shortDestCardDeck, DestinationCardDeck<DestinationCard> longDestCardDeck, List<Route> routes) {
         this.playerModels = playerModels;
         this.wagonCardDeck = wagonCardDeck;
         this.shortDestinationCardDeck = shortDestCardDeck;
@@ -77,8 +78,16 @@ public class GameModel implements
     }
 
     @Override
-    public boolean replaceShownWagonCards(List<WagonCard> wagonCards) {
+    public boolean placeShownWagonCards(List<WagonCard> wagonCards) {
         return wagonCardDeck.replaceShownCards(wagonCards);
+    }
+    @Override
+    public boolean replaceShownWagonCardsInCaseOfLocomotives(int minimumLocomotives) {
+        while (getListOfShownWagonCards().stream().filter(c -> c.getColor() == Color.ANY).count() >= minimumLocomotives) {
+            List<WagonCard> newShownCards = drawCardsFromWagonCardDeck(5);
+            wagonCardDeck.replaceShownCards(newShownCards);
+        }
+        return true;
     }
 
     @Override
@@ -215,22 +224,22 @@ public class GameModel implements
     }
 
     @Override
-    public List<ShortDestinationCard> drawDestinationCards(int maximumCards) {
+    public List<DestinationCard> drawDestinationCards(int maximumCards) {
         return shortDestinationCardDeck.drawCard(maximumCards);
     }
 
     @Override
-    public List<LongDestinationCard> drawLongDestinationCards(int maximumCards) {
+    public List<DestinationCard> drawLongDestinationCards(int maximumCards) {
         return longDestinationCardDeck.drawCard(maximumCards);
     }
 
     @Override
-    public void returnShortDestinationCardsToTheBottom(List<ShortDestinationCard> cards) {
+    public void returnShortDestinationCardsToTheBottom(List<DestinationCard> cards) {
         shortDestinationCardDeck.addCardsAtBottom(cards);
     }
 
     @Override
-    public void returnLongDestinationCardsToTheBottom(List<LongDestinationCard> cards) {
+    public void returnLongDestinationCardsToTheBottom(List<DestinationCard> cards) {
         longDestinationCardDeck.addCardsAtBottom(cards);
     }
 
@@ -242,8 +251,10 @@ public class GameModel implements
     }
 
     @Override
-    public List<IPlayerModelControllable> getPlayers() {
-        return new ArrayList<>(playerModels);
+    public List<PlayerIdentification> getPlayersIdentification() {
+        return playerModels.stream()
+                .map(IPlayerModelControllable::getIdentification)
+                .toList();
     }
 
     public PlayerModel getWinner() {
@@ -251,13 +262,9 @@ public class GameModel implements
             return null;
         }
 
-        PlayerModel winner = playerModels.get(0);
-        for (PlayerModel player : playerModels) {
-            if (player.getScore() > winner.getScore()) {
-                winner = player;
-            }
-        }
-        return winner;
+        return playerModels.stream()
+                .min(new ScoreComparator())
+                .orElse(null);
     }
 
 

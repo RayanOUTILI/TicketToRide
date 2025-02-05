@@ -2,9 +2,9 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimObject;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
@@ -73,7 +73,7 @@ class MediumBotEngineTest {
 
     @Test
     void askAction_pickDestinationCards() {
-        when(playerModel.getDestinationCardsHand()).thenReturn(Collections.emptyList());
+        when(playerModel.getDestinationCards()).thenReturn(Collections.emptyList());
         when(gameModel.isShortDestCardDeckEmpty()).thenReturn(false);
         when(playerModel.getNumberOfWagonCards()).thenReturn(16);
 
@@ -82,7 +82,7 @@ class MediumBotEngineTest {
 
     @Test
     void askAction_pickWagonCard() {
-        when(playerModel.getDestinationCardsHand()).thenReturn(Arrays.asList(mock(ShortDestinationCard.class), mock(ShortDestinationCard.class), mock(ShortDestinationCard.class)));
+        when(playerModel.getDestinationCards()).thenReturn(Arrays.asList(mock(DestinationCard.class), mock(DestinationCard.class), mock(DestinationCard.class)));
         when(gameModel.isWagonCardDeckEmpty()).thenReturn(false);
 
         assertEquals(Action.PICK_WAGON_CARD, botEngine.askAction());
@@ -106,9 +106,9 @@ class MediumBotEngineTest {
         when(playerModel.getNumberOfWagonCardsIncludingAnyColor(any())).thenReturn(5);
         when(playerModel.getNumberOfWagons()).thenReturn(5);
 
-        ClaimRoute claimRoute = botEngine.askClaimRoute();
+        ClaimObject<RouteReadOnly> claimRoute = botEngine.askClaimRoute();
         assertNotNull(claimRoute);
-        assertEquals(route, claimRoute.route());
+        assertEquals(route, claimRoute.getClaimable());
     }
 
     @Test
@@ -124,21 +124,21 @@ class MediumBotEngineTest {
         when(gameModel.getNonControllableAvailableCities()).thenReturn(Collections.singletonList(city));
         when(playerModel.getWagonCardsIncludingAnyColor(anyInt())).thenReturn(Arrays.asList(mock(WagonCard.class), mock(WagonCard.class), mock(WagonCard.class)));
 
-        ClaimStation claimStation = botEngine.askClaimStation();
+        ClaimObject<CityReadOnly> claimStation = botEngine.askClaimStation();
         assertNotNull(claimStation);
-        assertEquals(city, claimStation.city());
+        assertEquals(city, claimStation.getClaimable());
     }
 
     @Test
     void askDestinationCards_prioritizeCards() {
-        ShortDestinationCard card1 = mock(ShortDestinationCard.class);
-        ShortDestinationCard card2 = mock(ShortDestinationCard.class);
-        ShortDestinationCard card3 = mock(ShortDestinationCard.class);
+        DestinationCard card1 = mock(DestinationCard.class);
+        DestinationCard card2 = mock(DestinationCard.class);
+        DestinationCard card3 = mock(DestinationCard.class);
         when(card1.getPoints()).thenReturn(5);
         when(card2.getPoints()).thenReturn(10);
         when(card3.getPoints()).thenReturn(15);
 
-        List<ShortDestinationCard> selectedCards = botEngine.askDestinationCards(Arrays.asList(card1, card2, card3));
+        List<DestinationCard> selectedCards = botEngine.askDestinationCards(Arrays.asList(card1, card2, card3));
         assertEquals(2, selectedCards.size());
         assertTrue(selectedCards.contains(card2));
         assertTrue(selectedCards.contains(card3));

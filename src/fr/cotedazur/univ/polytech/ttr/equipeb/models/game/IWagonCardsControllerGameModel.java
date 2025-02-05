@@ -21,7 +21,9 @@ public interface IWagonCardsControllerGameModel {
 
     boolean placeNewWagonCardOnShownCards(WagonCard card);
 
-    boolean replaceShownWagonCards(List<WagonCard> wagonCards);
+    boolean placeShownWagonCards(List<WagonCard> wagonCards);
+
+    boolean replaceShownWagonCardsInCaseOfLocomotives(int minimumOfLocomotives);
 
     boolean discardWagonCards(List<WagonCard> wagonCards);
 

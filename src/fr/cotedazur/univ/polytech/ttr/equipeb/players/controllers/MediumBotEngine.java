@@ -1,7 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
@@ -78,12 +78,12 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @return the claim route action, or null if no route is available.
      */
     @Override
-    public ClaimRoute askClaimRoute() {
+    public ClaimObject<RouteReadOnly> askClaimRoute() {
         RouteReadOnly bestRoute = findBestRouteToClaim();
         if (bestRoute == null) {
             return null;
         }
-        return new ClaimRoute(bestRoute, playerModel.getWagonCardsIncludingAnyColor(bestRoute.getColor(), bestRoute.getLength(), 0));
+        return new ClaimObject<>(bestRoute, playerModel.getWagonCardsIncludingAnyColor(bestRoute.getColor(), bestRoute.getLength(), 0));
     }
 
     /**
@@ -92,13 +92,13 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @return the claim station action for the chosen city.
      */
     @Override
-    public ClaimStation askClaimStation() {
+    public ClaimObject<CityReadOnly> askClaimStation() {
         List<CityReadOnly> availableCities = gameModel.getNonControllableAvailableCities();
         if (availableCities.isEmpty()) {
             return null;
         }
         CityReadOnly bestCity = chooseCityToPlaceStation(availableCities);
-        return new ClaimStation(bestCity, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft() - 1)));
+        return new ClaimObject<>(bestCity, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft() - 1)));
     }
 
     /**
@@ -108,8 +108,14 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @return a list of selected destination cards.
      */
     @Override
-    public List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards) {
+    public List<DestinationCard> askDestinationCards(List<DestinationCard> cards) {
         return prioritizeDestinationCards(cards);
+    }
+
+    @Override
+    public List<DestinationCard> askInitialDestinationCards(List<DestinationCard> cards) {
+        //TODO implement
+        return List.of();
     }
 
     @Override
@@ -178,7 +184,7 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @return true if the bot has fewer than 3 destination cards and the destination deck is not empty, otherwise false.
      */
     private boolean shouldPickDestinationCards() {
-        return playerModel.getDestinationCardsHand().size() < 3 && !gameModel.isShortDestCardDeckEmpty();
+        return playerModel.getDestinationCards().size() < 3 && !gameModel.isShortDestCardDeckEmpty();
     }
 
     /**
@@ -242,7 +248,7 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @param cards the list of destination cards to prioritize.
      * @return the list of prioritized destination cards.
      */
-    private List<ShortDestinationCard> prioritizeDestinationCards(List<ShortDestinationCard> cards) {
+    private List<DestinationCard> prioritizeDestinationCards(List<DestinationCard> cards) {
         return cards.stream()
                 .sorted(Comparator.comparingInt(this::evaluateDestinationCardPriority).reversed())
                 .limit(2)
@@ -255,9 +261,9 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @param card the destination card to evaluate.
      * @return the priority score for the destination card.
      */
-    private int evaluateDestinationCardPriority(ShortDestinationCard card) {
+    private int evaluateDestinationCardPriority(DestinationCard card) {
         int priority = card.getPoints();
-        for (RouteReadOnly route : gameModel.getAllRoutesClaimedByPlayer(playerModel.getPlayerIdentification())) {
+        for (RouteReadOnly route : gameModel.getAllRoutesClaimedByPlayer(playerModel.getIdentification())) {
             if (card.getCities().contains(route.getFirstCity()) || card.getCities().contains(route.getSecondCity())) {
                 priority += 10;
             }

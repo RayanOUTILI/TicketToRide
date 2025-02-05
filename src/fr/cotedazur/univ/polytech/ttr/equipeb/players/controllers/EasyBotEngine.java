@@ -1,11 +1,11 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
+
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimObject;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
@@ -47,7 +47,7 @@ public class EasyBotEngine implements IPlayerActionsControllable {
     public Action askAction() {
         int action = random.nextInt(2);
 
-        if (action == 0 && !gameModel.isShortDestCardDeckEmpty() && playerModel.getDestinationCardsHand().size() < 3) {
+        if (action == 0 && !gameModel.isShortDestCardDeckEmpty() && playerModel.getDestinationCards().size() < 3) {
             return Action.PICK_DESTINATION_CARDS;
         } else if (canTakeARoute()) {
             return Action.CLAIM_ROUTE;
@@ -67,29 +67,29 @@ public class EasyBotEngine implements IPlayerActionsControllable {
     }
 
     @Override
-    public ClaimRoute askClaimRoute() {
+    public ClaimObject<RouteReadOnly> askClaimRoute() {
         RouteReadOnly route = chooseRoute();
 
         if(route == null) return null;
 
-        return new ClaimRoute(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getType() == RouteType.FERRY ? route.getNbLocomotives() : 0));
+        return new ClaimObject<>(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getType() == RouteType.FERRY ? route.getNbLocomotives() : 0));
     }
 
     @Override
-    public ClaimStation askClaimStation() {
+    public ClaimObject<CityReadOnly> askClaimStation() {
         List<CityReadOnly> availableCities = gameModel.getNonControllableAvailableCities();
 
         int cityIndex = random.nextInt(availableCities.size());
         CityReadOnly city = availableCities.get(cityIndex);
 
-        return new ClaimStation(city, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft()-1)));
+        return new ClaimObject<>(city, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft()-1)));
     }
 
     @Override
-    public List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards) {
+    public List<DestinationCard> askDestinationCards(List<DestinationCard> cards) {
         int maxCardsNumber = cards.size();
 
-        List<ShortDestinationCard> cardsToKeep = new ArrayList<>(cards);
+        List<DestinationCard> cardsToKeep = new ArrayList<>(cards);
 
         if (!cards.isEmpty() && maxCardsNumber > 1) {
             int nbCardsToRemove = random.nextInt(maxCardsNumber - 1);
@@ -101,6 +101,12 @@ public class EasyBotEngine implements IPlayerActionsControllable {
         }
 
         return cardsToKeep;
+    }
+
+    @Override
+    public List<DestinationCard> askInitialDestinationCards(List<DestinationCard> cards) {
+        //TODO implement
+        return List.of();
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface IPlayerModel {
     int getNumberOfWagonCards();
-    List<DestinationCard> getDestinationCardsHand();
+    List<DestinationCard> getDestinationCards();
     int getStationsLeft();
     List<WagonCard> getWagonCards(int numberOfCards);
     List<WagonCard> getWagonCardsIncludingAnyColor(int numberOfCards);
@@ -20,7 +20,7 @@ public interface IPlayerModel {
     List<WagonCard> getWagonCardsOfColor(Color color, int numberOfCards);
 
     int getNumberOfWagons();
-    PlayerIdentification getPlayerIdentification();
+    PlayerIdentification getIdentification();
 
     int getNumberOfWagonCardsIncludingAnyColor(Color color);
 }

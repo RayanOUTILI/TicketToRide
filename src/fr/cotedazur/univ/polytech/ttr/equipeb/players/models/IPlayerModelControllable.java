@@ -1,8 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
@@ -27,12 +25,10 @@ public interface IPlayerModelControllable {
     void notifyClaimedRoute(RouteReadOnly route);
     void setScore(int score);
     int getScore();
-    void receivedDestinationCards(List<ShortDestinationCard> destinationCards);
-    void receiveLongDestCards(List<LongDestinationCard> destinationCards);
+    void receiveDestinationCards(List<DestinationCard> destinationCards);
 
-    List<DestinationCard> getDestinationCardsHand();
-    List<ShortDestinationCard> getShortDestinationCardsHand();
-    List<LongDestinationCard> getLongDestinationCardsHand();
+    List<DestinationCard> getDestinationCards();
+    List<DestinationCard> getDiscardDestinationCards();
 
     void defineStartingStationsNumber(int size);
     int getStationsLeft();
@@ -52,4 +48,10 @@ public interface IPlayerModelControllable {
     boolean clearScore();
     boolean clearStationsLeft();
     boolean clearNumberOfWagons();
+
+    void incrementNumberOfCompletedObjectiveCards(int numberOfCompletedObjectiveCards);
+    void setLongestContinuousRouteLength(int length);
+
+    boolean discardDestinationCard(List<DestinationCard> destinationCards);
+
 }

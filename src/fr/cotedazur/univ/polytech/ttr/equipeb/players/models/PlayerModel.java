@@ -1,18 +1,13 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.models;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.LongDestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerViewable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -22,25 +17,29 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
     private final PlayerIdentification playerIdentification;
     private final PlayerType playerType;
     private final List<WagonCard> wagonCards;
-    private final List<ShortDestinationCard> shortDestinationCards;
-    private final List<LongDestinationCard> longDestinationCards;
+    private final List<DestinationCard> destinationCards;
+    private final List<DestinationCard> discardDestinationCards;
     private final Optional<IPlayerViewable> view;
     private final List<RouteReadOnly> chosenRouteStations;
     private int stationsLeft;
     private int score;
     private int numberOfWagons;
+    private int longestContinuousRoute;
+    private int completedObjectiveCards;
 
     public PlayerModel(PlayerIdentification playerIdentification, PlayerType playerType, IPlayerViewable view) {
         this.playerIdentification = playerIdentification;
         this.playerType = playerType;
         this.wagonCards = new ArrayList<>();
-        this.shortDestinationCards = new ArrayList<>();
-        this.longDestinationCards = new ArrayList<>();
+        this.destinationCards = new ArrayList<>();
+        this.discardDestinationCards = new ArrayList<>();
         this.chosenRouteStations = new ArrayList<>();
         this.view = Optional.ofNullable(view);
         this.score = 0;
         this.stationsLeft = 0;
         this.numberOfWagons = 0;
+        this.longestContinuousRoute = 0;
+        this.completedObjectiveCards = 0;
     }
 
     public PlayerModel(PlayerIdentification playerIdentification, IPlayerViewable view) {
@@ -53,6 +52,14 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
 
     public PlayerIdentification getIdentification() {
         return playerIdentification;
+    }
+
+    public int getLongestContinuousRouteLength() {
+        return longestContinuousRoute;
+    }
+
+    public int getNumberOfCompletedObjectiveCards() {
+        return completedObjectiveCards;
     }
 
     @Override
@@ -108,33 +115,19 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
         return this.score;
     }
 
-    public void receivedDestinationCards(List<ShortDestinationCard> destinationCards) {
-        this.shortDestinationCards.addAll(destinationCards);
+    public void receiveDestinationCards(List<DestinationCard> destinationCards) {
+        this.destinationCards.addAll(destinationCards);
         this.view.ifPresent(v -> v.displayReceivedDestinationCards(new ArrayList<>(destinationCards)));
     }
 
     @Override
-    public void receiveLongDestCards(List<LongDestinationCard> destinationCards) {
-        this.longDestinationCards.addAll(destinationCards);
-        this.view.ifPresent(v -> v.displayReceivedDestinationCards(new ArrayList<>(destinationCards)));
-    }
-
-    @Override
-    public List<DestinationCard> getDestinationCardsHand() {
-        List<DestinationCard> destinationCards = new ArrayList<>();
-        destinationCards.addAll(shortDestinationCards);
-        destinationCards.addAll(longDestinationCards);
+    public List<DestinationCard> getDestinationCards() {
         return destinationCards;
     }
 
     @Override
-    public List<ShortDestinationCard> getShortDestinationCardsHand() {
-        return new ArrayList<>(shortDestinationCards);
-    }
-
-    @Override
-    public List<LongDestinationCard> getLongDestinationCardsHand() {
-        return new ArrayList<>(longDestinationCards);
+    public List<DestinationCard> getDiscardDestinationCards() {
+        return discardDestinationCards;
     }
 
     @Override
@@ -185,7 +178,8 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
 
     @Override
     public boolean clearDestinationCards() {
-        this.shortDestinationCards.clear();
+        this.destinationCards.clear();
+        this.discardDestinationCards.clear();
         return true;
     }
 
@@ -197,6 +191,8 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
 
     @Override
     public boolean clearScore() {
+        this.longestContinuousRoute = 0;
+        this.completedObjectiveCards = 0;
         this.score = 0;
         return true;
     }
@@ -210,6 +206,22 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
     @Override
     public boolean clearNumberOfWagons() {
         this.numberOfWagons = 0;
+        return true;
+    }
+
+    @Override
+    public void incrementNumberOfCompletedObjectiveCards(int numberOfCompletedObjectiveCards) {
+        this.completedObjectiveCards += numberOfCompletedObjectiveCards;
+    }
+
+    @Override
+    public void setLongestContinuousRouteLength(int length) {
+        this.longestContinuousRoute = length;
+    }
+
+    @Override
+    public boolean discardDestinationCard(List<DestinationCard> destinationCards) {
+        this.discardDestinationCards.addAll(destinationCards);
         return true;
     }
 
@@ -309,10 +321,6 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
     @Override
     public int getNumberOfWagonCardsIncludingAnyColor(Color color) {
         return (int) wagonCards.stream().filter(c -> c.getColor().equals(color) || c.getColor().equals(Color.ANY)).count();
-    }
-
-    public PlayerIdentification getPlayerIdentification(){
-        return this.playerIdentification;
     }
 
     public PlayerType getPlayerType(){

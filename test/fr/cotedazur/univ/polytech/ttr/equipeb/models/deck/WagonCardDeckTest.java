@@ -10,7 +10,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class WagonCardDeckTest {
 
@@ -25,7 +24,7 @@ class WagonCardDeckTest {
 
         shownCardsField = WagonCardDeck.class.getDeclaredField("shownCards");
         shownCardsField.setAccessible(true);
-        shownCards = mock(List.class);
+        shownCards = new ArrayList<>();
         shownCardsField.set(wagonCardDeck, shownCards);
     }
 
@@ -66,26 +65,22 @@ class WagonCardDeckTest {
     @Test
     void addCardToShownCards() {
         WagonCard card = mock(WagonCard.class);
-
-        when(shownCards.size()).thenReturn(5);
+        shownCards.addAll(List.of(mock(WagonCard.class), mock(WagonCard.class), mock(WagonCard.class), mock(WagonCard.class), mock(WagonCard.class)));
         assertFalse(wagonCardDeck.addCardToShownCards(card));
 
-        when(shownCards.size()).thenReturn(1);
-        when(shownCards.add(card)).thenReturn(true);
+        shownCards.clear();
+        shownCards.add(mock(WagonCard.class));
         assertTrue(wagonCardDeck.addCardToShownCards(card));
-
-        when(shownCards.size()).thenReturn(3);
-        when(shownCards.add(card)).thenReturn(false);
-        assertFalse(wagonCardDeck.addCardToShownCards(card));
     }
 
     @Test
     void removeCardFromShownCards() {
         WagonCard card = mock(WagonCard.class);
-        when(shownCards.remove(card)).thenReturn(true);
+        shownCards.clear();
+        shownCards.add(card);
         assertTrue(wagonCardDeck.removeCardFromShownCards(card));
 
-        when(shownCards.remove(card)).thenReturn(false);
+        shownCards.remove(card);
         assertFalse(wagonCardDeck.removeCardFromShownCards(card));
     }
 
@@ -113,5 +108,15 @@ class WagonCardDeckTest {
         assertEquals(shownCards, cards);
 
         assertNotSame(shownCards, cards);
+    }
+
+    @Test
+    void testClear() {
+        assertFalse(wagonCardDeck.isEmpty());
+        WagonCard card = wagonCardDeck.drawCard();
+        assertTrue(wagonCardDeck.isEmpty());
+        wagonCardDeck.addCardToDiscardPile(new ArrayList<>(List.of(card)));
+        assertTrue(wagonCardDeck.clearDeck());
+        assertFalse(wagonCardDeck.isEmpty());
     }
 }

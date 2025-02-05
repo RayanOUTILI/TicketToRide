@@ -7,7 +7,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.EndGameScoreController
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
-import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,34 +15,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class GameEngineTest {
 
     private GameModel gameModel;
-    private IGameViewable gameView;
     private Controller controller;
     private GameEngine gameEngine;
     private Player player1;
     private Player player2;
     private List<Player> players;
+    private List<Controller> endGameControllers;
+    private Map<Action, Controller> gameControllers;
 
     @BeforeEach
     void setUp() {
         gameModel = mock(GameModel.class);
-        gameView = mock(IGameViewable.class);
         controller = mock(Controller.class);
         player1 = mock(Player.class);
         player2 = mock(Player.class);
         players = List.of(player1, player2);
 
-        List<Controller> endGameControllers = List.of(
+        endGameControllers = List.of(
                 mock(EndGameScoreController.class)
         );
 
-        gameEngine = new GameEngine(gameModel, Map.of(Action.PICK_WAGON_CARD, controller), new ArrayList<>(), endGameControllers, players, gameView);
+        gameControllers = Map.of(Action.PICK_WAGON_CARD, controller);
+
+        gameEngine = new GameEngine(gameModel, gameControllers, new ArrayList<>(), endGameControllers, players);
 
     }
 
@@ -128,5 +128,44 @@ class GameEngineTest {
         verify(player1, times(4)).askAction();
         verify(player2, times(3)).askAction();
         verify(controller, times(2)).doAction(player2);
+    }
+
+    @Test
+    void testResetFailedByPlayer1() {
+        endGameControllers.forEach(c -> when(c.resetPlayer(any())).thenReturn(true));
+        when(controller.resetPlayer(player1)).thenReturn(false);
+        when(controller.resetPlayer(player2)).thenReturn(true);
+
+        assertFalse(gameEngine.reset());
+        verify(controller, times(1)).resetPlayer(player1);
+        verify(controller, times(0)).resetPlayer(player2);
+    }
+
+    @Test
+    void testResetFailedByGame() {
+        endGameControllers.forEach(c -> when(c.resetPlayer(any())).thenReturn(true));
+        when(controller.resetPlayer(any())).thenReturn(true);
+
+        endGameControllers.forEach(c -> when(c.resetGame()).thenReturn(true));
+        when(controller.resetGame()).thenReturn(false);
+
+        assertFalse(gameEngine.reset());
+        verify(controller, times(1)).resetPlayer(player1);
+        verify(controller, times(1)).resetPlayer(player2);
+        verify(controller, times(1)).resetGame();
+    }
+
+    @Test
+    void testResetGameNotFailed() {
+        endGameControllers.forEach(c -> when(c.resetPlayer(any())).thenReturn(true));
+        when(controller.resetPlayer(any())).thenReturn(true);
+
+        endGameControllers.forEach(c -> when(c.resetGame()).thenReturn(true));
+        when(controller.resetGame()).thenReturn(true);
+
+        assertTrue(gameEngine.reset());
+        verify(controller, times(1)).resetPlayer(player1);
+        verify(controller, times(1)).resetPlayer(player2);
+        verify(controller, times(1)).resetGame();
     }
 }

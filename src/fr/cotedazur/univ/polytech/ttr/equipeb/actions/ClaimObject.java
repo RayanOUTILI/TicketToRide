@@ -1,21 +1,20 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.actions;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 
 import java.util.List;
 
-public class ClaimStation {
-    private final CityReadOnly city;
+public class ClaimObject<T> {
+    private final T claimable;
     private final List<WagonCard> wagonCards;
 
-    public ClaimStation(CityReadOnly city, List<WagonCard> wagonCards) {
-        this.city = city;
+    public ClaimObject(T claimable, List<WagonCard> wagonCards) {
+        this.claimable = claimable;
         this.wagonCards = wagonCards;
     }
 
-    public CityReadOnly city() {
-        return city;
+    public T getClaimable() {
+        return claimable;
     }
 
     public List<WagonCard> wagonCards() {
