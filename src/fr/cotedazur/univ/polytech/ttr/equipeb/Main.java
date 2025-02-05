@@ -34,7 +34,7 @@ import java.util.UUID;
 
 public class Main {
 
-    private static final String FILE_PATH = "resources/stats/gameResult.csv";
+    private static final String FILE_PATH = "stats/gamestats.csv";
 
     public static void main(String[] args) {
         try {
@@ -48,9 +48,9 @@ public class Main {
 
             PlayerFactory playerFactory = new PlayerFactory();
 
-            PlayerModel playerModelBlue = new PlayerModel(PlayerIdentification.BLUE, PlayerType.EASY_BOT, null);
-            PlayerModel playerModelRed = new PlayerModel(PlayerIdentification.RED, PlayerType.EASY_BOT, null);
-            PlayerModel playerModelGreen = new PlayerModel(PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT, null);
+            PlayerModel playerModelBlue = new PlayerModel(PlayerIdentification.BLUE, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.BLUE));
+            PlayerModel playerModelRed = new PlayerModel(PlayerIdentification.RED, PlayerType.EASY_BOT, new PlayerConsoleView(PlayerIdentification.RED));
+            PlayerModel playerModelGreen = new PlayerModel(PlayerIdentification.GREEN, PlayerType.MEDIUM_BOT, new PlayerConsoleView(PlayerIdentification.GREEN));
 
             List<PlayerModel> playerModels = List.of(
                     playerModelBlue,
@@ -115,7 +115,7 @@ public class Main {
 
             GameEngine gameEngine = new GameEngine(gameModel, gameControllers, endPlayerTurnControllers, endGameControllers, players, gameView);
             GameSimulator gameSimulator = new GameSimulator(gameEngine);
-            gameSimulator.simulateGame(2000);
+            gameSimulator.simulateGame(1);
 
             statsWriter.close();
 
