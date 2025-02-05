@@ -59,6 +59,7 @@ class GameEngineTest {
     void testInitPlayer() {
         when(controller.initPlayer(player1)).thenReturn(true);
         when(controller.initPlayer(player2)).thenReturn(true);
+        endGameControllers.forEach(c -> when(c.initPlayer(any())).thenReturn(true));
 
         assertTrue(gameEngine.initPlayers());
         verify(controller, times(1)).initPlayer(player1);
@@ -70,6 +71,8 @@ class GameEngineTest {
         when(controller.initGame()).thenReturn(true);
         when(controller.initPlayer(player1)).thenReturn(true);
         when(controller.initPlayer(player2)).thenReturn(true);
+        endGameControllers.forEach(c -> when(c.initGame()).thenReturn(true));
+        endGameControllers.forEach(c -> when(c.initPlayer(any())).thenReturn(true));
 
         when(player1.getIdentification()).thenReturn(PlayerIdentification.BLUE);
         when(player2.getIdentification()).thenReturn(PlayerIdentification.RED);
@@ -87,8 +90,9 @@ class GameEngineTest {
     @Test
     void testStop2Turn() {
         when(controller.initGame()).thenReturn(true);
-        when(controller.initPlayer(player1)).thenReturn(true);
-        when(controller.initPlayer(player2)).thenReturn(true);
+        when(controller.initPlayer(any())).thenReturn(true);
+        endGameControllers.forEach(c -> when(c.initGame()).thenReturn(true));
+        endGameControllers.forEach(c -> when(c.initPlayer(any())).thenReturn(true));
 
         when(player1.getIdentification()).thenReturn(PlayerIdentification.BLUE);
         when(player2.getIdentification()).thenReturn(PlayerIdentification.RED);
@@ -111,6 +115,8 @@ class GameEngineTest {
         when(controller.initGame()).thenReturn(true);
         when(controller.initPlayer(player1)).thenReturn(true);
         when(controller.initPlayer(player2)).thenReturn(true);
+        endGameControllers.forEach(c -> when(c.initGame()).thenReturn(true));
+        endGameControllers.forEach(c -> when(c.initPlayer(any())).thenReturn(true));
         when(controller.doAction(player1)).thenReturn(Optional.of(ReasonActionRefused.ACTION_INVALID));
 
         when(player1.getIdentification()).thenReturn(PlayerIdentification.BLUE);

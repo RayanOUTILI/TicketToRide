@@ -194,6 +194,7 @@ public class GameModel implements
 
     @Override
     public boolean discardWagonCards(List<WagonCard> wagonCards) {
+        if(wagonCards.isEmpty()) return true;
         return wagonCardDeck.addCardToDiscardPile(wagonCards);
     }
 

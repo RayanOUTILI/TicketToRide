@@ -70,20 +70,18 @@ public class GameEngine {
     }
 
     public boolean initPlayers() {
-        boolean success = true;
+        boolean success;
 
-        Iterator<Player> playersIterator = this.players.iterator();
-        while(playersIterator.hasNext() && success) {
-            Player player = playersIterator.next();
-
-            Iterator<Map.Entry<Action, Controller>> entries = gameControllers.entrySet().iterator();
-            while (entries.hasNext() && success) {
-                Map.Entry<Action, Controller> entry = entries.next();
-                success = entry.getValue().initPlayer(player);
+        for(Controller controller : getAllControllers()) {
+            for (Player player : players) {
+                success = controller.initPlayer(player);
+                if (!success){
+                    return false;
+                }
             }
         }
 
-        return success;
+        return true;
     }
 
     public int startGame() {
@@ -145,10 +143,14 @@ public class GameEngine {
         for(Controller controller : getAllControllers()) {
             for (Player player : players) {
                 success = controller.resetPlayer(player);
-                if (!success) return false;
+                if (!success) {
+                    return false;
+                }
             }
             success = controller.resetGame();
-            if(!success) return false;
+            if(!success) {
+                return false;
+            }
         }
         return success;
     }

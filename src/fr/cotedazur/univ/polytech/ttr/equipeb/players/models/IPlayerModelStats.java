@@ -8,8 +8,8 @@ import java.util.List;
 public interface IPlayerModelStats {
     int getScore();
     int getNumberOfWagonCards();
-    List<DestinationCard> getDestinationCardsHand();
+    List<DestinationCard> getDestinationCards();
     PlayerType getPlayerType();
-    PlayerIdentification getPlayerIdentification();
+    PlayerIdentification getIdentification();
     List<RouteReadOnly> getSelectedStationRoutes();
 }

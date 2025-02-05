@@ -47,7 +47,7 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
     private void commitLine() {
         this.statsLine.setScore(playerModel.getScore());
         this.statsLine.setWagonsCards(playerModel.getNumberOfWagonCards());
-        this.statsLine.setDestinationCards(playerModel.getDestinationCardsHand().size());
+        this.statsLine.setDestinationCards(playerModel.getDestinationCards().size());
         this.statsLine.setCurrentDestinationScore(calculateDestinationCardsScore());
 
         statsLine.setCurrentTime(System.nanoTime());
@@ -58,10 +58,10 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
     private int calculateDestinationCardsScore() {
         List<RouteReadOnly> routes = new ArrayList<>();
         routes.addAll(playerModel.getSelectedStationRoutes());
-        routes.addAll(gameModel.getAllRoutesClaimedByPlayer(playerModel.getPlayerIdentification()));
+        routes.addAll(gameModel.getAllRoutesClaimedByPlayer(playerModel.getIdentification()));
         Set<CityPair> allCityPairs = CitiesGraphUtils.findLengthBetweenAllCityInGraph(CitiesGraphUtils.getGraphFromRoutes(routes));
 
-        List<DestinationCard> destinationCards = playerModel.getDestinationCardsHand();
+        List<DestinationCard> destinationCards = playerModel.getDestinationCards();
 
 
         return destinationCards.stream()
@@ -112,7 +112,7 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
 
     public void displayWinner(PlayerIdentification playerId, int score) {
         statsLine.setAction(StatAction.WINNER);
-        if (playerId.equals(playerModel.getPlayerIdentification())) {
+        if (playerId.equals(playerModel.getIdentification())) {
             statsLine.setActionStatus(StatActionStatus.YES);
         } else {
             statsLine.setActionStatus(StatActionStatus.NO);

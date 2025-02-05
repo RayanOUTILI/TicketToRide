@@ -112,11 +112,11 @@ class PlayerStatisticsViewTest {
         this.playerStatisticsView.setPlayerModel(playerModel);
         this.playerStatisticsView.setGameModel(gameModel);
 
-        when(playerModel.getPlayerIdentification()).thenReturn(PlayerIdentification.BLACK);
+        when(playerModel.getIdentification()).thenReturn(PlayerIdentification.BLACK);
         when(playerModel.getPlayerType()).thenReturn(PlayerType.MEDIUM_BOT);
         when(playerModel.getScore()).thenReturn(score);
         when(playerModel.getNumberOfWagonCards()).thenReturn(wagonsCards);
-        when(playerModel.getDestinationCardsHand()).thenReturn(destinationCardsList);
+        when(playerModel.getDestinationCards()).thenReturn(destinationCardsList);
         when(playerModel.getSelectedStationRoutes()).thenReturn(routes);
         when(gameModel.getAllRoutesClaimedByPlayer(playerColor)).thenReturn(routes);
     }

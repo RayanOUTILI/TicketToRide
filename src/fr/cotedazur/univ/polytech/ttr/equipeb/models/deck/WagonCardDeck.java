@@ -78,6 +78,7 @@ public class WagonCardDeck {
 
     public boolean clearDeck() {
         boolean added = true;
+
         if(!shownCards.isEmpty()) {
             added = stack.addAll(shownCards);
         }
