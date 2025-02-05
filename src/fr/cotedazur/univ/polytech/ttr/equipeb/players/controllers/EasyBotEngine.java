@@ -120,6 +120,11 @@ public class EasyBotEngine implements IPlayerActionsControllable {
     }
 
     @Override
+    public void actionStop() {
+        view.ifPresent(IPlayerEngineViewable::displayActionStop);
+    }
+
+    @Override
     public List<WagonCard> askWagonCardsForTunnel(int numberOfCards, Color acceptedColor) {
         return playerModel.getWagonCardsOfColor(acceptedColor, numberOfCards);
     }

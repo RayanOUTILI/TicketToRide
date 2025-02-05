@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Class representing the player model
  */
-public class PlayerModel implements IPlayerModel, IPlayerModelControllable {
+public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPlayerModelStats {
     private final PlayerIdentification playerIdentification;
     private final PlayerType playerType;
     private final List<WagonCard> wagonCards;

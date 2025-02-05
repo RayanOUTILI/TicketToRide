@@ -59,6 +59,7 @@ class GameEngineTest {
     void testInitPlayer() {
         when(controller.initPlayer(player1)).thenReturn(true);
         when(controller.initPlayer(player2)).thenReturn(true);
+        endGameControllers.forEach(c -> when(c.initPlayer(any())).thenReturn(true));
 
         assertTrue(gameEngine.initPlayers());
         verify(controller, times(1)).initPlayer(player1);
@@ -70,6 +71,8 @@ class GameEngineTest {
         when(controller.initGame()).thenReturn(true);
         when(controller.initPlayer(player1)).thenReturn(true);
         when(controller.initPlayer(player2)).thenReturn(true);
+        endGameControllers.forEach(c -> when(c.initGame()).thenReturn(true));
+        endGameControllers.forEach(c -> when(c.initPlayer(any())).thenReturn(true));
 
         when(player1.getIdentification()).thenReturn(PlayerIdentification.BLUE);
         when(player2.getIdentification()).thenReturn(PlayerIdentification.RED);
@@ -81,14 +84,15 @@ class GameEngineTest {
         when(player2.askAction()).thenReturn(Action.STOP);
 
         int nbTurn = gameEngine.startGame();
-        assertEquals(1, nbTurn);
+        assertEquals(2, nbTurn);
     }
 
     @Test
     void testStop2Turn() {
         when(controller.initGame()).thenReturn(true);
-        when(controller.initPlayer(player1)).thenReturn(true);
-        when(controller.initPlayer(player2)).thenReturn(true);
+        when(controller.initPlayer(any())).thenReturn(true);
+        endGameControllers.forEach(c -> when(c.initGame()).thenReturn(true));
+        endGameControllers.forEach(c -> when(c.initPlayer(any())).thenReturn(true));
 
         when(player1.getIdentification()).thenReturn(PlayerIdentification.BLUE);
         when(player2.getIdentification()).thenReturn(PlayerIdentification.RED);
@@ -100,7 +104,7 @@ class GameEngineTest {
         when(player2.askAction()).thenReturn(Action.PICK_WAGON_CARD, Action.STOP, Action.STOP);
 
         int nbTurn = gameEngine.startGame();
-        assertEquals(2, nbTurn);
+        assertEquals(3, nbTurn);
 
         verify(player1, times(3)).askAction();
         verify(player2, times(2)).askAction();
@@ -111,6 +115,8 @@ class GameEngineTest {
         when(controller.initGame()).thenReturn(true);
         when(controller.initPlayer(player1)).thenReturn(true);
         when(controller.initPlayer(player2)).thenReturn(true);
+        endGameControllers.forEach(c -> when(c.initGame()).thenReturn(true));
+        endGameControllers.forEach(c -> when(c.initPlayer(any())).thenReturn(true));
         when(controller.doAction(player1)).thenReturn(Optional.of(ReasonActionRefused.ACTION_INVALID));
 
         when(player1.getIdentification()).thenReturn(PlayerIdentification.BLUE);
@@ -123,7 +129,7 @@ class GameEngineTest {
         when(player2.askAction()).thenReturn(Action.PICK_WAGON_CARD, Action.PICK_WAGON_CARD, Action.STOP);
 
         int nbTurn = gameEngine.startGame();
-        assertEquals(3, nbTurn);
+        assertEquals(4, nbTurn);
 
         verify(player1, times(4)).askAction();
         verify(player2, times(3)).askAction();

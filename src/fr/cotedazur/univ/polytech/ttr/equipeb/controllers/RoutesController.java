@@ -160,6 +160,8 @@ public class RoutesController extends Controller {
             }
         }
 
+        gameModel.discardWagonCards(drawnCards);
+
         return Optional.empty();
     }
 

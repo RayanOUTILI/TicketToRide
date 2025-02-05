@@ -27,7 +27,8 @@ public class GameModel implements
         IScoreControllerGameModel,
         IStationControllerGameModel,
         IChooseRouteStationControllerGameModel,
-        ICurrentPlayerScoreControllerGameModel
+        ICurrentPlayerScoreControllerGameModel,
+        IStatsGameModel
 {
 
     private final List<PlayerModel> playerModels;
@@ -193,6 +194,7 @@ public class GameModel implements
 
     @Override
     public boolean discardWagonCards(List<WagonCard> wagonCards) {
+        if(wagonCards.isEmpty()) return true;
         return wagonCardDeck.addCardToDiscardPile(wagonCards);
     }
 

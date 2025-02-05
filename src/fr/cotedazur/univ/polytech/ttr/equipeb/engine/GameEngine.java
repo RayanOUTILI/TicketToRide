@@ -39,7 +39,6 @@ public class GameEngine {
         this.endGameControllers = endGameControllers;
 
         this.gameView = Optional.ofNullable(view);
-
         this.lastTurnPlayer = Optional.empty();
     }
 
@@ -71,29 +70,29 @@ public class GameEngine {
     }
 
     public boolean initPlayers() {
-        boolean success = true;
+        boolean success;
 
-        Iterator<Player> playersIterator = this.players.iterator();
-        while(playersIterator.hasNext() && success) {
-            Player player = playersIterator.next();
-
-            Iterator<Map.Entry<Action, Controller>> entries = gameControllers.entrySet().iterator();
-            while (entries.hasNext() && success) {
-                Map.Entry<Action, Controller> entry = entries.next();
-                success = entry.getValue().initPlayer(player);
+        for(Controller controller : getAllControllers()) {
+            for (Player player : players) {
+                success = controller.initPlayer(player);
+                if (!success){
+                    return false;
+                }
             }
         }
 
-        return success;
+        return true;
     }
 
     public int startGame() {
-        int nbTurn = 0;
+        if (gameView.isPresent()) this.gameView.get().displayNewGame();
+        int nbTurn = 1;
 
         boolean forcedEndGame = false;
         int nbPlayersWantStop = 0;
 
         while(!isWasTheLastTurn() && !forcedEndGame) {
+            if (gameView.isPresent()) this.gameView.get().displayNewTurn(nbTurn);
             TypeActionHandled actionHandled ;
 
 
@@ -117,7 +116,7 @@ public class GameEngine {
 
             boolean newTurn = nextPlayer();
 
-            if (newTurn){
+            if (!newTurn){
                 if(gameModel.isWagonCardDeckEmpty()) gameModel.fillWagonCardDeck();
 
                 nbTurn++;
@@ -126,8 +125,9 @@ public class GameEngine {
 
         askForEndGameActions();
 
+        int finalNbTurn = nbTurn;
         lastTurnPlayer.ifPresent(playerIdentification ->
-            gameView.ifPresent(v -> v.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons()))
+            gameView.ifPresent(v -> v.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons(), finalNbTurn))
         );
 
         PlayerModel winner = gameModel.getWinner();
@@ -143,10 +143,14 @@ public class GameEngine {
         for(Controller controller : getAllControllers()) {
             for (Player player : players) {
                 success = controller.resetPlayer(player);
-                if (!success) return false;
+                if (!success) {
+                    return false;
+                }
             }
             success = controller.resetGame();
-            if(!success) return false;
+            if(!success) {
+                return false;
+            }
         }
         return success;
     }
@@ -169,7 +173,10 @@ public class GameEngine {
 
     private TypeActionHandled handlePlayerAction(Player player) {
         Action action = player.askAction();
-        if(action == Action.STOP) return TypeActionHandled.STOP;
+        if(action == Action.STOP){
+            player.actionStop();
+            return TypeActionHandled.STOP;
+        }
 
         else if(action == null || !gameControllers.containsKey(action)) {
             player.actionRefused(action, ReasonActionRefused.ACTION_INVALID);
@@ -182,7 +189,7 @@ public class GameEngine {
         if (actionRefused.isPresent()) {
             player.actionRefused(action, actionRefused.get());
         }
-        else  player.actionCompleted(action);
+        else player.actionCompleted(action);
         return actionRefused.isEmpty() ? TypeActionHandled.SUCCESS : TypeActionHandled.REFUSED;
     }
 

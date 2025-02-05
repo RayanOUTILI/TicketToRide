@@ -31,6 +31,8 @@ public interface IPlayerActionsControllable {
 
     void actionCompleted(Action action);
 
+    void actionStop();
+
     List<WagonCard> askWagonCardsForTunnel(int numberOfCards, Color acceptedColor);
 
     Optional<ActionDrawWagonCard> askDrawWagonCard(List<ActionDrawWagonCard> possibleActions);
