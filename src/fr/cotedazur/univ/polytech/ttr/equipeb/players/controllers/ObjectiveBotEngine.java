@@ -195,10 +195,10 @@ public class ObjectiveBotEngine extends BotEngineControllable {
                 .filter(n -> n.equals(destinationPathsSorted.getFirst()))
                 .limit(2)
                 .toList();
-        List<DestinationCard> chosenCards = chosenDestinationPaths.stream().map(destinationPath -> destinationPath.destinationCard).toList();
+        List<DestinationCard> chosenCards = chosenDestinationPaths.stream().map(DestinationPath::getDestinationCard).toList();
 
         for (DestinationPath destinationPath : chosenDestinationPaths) {
-            routesForObjective.put(destinationPath.destinationCard, destinationPath.routes);
+            routesForObjective.put(destinationPath.getDestinationCard(), destinationPath.getRoutes());
         }
         return chosenCards;
     }
@@ -263,36 +263,6 @@ public class ObjectiveBotEngine extends BotEngineControllable {
     @Override
     protected RouteReadOnly chooseRouteFromCity(List<RouteReadOnly> availableRoutes) {
         return null;
-    }
-
-    private static class DestinationPath implements Comparable<DestinationPath> {
-        private final DestinationCard destinationCard;
-        private final List<RouteReadOnly> routes;
-        private final int length;
-
-        public DestinationPath(DestinationCard destinationCard, List<RouteReadOnly> routes, int length) {
-            this.destinationCard = destinationCard;
-            this.routes = routes;
-            this.length = length;
-        }
-
-        @Override
-        public int compareTo(DestinationPath o) {
-            return Integer.compare(length, o.length);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof DestinationPath destinationPath) {
-                return (destinationPath).length == length;
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(length);
-        }
     }
 
     /**
