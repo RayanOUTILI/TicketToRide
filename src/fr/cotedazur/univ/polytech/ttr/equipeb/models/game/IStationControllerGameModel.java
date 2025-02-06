@@ -9,4 +9,5 @@ public interface IStationControllerGameModel {
     List<City> getAllCities();
     City getCity(int id);
     boolean discardWagonCards(List<WagonCard> wagonCards);
+    boolean setAllStationsNotClaimed();
 }

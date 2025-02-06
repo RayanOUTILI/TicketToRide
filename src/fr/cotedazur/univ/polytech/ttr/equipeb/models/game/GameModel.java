@@ -1,13 +1,15 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.game;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.ScoreComparator;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
@@ -24,19 +26,25 @@ public class GameModel implements
         IDestinationCardsControllerGameModel,
         IScoreControllerGameModel,
         IStationControllerGameModel,
-        IChooseRouteStationControllerGameModel
+        IChooseRouteStationControllerGameModel,
+        ICurrentPlayerScoreControllerGameModel,
+        IStatsGameModel
 {
 
-    private List<PlayerModel> playerModels;
-    private WagonCardDeck wagonCardDeck;
-    private DestinationCardDeck destinationCardDeck;
-    private List<Route> routes;
+    private final List<PlayerModel> playerModels;
+    private final WagonCardDeck wagonCardDeck;
+    private final DestinationCardDeck<DestinationCard> shortDestinationCardDeck;
+    private final DestinationCardDeck<DestinationCard> longDestinationCardDeck;
+    private final List<Route> routes;
+    private final List<Route> removedRoutes;
 
-    public GameModel(List<PlayerModel> playerModels, WagonCardDeck wagonCardDeck, DestinationCardDeck destinationCardDeck, List<Route> routes) {
+    public GameModel(List<PlayerModel> playerModels, WagonCardDeck wagonCardDeck, DestinationCardDeck<DestinationCard> shortDestCardDeck, DestinationCardDeck<DestinationCard> longDestCardDeck, List<Route> routes) {
         this.playerModels = playerModels;
         this.wagonCardDeck = wagonCardDeck;
-        this.destinationCardDeck = destinationCardDeck;
+        this.shortDestinationCardDeck = shortDestCardDeck;
+        this.longDestinationCardDeck = longDestCardDeck;
         this.routes = routes;
+        this.removedRoutes = new ArrayList<>();
     }
 
     @Override
@@ -70,8 +78,16 @@ public class GameModel implements
     }
 
     @Override
-    public boolean replaceShownWagonCards(List<WagonCard> wagonCards) {
+    public boolean placeShownWagonCards(List<WagonCard> wagonCards) {
         return wagonCardDeck.replaceShownCards(wagonCards);
+    }
+    @Override
+    public boolean replaceShownWagonCardsInCaseOfLocomotives(int minimumLocomotives) {
+        while (getListOfShownWagonCards().stream().filter(c -> c.getColor() == Color.ANY).count() >= minimumLocomotives) {
+            List<WagonCard> newShownCards = drawCardsFromWagonCardDeck(5);
+            wagonCardDeck.replaceShownCards(newShownCards);
+        }
+        return true;
     }
 
     @Override
@@ -129,6 +145,13 @@ public class GameModel implements
     }
 
     @Override
+    public boolean retrieveDeletedRoutes() {
+        boolean added = routes.addAll(removedRoutes);
+        removedRoutes.clear();
+        return added;
+    }
+
+    @Override
     public boolean setAllRoutesIDs() {
         for (int i = 0; i < routes.size(); i++) {
             routes.get(i).setId(i);
@@ -159,7 +182,9 @@ public class GameModel implements
     public boolean deleteRoute(int id) {
         Route route = getRoute(id);
         if (route == null) return false;
-        return routes.remove(route);
+        boolean removed = routes.remove(route);
+        if (removed) return removedRoutes.add(route);
+        return false;
     }
 
     @Override
@@ -169,27 +194,54 @@ public class GameModel implements
 
     @Override
     public boolean discardWagonCards(List<WagonCard> wagonCards) {
+        if(wagonCards.isEmpty()) return true;
         return wagonCardDeck.addCardToDiscardPile(wagonCards);
     }
 
     @Override
-    public boolean shuffleDestinationCardDeck() {
-        return destinationCardDeck.shuffle();
+    public boolean clearWagonCardsDeck() {
+        return wagonCardDeck.clearDeck();
     }
 
     @Override
-    public boolean isDestinationCardDeckEmpty() {
-        return destinationCardDeck.isEmpty();
+    public boolean setAllStationsNotClaimed() {
+        getAllCities().forEach(city -> city.setOwner(null));
+        return true;
     }
 
     @Override
-    public List<ShortDestinationCard> drawDestinationCards(int maximumCards) {
-        return destinationCardDeck.drawCard(maximumCards);
+    public boolean shuffleDestinationCardsDecks() {
+        return shortDestinationCardDeck.shuffle() && longDestinationCardDeck.shuffle();
     }
 
     @Override
-    public void returnDestinationCardsToTheBottom(List<ShortDestinationCard> cards) {
-        destinationCardDeck.addCardsAtBottom(cards);
+    public boolean isShortDestCardDeckEmpty() {
+        return shortDestinationCardDeck.isEmpty();
+    }
+
+    @Override
+    public boolean isLongDestCardDeckEmpty() {
+        return longDestinationCardDeck.isEmpty();
+    }
+
+    @Override
+    public List<DestinationCard> drawDestinationCards(int maximumCards) {
+        return shortDestinationCardDeck.drawCard(maximumCards);
+    }
+
+    @Override
+    public List<DestinationCard> drawLongDestinationCards(int maximumCards) {
+        return longDestinationCardDeck.drawCard(maximumCards);
+    }
+
+    @Override
+    public void returnShortDestinationCardsToTheBottom(List<DestinationCard> cards) {
+        shortDestinationCardDeck.addCardsAtBottom(cards);
+    }
+
+    @Override
+    public void returnLongDestinationCardsToTheBottom(List<DestinationCard> cards) {
+        longDestinationCardDeck.addCardsAtBottom(cards);
     }
 
     @Override
@@ -200,8 +252,10 @@ public class GameModel implements
     }
 
     @Override
-    public List<IPlayerModelControllable> getPlayers() {
-        return new ArrayList<>(playerModels);
+    public List<PlayerIdentification> getPlayersIdentification() {
+        return playerModels.stream()
+                .map(IPlayerModelControllable::getIdentification)
+                .toList();
     }
 
     public PlayerModel getWinner() {
@@ -209,13 +263,9 @@ public class GameModel implements
             return null;
         }
 
-        PlayerModel winner = playerModels.get(0);
-        for (PlayerModel player : playerModels) {
-            if (player.getScore() > winner.getScore()) {
-                winner = player;
-            }
-        }
-        return winner;
+        return playerModels.stream()
+                .min(new ScoreComparator())
+                .orElse(null);
     }
 
 

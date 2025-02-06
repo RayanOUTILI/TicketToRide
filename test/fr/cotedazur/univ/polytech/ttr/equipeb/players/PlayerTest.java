@@ -2,7 +2,6 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
@@ -42,21 +41,21 @@ class PlayerTest {
 
     @Test
     void askClaimRouteReturnsClaimRoute() {
-        ClaimRoute claimRoute = mock(ClaimRoute.class);
+        ClaimObject<RouteReadOnly> claimRoute = mock(ClaimObject.class);
         when(actionsController.askClaimRoute()).thenReturn(claimRoute);
         assertEquals(claimRoute, player.askClaimRoute());
     }
 
     @Test
     void askClaimStationReturnsClaimStation() {
-        ClaimStation claimStation = mock(ClaimStation.class);
+        ClaimObject<CityReadOnly> claimStation = mock(ClaimObject.class);
         when(actionsController.askClaimStation()).thenReturn(claimStation);
         assertEquals(claimStation, player.askClaimStation());
     }
 
     @Test
     void askDestinationCardsReturnsCards() {
-        List<ShortDestinationCard> cards = Collections.singletonList(mock(ShortDestinationCard.class));
+        List<DestinationCard> cards = Collections.singletonList(mock(DestinationCard.class));
         when(actionsController.askDestinationCards(cards)).thenReturn(cards);
         assertEquals(cards, player.askDestinationCards(cards));
     }
@@ -186,17 +185,17 @@ class PlayerTest {
     }
 
     @Test
-    void receivedDestinationCardsCallsController() {
-        List<ShortDestinationCard> cards = Collections.singletonList(mock(ShortDestinationCard.class));
-        player.receivedDestinationCards(cards);
-        verify(modelController).receivedDestinationCards(cards);
+    void receiveDestinationCardsCallsController() {
+        List<DestinationCard> cards = Collections.singletonList(mock(DestinationCard.class));
+        player.receiveDestinationCards(cards);
+        verify(modelController).receiveDestinationCards(cards);
     }
 
     @Test
     void getDestinationCardsHandReturnsCards() {
         List<DestinationCard> cards = Collections.singletonList(mock(DestinationCard.class));
-        when(modelController.getDestinationCardsHand()).thenReturn(cards);
-        assertEquals(cards, player.getDestinationCardsHand());
+        when(modelController.getDestinationCards()).thenReturn(cards);
+        assertEquals(cards, player.getDestinationCards());
     }
 
     @Test

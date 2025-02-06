@@ -10,6 +10,24 @@ public class GameConsoleView implements IGameViewable {
     @Override
     public void displayEndGameReason(PlayerIdentification playerId, int nbOfWagons) {
         logger.info("Player {} has run out of wagons ({} wagons left)", playerId, nbOfWagons);
+    public void displayNewGame() {
+        if(logger.isLoggable(Level.INFO)) {
+            logger.log(Level.INFO, "New game started");
+        }
+    }
+
+    @Override
+    public void displayNewTurn(int currentTurn) {
+        if(logger.isLoggable(Level.INFO)) {
+            logger.log(Level.INFO, String.format("Current turn: %d", currentTurn));
+        }
+    }
+
+    @Override
+    public void displayEndGameReason(PlayerIdentification playerId, int nbOfWagons, int nbTurns) {
+        if(logger.isLoggable(Level.INFO)) {
+            logger.log(Level.INFO, String.format("Player %s has run out of wagons", playerId));
+        }
     }
 
     @Override

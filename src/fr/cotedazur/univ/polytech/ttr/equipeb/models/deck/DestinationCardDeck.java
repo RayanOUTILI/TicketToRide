@@ -1,25 +1,26 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.deck;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 
 import java.util.*;
 
-public class DestinationCardDeck {
-    private final Deque<ShortDestinationCard> stack;
+public class DestinationCardDeck<T extends DestinationCard>{
+    private final Deque<T> stack;
 
-    public DestinationCardDeck(List<ShortDestinationCard> cards) {
-        this.stack = new ArrayDeque<>(cards);
+    public DestinationCardDeck(List<T> cards) {
+        this.stack = new ArrayDeque<>();
+        this.stack.addAll(cards);
     }
 
-    public List<ShortDestinationCard> drawCard(int maximumDraw) {
-        List<ShortDestinationCard> cards = new ArrayList<>();
+    public List<T> drawCard(int maximumDraw) {
+        List<T> cards = new ArrayList<>();
 
         for (int i = 0; i < maximumDraw && !stack.isEmpty(); i++) cards.add(stack.removeFirst());
 
         return cards;
     }
 
-    public void addCardsAtBottom(List<ShortDestinationCard> cards) {
+    public void addCardsAtBottom(List<T> cards) {
         cards.forEach(stack::addLast);
     }
 
@@ -31,7 +32,7 @@ public class DestinationCardDeck {
     }
 
     public boolean shuffle() {
-        List<ShortDestinationCard> list = new ArrayList<>(stack);
+        List<T> list = new ArrayList<>(stack);
         Collections.shuffle(list);
         stack.clear();
         stack.addAll(list);

@@ -1,6 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.models.deck;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,23 +12,23 @@ import static org.mockito.Mockito.mock;
 
 class DestinationCardDeckTest {
 
-    private DestinationCardDeck destinationCardDeck;
+    private DestinationCardDeck<DestinationCard> destinationCardDeck;
 
     @BeforeEach
     void setup() {
-        List<ShortDestinationCard> cards = new ArrayList<>(List.of(mock(ShortDestinationCard.class), mock(ShortDestinationCard.class), mock(ShortDestinationCard.class)));
-        destinationCardDeck = new DestinationCardDeck(cards);
+        List<DestinationCard> cards = new ArrayList<>(List.of(mock(DestinationCard.class), mock(DestinationCard.class), mock(DestinationCard.class)));
+        destinationCardDeck = new DestinationCardDeck<>(cards);
     }
 
     @Test
     void drawCard() {
-        List<ShortDestinationCard> cards = destinationCardDeck.drawCard(2);
+        List<DestinationCard> cards = destinationCardDeck.drawCard(2);
         assertEquals(2, cards.size());
     }
 
     @Test
     void addCardsAtBottom() {
-        List<ShortDestinationCard> cards = new ArrayList<>(List.of(mock(ShortDestinationCard.class), mock(ShortDestinationCard.class), mock(ShortDestinationCard.class)));
+        List<DestinationCard> cards = new ArrayList<>(List.of(mock(DestinationCard.class), mock(DestinationCard.class), mock(DestinationCard.class)));
         destinationCardDeck.addCardsAtBottom(cards);
         assertEquals(6, destinationCardDeck.drawCard(6).size());
     }
@@ -42,9 +42,9 @@ class DestinationCardDeckTest {
 
     @Test
     void shuffle() {
-        List<ShortDestinationCard> cards = destinationCardDeck.drawCard(3);
+        List<DestinationCard> cards = destinationCardDeck.drawCard(3);
         destinationCardDeck.shuffle();
-        List<ShortDestinationCard> shuffledCards = destinationCardDeck.drawCard(3);
+        List<DestinationCard> shuffledCards = destinationCardDeck.drawCard(3);
         assertNotEquals(cards, shuffledCards);
     }
 }

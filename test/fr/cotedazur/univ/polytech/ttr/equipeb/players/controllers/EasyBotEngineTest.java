@@ -2,7 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
@@ -47,7 +47,7 @@ class EasyBotEngineTest {
     @Test
     void testAskActionPickDestinationCards() {
         when(random.nextInt(anyInt())).thenReturn(0);
-        when(gameModel.isDestinationCardDeckEmpty()).thenReturn(false);
+        when(gameModel.isShortDestCardDeckEmpty()).thenReturn(false);
 
         assertEquals(Action.PICK_DESTINATION_CARDS, easyBotEngine.askAction());
     }
@@ -102,16 +102,16 @@ class EasyBotEngineTest {
 
     @Test
     void testAskDestinationCards() {
-        List<ShortDestinationCard> cards = new ArrayList<>(List.of(
-                mock(ShortDestinationCard.class),
-                mock(ShortDestinationCard.class),
-                mock(ShortDestinationCard.class)
+        List<DestinationCard> cards = new ArrayList<>(List.of(
+                mock(DestinationCard.class),
+                mock(DestinationCard.class),
+                mock(DestinationCard.class)
         ));
 
         when(random.nextInt(anyInt())).thenReturn(1);
         when(random.nextInt(anyInt())).thenReturn(1);
 
-        List<ShortDestinationCard> result = easyBotEngine.askDestinationCards(cards);
+        List<DestinationCard> result = easyBotEngine.askDestinationCards(cards);
 
         assertEquals(2, result.size());
         assertTrue(cards.containsAll(result));
