@@ -39,7 +39,7 @@ public class ViewFactory {
         }
 
         if (viewOptions.contains(ViewOptions.CLI_STATS)){
-            throw new UnsupportedOperationException("Not implemented yet");
+//            throw new UnsupportedOperationException("Not implemented yet");
         }
 
         return compositeGameEngineView;
@@ -67,7 +67,7 @@ public class ViewFactory {
 
         // CLI_STATS
         if (viewOptions.contains(ViewOptions.CLI_STATS)){
-            throw new UnsupportedOperationException("Not implemented yet");
+            //throw new UnsupportedOperationException("Not implemented yet");
         }
 
         return new ArrayList<>(compositePlayerEngineViews);
@@ -89,7 +89,7 @@ public class ViewFactory {
 
         // CLI_STATS
         if (viewOptions.contains(ViewOptions.CLI_STATS)){
-            throw new UnsupportedOperationException("Not implemented yet");
+//            throw new UnsupportedOperationException("Not implemented yet");
         }
 
         return new ArrayList<>(playerViews);

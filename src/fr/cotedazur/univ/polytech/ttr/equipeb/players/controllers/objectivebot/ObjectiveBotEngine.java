@@ -9,12 +9,19 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.CityPair;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.BotEngineControllable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.randombots.BotEngineWithRandom;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils;
 
 import java.util.*;
+
+import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.findLengthBetweenAllCityInGraph;
+import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.getGraphFromRoutes;
 
 
 public class ObjectiveBotEngine extends BotEngineControllable {
@@ -43,8 +50,12 @@ public class ObjectiveBotEngine extends BotEngineControllable {
      * @return true if the bot can claim the route, otherwise false.
      */
     private boolean canTakeRoute(RouteReadOnly route) {
+        int requiredLength = route.getLength();
+        if (route.getType() == RouteType.TUNNEL) {
+            requiredLength += 1;
+        }
         return !route.isClaimed() &&
-                playerModel.getNumberOfWagonCardsIncludingAnyColor(route.getColor()) >= route.getLength()
+                playerModel.getNumberOfWagonCardsIncludingAnyColor(route.getColor()) >= requiredLength
                 && playerModel.getNumberOfWagons() >= route.getLength()
                 && route.getNbLocomotives() <= playerModel.getNumberOfWagonCardsIncludingAnyColor(Color.ANY);
     }
@@ -58,16 +69,22 @@ public class ObjectiveBotEngine extends BotEngineControllable {
         if (shouldClaimRoute()) {
             return Action.CLAIM_ROUTE;
         }
-        if (!routesForObjective.isEmpty()) {
+        if (!gameModel.isWagonCardDeckEmpty() && !routesForObjective.isEmpty()) {
             return Action.PICK_WAGON_CARD;
         }
-        if (!gameModel.isShortDestCardDeckEmpty() && shouldPickDestinationCards()) {
+        if (!gameModel.isShortDestCardDeckEmpty() && allObjectivesCompleted) {
             return Action.PICK_DESTINATION_CARDS;
         }
         if (!gameModel.isWagonCardDeckEmpty()) {
             return Action.PICK_WAGON_CARD;
         }
         return Action.STOP;
+    }
+
+    @Override
+    public boolean reset() {
+        routesForObjective.clear();
+        return true;
     }
 
     private void updateStateOfRoutes() {
@@ -120,7 +137,34 @@ public class ObjectiveBotEngine extends BotEngineControllable {
         }
     }
 
+    private List<DestinationCard> checkObjectives() {
+        List<DestinationCard> destinationCards = routesForObjective.keySet().stream().toList();
+        List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(playerModel.getIdentification());
+
+        List<DestinationCard> completedObjectives = new ArrayList<>();
+
+        // Combine all routes
+        List<RouteReadOnly> allRoutes = new ArrayList<>();
+        allRoutes.addAll(claimedRoutes);
+
+        // Find all pairs of cities with continuous routes
+        Map<City, Map<City, Integer>> claimedPlayerRouteGraph = getGraphFromRoutes(allRoutes);
+        Set<CityPair> allCityPairs = findLengthBetweenAllCityInGraph(claimedPlayerRouteGraph);
+
+        // Calculate the score based on destination cards
+        for (DestinationCard dest : destinationCards) {
+            CityPair pair = new CityPair(dest.getStartCity(), dest.getEndCity());
+            if (allCityPairs.contains(pair)) {
+                completedObjectives.add(dest);
+            }
+        }
+        return completedObjectives;
+    }
+
     private void checkRoutesForObjectiveCompletion() {
+        List<DestinationCard> completedObjectives = new ArrayList<>();
+        //completedObjectives.addAll(checkObjectives());
+
         for (Map.Entry<DestinationCard, List<RouteReadOnly>> entry : routesForObjective.entrySet()) {
             boolean completed = true;
             for (RouteReadOnly route : entry.getValue()) {
@@ -131,9 +175,14 @@ public class ObjectiveBotEngine extends BotEngineControllable {
 
             }
             if (completed) {
-                routesForObjective.remove(entry.getKey());
+                completedObjectives.add(entry.getKey());
             }
         }
+
+        for (DestinationCard card : completedObjectives) {
+            routesForObjective.remove(card);
+        }
+
         if (routesForObjective.isEmpty()) {
             allObjectivesCompleted = true;
         }

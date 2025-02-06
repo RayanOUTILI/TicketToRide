@@ -61,6 +61,11 @@ public class MediumBotEngine extends BotEngineWithRandom {
         return Action.STOP;
     }
 
+    @Override
+    public boolean reset() {
+        return true;
+    }
+
     ////// Methods to determine the bot's next action //////
     private boolean shouldPickCards() {
         return playerModel.getNumberOfWagonCards() < 10 && !gameModel.isWagonCardDeckEmpty();
@@ -130,8 +135,13 @@ public class MediumBotEngine extends BotEngineWithRandom {
      * @return true if the bot can claim the route, otherwise false.
      */
     private boolean canTakeRoute(RouteReadOnly route) {
+        int requiredLength = route.getLength();
+        if (route.getType() == RouteType.TUNNEL) {
+            requiredLength += 1;
+        }
         return !route.isClaimed() &&
-                playerModel.getNumberOfWagonCardsIncludingAnyColor(route.getColor()) >= route.getLength() && playerModel.getNumberOfWagons() >= route.getLength();
+                playerModel.getNumberOfWagonCardsIncludingAnyColor(route.getColor()) >= requiredLength
+                && playerModel.getNumberOfWagons() >= route.getLength();
     }
 
     /**

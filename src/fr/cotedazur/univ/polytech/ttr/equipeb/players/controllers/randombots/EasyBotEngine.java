@@ -50,6 +50,11 @@ public class EasyBotEngine extends BotEngineWithRandom {
     }
 
     @Override
+    public boolean reset() {
+        return true;
+    }
+
+    @Override
     protected Optional<ActionDrawWagonCard> chooseActionDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
         return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
     }
@@ -119,7 +124,7 @@ public class EasyBotEngine extends BotEngineWithRandom {
             return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0).size() == route.getLength();
         }
         // Tunnel
-        return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0).size() >= route.getLength();
+        return playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength()+1, 0).size() >= route.getLength();
     }
 
 

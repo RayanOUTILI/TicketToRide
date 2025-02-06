@@ -40,4 +40,6 @@ public interface IPlayerActionsControllable {
     WagonCard askWagonCardFromShownCards();
 
     RouteReadOnly askChooseRouteStation(CityReadOnly city);
+
+    boolean reset();
 }

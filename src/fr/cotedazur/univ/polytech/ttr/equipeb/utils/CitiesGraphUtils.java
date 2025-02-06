@@ -126,10 +126,13 @@ public class CitiesGraphUtils {
         while (previous.containsKey(current)) {
             City previousCity = previous.get(current);
             City finalCurrent = current;
-            path.add(allRoutes.stream()
-                    .filter(route -> route.getFirstCity().equals(previousCity) && route.getSecondCity().equals(finalCurrent))
-                    .findFirst()
-                    .orElseThrow());
+            if(previousCity != null){
+                path.add(allRoutes.stream()
+                        .filter(route -> (route.getFirstCity().equals(previousCity) && route.getSecondCity().equals(finalCurrent)) ||
+                                (route.getFirstCity().equals(finalCurrent) && route.getSecondCity().equals(previousCity)))
+                        .findFirst()
+                        .orElseThrow());
+            }
             current = previousCity;
         }
         Collections.reverse(path);

@@ -152,6 +152,7 @@ public class GameEngine {
                 return false;
             }
         }
+        players.forEach(Player::reset);
         return success;
     }
 

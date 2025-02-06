@@ -1,6 +1,8 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
+import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
+import fr.cotedazur.univ.polytech.ttr.equipeb.factories.DestinationCardsFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IDestinationCardsControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
@@ -27,7 +29,8 @@ public class DestinationCardsController extends Controller {
 
     @Override
     public boolean initPlayer(Player player) {
-        if(gameModel.isShortDestCardDeckEmpty() || gameModel.isLongDestCardDeckEmpty()) return false;
+        if(gameModel.isShortDestCardDeckEmpty() || gameModel.isLongDestCardDeckEmpty())
+            return false;
 
         List<DestinationCard> shortDestinationCards = gameModel.drawDestinationCards(STARTING_SHORT_DESTINATION_CARDS);
 
@@ -40,7 +43,8 @@ public class DestinationCardsController extends Controller {
 
         List<DestinationCard> longDestCards = gameModel.drawLongDestinationCards(STARTING_LONG_DESTINATION_CARDS);
 
-        if(longDestCards == null || longDestCards.isEmpty() || longDestCards.size() != STARTING_LONG_DESTINATION_CARDS) return false;
+        if(longDestCards == null || longDestCards.isEmpty() || longDestCards.size() != STARTING_LONG_DESTINATION_CARDS)
+            return false;
 
         List<DestinationCard> drawnCards = new ArrayList<>(shortDestinationCards);
         drawnCards.addAll(longDestCards);
@@ -67,6 +71,10 @@ public class DestinationCardsController extends Controller {
         }
 
         player.receiveDestinationCards(chosenCards);
+
+        if (cards.removeAll(chosenCards)) {
+            gameModel.returnShortDestinationCardsToTheBottom(cards);
+        }
 
         return Optional.empty();
     }
