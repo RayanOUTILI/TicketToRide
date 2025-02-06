@@ -8,6 +8,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.factories.views.ViewOptions;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.simulations.GameExecutionInfos;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +55,8 @@ public class CommandLineArgs {
     private void updateLogLevel() {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         switch (verbose) {
-            case 1 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.WARN);
-            case 2 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.INFO);
+            case 1 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.convertAnSLF4JLevel(Level.WARN));
+            case 2 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.convertAnSLF4JLevel(Level.INFO));
             case 3 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.DEBUG);
             default -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.INFO);
         }
