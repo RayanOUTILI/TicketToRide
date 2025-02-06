@@ -23,17 +23,12 @@ import java.util.UUID;
 public class PlayerStatisticsView implements IPlayerEngineViewable {
 
     private PlayerStatsLine statsLine;
-    private IPlayerModelStats playerModel;
     private IStatsGameModel gameModel;
     private StatsWriter statsWriter;
 
     public PlayerStatisticsView(PlayerStatsLine statsLine, StatsWriter playerWriter) {
         this.statsWriter = playerWriter;
         this.statsLine = statsLine;
-    }
-
-    public void setPlayerModel(IPlayerModelStats playerModel) {
-        this.playerModel = playerModel;
     }
 
     public void setGameModel(IStatsGameModel gameModel) {
@@ -45,17 +40,17 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
     }
 
     private void commitLine() {
+        IPlayerModelStats playerModel = this.gameModel.getPlayerWithIdentification(statsLine.getPlayerColor());
         this.statsLine.setScore(playerModel.getScore());
         this.statsLine.setWagonsCards(playerModel.getNumberOfWagonCards());
         this.statsLine.setDestinationCards(playerModel.getDestinationCards().size());
-        this.statsLine.setCurrentDestinationScore(calculateDestinationCardsScore());
+        this.statsLine.setCurrentDestinationScore(calculateDestinationCardsScore(playerModel));
 
-        statsLine.setCurrentTime(System.nanoTime());
-        statsWriter.commit(statsLine.getValues());
+        statsWriter.commit(statsLine);
         statsLine = statsLine.cloneWithTurn();
     }
 
-    private int calculateDestinationCardsScore() {
+    private int calculateDestinationCardsScore(IPlayerModelStats playerModel) {
         List<RouteReadOnly> routes = new ArrayList<>();
         routes.addAll(playerModel.getSelectedStationRoutes());
         routes.addAll(gameModel.getAllRoutesClaimedByPlayer(playerModel.getIdentification()));
@@ -80,12 +75,14 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
         statsLine.setCurrentTurn(currentTurn);
     }
 
+    @Override
     public void displayActionRefused(Action action, ReasonActionRefused reason) {
         statsLine.setAction(StatAction.valueOf(action.name()));
         statsLine.setActionStatus(StatActionStatus.valueOf(reason.name()));
         commitLine();
     }
 
+    @Override
     public void displayActionCompleted(Action action) {
         statsLine.setAction(StatAction.valueOf(action.name()));
         statsLine.setActionStatus(StatActionStatus.YES);
@@ -110,9 +107,9 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
         commitLine();
     }*/
 
-    public void displayWinner(PlayerIdentification playerId, int score) {
+    public void displayWinner(PlayerIdentification playerIdentification, int score) {
         statsLine.setAction(StatAction.WINNER);
-        if (playerId.equals(playerModel.getIdentification())) {
+        if (playerIdentification.equals(statsLine.getPlayerColor())) {
             statsLine.setActionStatus(StatActionStatus.YES);
         } else {
             statsLine.setActionStatus(StatActionStatus.NO);

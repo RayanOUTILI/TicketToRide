@@ -76,6 +76,11 @@
             <version>2.0.13</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.82</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -141,7 +146,7 @@
 
                     <!-- Exécution de GameSimulator -->
                     <execution>
-                        <id>gameSimulator</id>
+                        <id>gameExecutor</id>
                         <goals>
                             <goal>java</goal>
                         </goals>

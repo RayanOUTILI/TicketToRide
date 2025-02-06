@@ -18,6 +18,19 @@ import java.util.List;
 public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineViewable {
     private final Logger logger = LoggerFactory.getLogger(PlayerConsoleView.class);
 
+    public PlayerConsoleView() {
+        logger = Logger.getLogger(String.format("PlayerConsoleView {%s}", playerIdentification));
+        logger.setLevel(Level.ALL);
+
+        ConsoleHandler consoleHandler = new ConsoleHandler();
+        consoleHandler.setLevel(Level.ALL);
+        logger.addHandler(consoleHandler);
+    }
+
+    private void log(Level level, String message) {
+        if (logger.isLoggable(level)) {
+            logger.log(level, String.format("Player %s: %s", playerIdentification, message));
+        }
     public PlayerConsoleView(PlayerIdentification playerIdentification) {
         super(playerIdentification);
     }

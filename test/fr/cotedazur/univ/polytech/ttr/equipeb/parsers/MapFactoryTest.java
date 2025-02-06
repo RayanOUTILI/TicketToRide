@@ -37,7 +37,7 @@ class MapFactoryTest {
         List<Route> mockRoutes = List.of(new Route(new City("Paris"), new City("Lyon"), 4, RouteType.TRAIN, Color.RED, 0));
         when(routeParserMock.parseRoutes(anyString())).thenReturn(mockRoutes);
 
-        List<Route> routes = mapFactory.getMapFromJson();
+        List<Route> routes = mapFactory.getMapFromJson("");
 
         assertNotNull(routes, "The list of routes should not be null.");
         assertFalse(routes.isEmpty(), "The list of routes should not be empty.");
@@ -75,7 +75,7 @@ class MapFactoryTest {
     void testGetMapFromJsonWithInvalidFile() throws JsonParseException {
         when(routeParserMock.parseRoutes(anyString())).thenThrow(new JsonParseException("Invalid file"));
 
-        assertThrows(JsonParseException.class, () -> mapFactory.getMapFromJson(), "A JsonParseException should be thrown.");
+        assertThrows(JsonParseException.class, () -> mapFactory.getMapFromJson("data-europe/routes.json"), "A JsonParseException should be thrown.");
     }
 
     /**

@@ -82,4 +82,57 @@ public class CitiesGraphUtils {
             }
         }
     }
+
+    /**
+     * This method is used to find the shortest path between two cities
+     * Used the Dijkstra algorithm
+     *
+     * @param graph  the graph of cities and their connected cities
+     * @param start  the start city
+     * @param finish the finish city
+     * @return the shortest path between the two cities
+     */
+    public static List<RouteReadOnly> findShortestPathBetweenCities(Map<City, Map<City, Integer>> graph, List<RouteReadOnly> allRoutes, City start, City finish) {
+        Map<City, Integer> distances = new HashMap<>();
+        Map<City, City> previous = new HashMap<>();
+        PriorityQueue<City> queue = new PriorityQueue<>(Comparator.comparingInt(distances::get));
+        Set<City> visited = new HashSet<>();
+
+        distances.put(start, 0);
+        queue.add(start);
+
+        while (!queue.isEmpty()) {
+            City current = queue.poll();
+            if (current.equals(finish)) {
+                break;
+            }
+            if (visited.contains(current)) {
+                continue;
+            }
+            visited.add(current);
+
+            for (City neighbor : graph.getOrDefault(current, new HashMap<>()).keySet()) {
+                int newDistance = distances.get(current) + graph.get(current).get(neighbor);
+                if (!distances.containsKey(neighbor) || newDistance < distances.get(neighbor)) {
+                    distances.put(neighbor, newDistance);
+                    previous.put(neighbor, current);
+                    queue.add(neighbor);
+                }
+            }
+        }
+
+        List<RouteReadOnly> path = new ArrayList<>();
+        City current = finish;
+        while (previous.containsKey(current)) {
+            City previousCity = previous.get(current);
+            City finalCurrent = current;
+            path.add(allRoutes.stream()
+                    .filter(route -> route.getFirstCity().equals(previousCity) && route.getSecondCity().equals(finalCurrent))
+                    .findFirst()
+                    .orElseThrow());
+            current = previousCity;
+        }
+        Collections.reverse(path);
+        return path;
+    }
 }

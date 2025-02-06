@@ -24,7 +24,7 @@ mvn exec:java@gameStatistics
 
 Lancer x parties
 ```
-mvn exec:java@gameSimulator
+mvn exec:java@gameExecutor
 ```
 
 
