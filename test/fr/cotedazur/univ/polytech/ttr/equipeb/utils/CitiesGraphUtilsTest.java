@@ -163,4 +163,49 @@ class CitiesGraphUtilsTest {
         assertEquals(2, graph.get(lyon).size());
         assertEquals(2, graph.get(bordeaux).size());
     }
+
+    @Test
+    void testFindShortestPath1() {
+        City nice = new City("Nice");
+        City marseille = new City("Marseille");
+        City paris = new City("Paris");
+        City lyon = new City("Lyon");
+
+        Route niceMarseille = new Route(nice, marseille, 5, null, null, 0);
+        Route marseilleParis = new Route(marseille, paris, 12, null, null, 0);
+        Route marseilleLyon = new Route(marseille, lyon, 5, null, null, 0);
+        Route lyonParis = new Route(lyon, paris, 5, null, null, 0);
+
+
+        List<RouteReadOnly> allRoutes = List.of(niceMarseille, marseilleParis, marseilleLyon, lyonParis);
+        Map<City, Map<City, Integer>> graph = CitiesGraphUtils.getGraphFromRoutes(List.of(niceMarseille, marseilleParis, marseilleLyon, lyonParis));
+
+        List<RouteReadOnly> path = CitiesGraphUtils.findShortestPathBetweenCities(graph,allRoutes,nice, paris);
+        assertEquals(3, path.size());
+        assertEquals(niceMarseille, path.get(0));
+        assertEquals(marseilleLyon, path.get(1));
+        assertEquals(lyonParis, path.get(2));
+    }
+
+    @Test
+    void testFindShortestPath2() {
+        City nice = new City("Nice");
+        City marseille = new City("Marseille");
+        City paris = new City("Paris");
+        City lyon = new City("Lyon");
+
+        Route niceMarseille = new Route(nice, marseille, 5, null, null, 0);
+        Route marseilleParis = new Route(marseille, paris, 10, null, null, 0);
+        Route marseilleLyon = new Route(marseille, lyon, 5, null, null, 0);
+        Route lyonParis = new Route(lyon, paris, 5, null, null, 0);
+
+
+        List<RouteReadOnly> allRoutes = List.of(niceMarseille, marseilleParis, marseilleLyon, lyonParis);
+        Map<City, Map<City, Integer>> graph = CitiesGraphUtils.getGraphFromRoutes(List.of(niceMarseille, marseilleParis, marseilleLyon, lyonParis));
+
+        List<RouteReadOnly> path = CitiesGraphUtils.findShortestPathBetweenCities(graph, allRoutes, nice, paris);
+        assertEquals(2, path.size());
+        assertEquals(niceMarseille, path.get(0));
+        assertEquals(marseilleParis, path.get(1));
+    }
 }

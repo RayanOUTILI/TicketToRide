@@ -2,8 +2,8 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.factories;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.EasyBotEngine;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.MediumBotEngine;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.randombots.EasyBotEngine;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.randombots.MediumBotEngine;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
 

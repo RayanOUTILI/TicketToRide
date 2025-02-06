@@ -2,15 +2,14 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimObject;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.*;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.randombots.BotEngineWithRandom;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.randombots.MediumBotEngine;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
@@ -18,10 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -30,7 +26,6 @@ class MediumBotEngineTest {
 
     private IPlayerGameModel gameModel;
     private IPlayerModel playerModel;
-    private IPlayerEngineViewable view;
     private RandomGenerator random;
     private MediumBotEngine botEngine;
 
@@ -38,11 +33,11 @@ class MediumBotEngineTest {
     void setUp() throws IllegalAccessException, NoSuchFieldException {
         gameModel = mock(IPlayerGameModel.class);
         playerModel = mock(IPlayerModel.class);
-        view = mock(IPlayerEngineViewable.class);
+        IPlayerEngineViewable view = mock(IPlayerEngineViewable.class);
         random = mock(RandomGenerator.class);
         botEngine = new MediumBotEngine(playerModel, gameModel, view);
 
-        Field randomField = MediumBotEngine.class.getDeclaredField("random");
+        Field randomField = BotEngineWithRandom.class.getDeclaredField("random");
         randomField.setAccessible(true);
         randomField.set(botEngine, random);
     }
@@ -53,10 +48,10 @@ class MediumBotEngineTest {
 
         when(playerModel.getNumberOfWagonCards()).thenReturn(16);
         when(playerModel.getNumberOfWagons()).thenReturn(20);
-        when(gameModel.getNonControllableAvailableRoutes().get(0).isClaimed()).thenReturn(false);
-        when(gameModel.getNonControllableAvailableRoutes().get(0).getLength()).thenReturn(5);
-        when(gameModel.getNonControllableAvailableRoutes().get(0).getColor()).thenReturn(Color.BLACK);
-        when(gameModel.getNonControllableAvailableRoutes().get(0).getType()).thenReturn(RouteType.TRAIN);
+        when(gameModel.getNonControllableAvailableRoutes().getFirst().isClaimed()).thenReturn(false);
+        when(gameModel.getNonControllableAvailableRoutes().getFirst().getLength()).thenReturn(5);
+        when(gameModel.getNonControllableAvailableRoutes().getFirst().getColor()).thenReturn(Color.BLACK);
+        when(gameModel.getNonControllableAvailableRoutes().getFirst().getType()).thenReturn(RouteType.TRAIN);
         when(playerModel.getNumberOfWagonCardsIncludingAnyColor(Color.BLACK)).thenReturn(5);
         assertEquals(Action.CLAIM_ROUTE, botEngine.askAction());
     }
@@ -97,18 +92,62 @@ class MediumBotEngineTest {
 
     @Test
     void askClaimRoute_bestRoute() {
-        RouteReadOnly route = mock(RouteReadOnly.class);
-        when(route.isClaimed()).thenReturn(false);
-        when(route.getLength()).thenReturn(5);
-        when(route.getColor()).thenReturn(Color.BLACK);
-        when(route.getType()).thenReturn(RouteType.TRAIN);
-        when(gameModel.getNonControllableAvailableRoutes()).thenReturn(Collections.singletonList(route));
-        when(playerModel.getNumberOfWagonCardsIncludingAnyColor(any())).thenReturn(5);
-        when(playerModel.getNumberOfWagons()).thenReturn(5);
+        List<RouteReadOnly> availableRoutes = createRoutesOfAllLengths();
+        RouteReadOnly routeLength8 = availableRoutes.get(6);
+
+        when(gameModel.getNonControllableAvailableRoutes()).thenReturn(availableRoutes);
+        when(playerModel.getNumberOfWagonCardsIncludingAnyColor(any())).thenReturn(8);
+        when(playerModel.getNumberOfWagons()).thenReturn(8);
 
         ClaimObject<RouteReadOnly> claimRoute = botEngine.askClaimRoute();
         assertNotNull(claimRoute);
-        assertEquals(route, claimRoute.getClaimable());
+        assertEquals(routeLength8, claimRoute.getClaimable());
+    }
+
+    private List<RouteReadOnly> createRoutesOfAllLengths() {
+        RouteReadOnly routeLength1 = mock(RouteReadOnly.class);
+        when(routeLength1.isClaimed()).thenReturn(false);
+        when(routeLength1.getLength()).thenReturn(1);
+        when(routeLength1.getColor()).thenReturn(Color.BLACK);
+        when(routeLength1.getType()).thenReturn(RouteType.TRAIN);
+
+        RouteReadOnly routeLength2 = mock(RouteReadOnly.class);
+        when(routeLength2.isClaimed()).thenReturn(false);
+        when(routeLength2.getLength()).thenReturn(2);
+        when(routeLength2.getColor()).thenReturn(Color.BLACK);
+        when(routeLength2.getType()).thenReturn(RouteType.TRAIN);
+
+        RouteReadOnly routeLength3 = mock(RouteReadOnly.class);
+        when(routeLength3.isClaimed()).thenReturn(false);
+        when(routeLength3.getLength()).thenReturn(3);
+        when(routeLength3.getColor()).thenReturn(Color.BLACK);
+        when(routeLength3.getType()).thenReturn(RouteType.TRAIN);
+
+        RouteReadOnly routeLength5 = mock(RouteReadOnly.class);
+        when(routeLength5.isClaimed()).thenReturn(false);
+        when(routeLength5.getLength()).thenReturn(5);
+        when(routeLength5.getColor()).thenReturn(Color.BLACK);
+        when(routeLength5.getType()).thenReturn(RouteType.TRAIN);
+
+        RouteReadOnly routeLength8 = mock(RouteReadOnly.class);
+        when(routeLength8.isClaimed()).thenReturn(false);
+        when(routeLength8.getLength()).thenReturn(8);
+        when(routeLength8.getColor()).thenReturn(Color.BLACK);
+        when(routeLength8.getType()).thenReturn(RouteType.TRAIN);
+
+        RouteReadOnly routeLength6 = mock(RouteReadOnly.class);
+        when(routeLength6.isClaimed()).thenReturn(false);
+        when(routeLength6.getLength()).thenReturn(6);
+        when(routeLength6.getColor()).thenReturn(Color.BLACK);
+        when(routeLength6.getType()).thenReturn(RouteType.TRAIN);
+
+        RouteReadOnly routeLength4 = mock(RouteReadOnly.class);
+        when(routeLength4.isClaimed()).thenReturn(false);
+        when(routeLength4.getLength()).thenReturn(4);
+        when(routeLength4.getColor()).thenReturn(Color.BLACK);
+        when(routeLength4.getType()).thenReturn(RouteType.TRAIN);
+
+        return List.of(routeLength1, routeLength2, routeLength3, routeLength4, routeLength5, routeLength6, routeLength8);
     }
 
     @Test
@@ -162,5 +201,17 @@ class MediumBotEngineTest {
 
         WagonCard selectedCard = botEngine.askWagonCardFromShownCards();
         assertEquals(card1, selectedCard);
+    }
+
+    @Test
+    void testAskChooseRouteStation() {
+        City paris = new City("Nice");
+        RouteReadOnly niceToLyon = new Route(paris, new City("Lyon"), 1, RouteType.TRAIN, Color.BLACK,  1);
+        RouteReadOnly parisToMarseille = new Route(paris, new City("Marseille"), 1, RouteType.TRAIN, Color.BLACK,  1);
+        List<RouteReadOnly> routes = new ArrayList<>(List.of(niceToLyon, parisToMarseille));
+        when(gameModel.getNonControllableAdjacentRoutes(paris)).thenReturn(routes);
+        when(random.nextInt(anyInt())).thenReturn(0);
+
+        assertEquals(niceToLyon, botEngine.askChooseRouteStation(paris));
     }
 }
