@@ -2,7 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.views;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
@@ -42,7 +42,7 @@ public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineV
     }
 
     @Override
-    public void displayReceivedDestinationCards(List<ShortDestinationCard> destinationCards) {
+    public void displayReceivedDestinationCards(List<DestinationCard> destinationCards) {
         logger.debug("Received destination cards: {}", destinationCards);
     }
 
@@ -68,11 +68,6 @@ public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineV
 
     @Override
     public void displayActionStop() {
-        log(Level.INFO, "Action Ask Stop Game");
-    }
-
-    @Override
-    public void displayActionStop() {
-        log(Level.INFO, "Action Ask Stop Game");
+        logger.info("Action Ask Stop Game");
     }
 }

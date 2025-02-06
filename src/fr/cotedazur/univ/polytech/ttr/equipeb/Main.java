@@ -16,7 +16,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.DestinationCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
@@ -31,11 +30,10 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.stats.views.GameStatisticsView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.views.PlayerStatisticsView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.GameConsoleView;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IGameViewable;
-
-import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -143,10 +141,10 @@ public class Main {
             logger.debug("Fin du jeu");
 
         } catch (JsonParseException e) {
+            logger.error("Erreur lors de la lecture du JSON: {}", e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
             throw new RuntimeException(e);
-            logger.error("Erreur lors de la lecture du JSON: {}", e.getMessage());
         }
     }
 

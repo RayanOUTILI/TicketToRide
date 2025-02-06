@@ -7,27 +7,22 @@ import org.slf4j.LoggerFactory;
 public class GameConsoleView implements IGameViewable {
     private final Logger logger = LoggerFactory.getLogger(GameConsoleView.class);
 
-    @Override
     public void displayEndGameReason(PlayerIdentification playerId, int nbOfWagons) {
         logger.info("Player {} has run out of wagons ({} wagons left)", playerId, nbOfWagons);
+    }
+
     public void displayNewGame() {
-        if(logger.isLoggable(Level.INFO)) {
-            logger.log(Level.INFO, "New game started");
-        }
+        logger.info("New game");
     }
 
     @Override
     public void displayNewTurn(int currentTurn) {
-        if(logger.isLoggable(Level.INFO)) {
-            logger.log(Level.INFO, String.format("Current turn: %d", currentTurn));
-        }
+        logger.info("New turn: {}", currentTurn);
     }
 
     @Override
     public void displayEndGameReason(PlayerIdentification playerId, int nbOfWagons, int nbTurns) {
-        if(logger.isLoggable(Level.INFO)) {
-            logger.log(Level.INFO, String.format("Player %s has run out of wagons", playerId));
-        }
+        logger.info("Player {} has run out of wagons ({} wagons left) after {} turns", playerId, nbOfWagons, nbTurns);
     }
 
     @Override
