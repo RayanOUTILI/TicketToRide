@@ -63,7 +63,7 @@ class StatsWriterTest {
     }
 
     @AfterAll
-    static void deleteFiles() {
+    static void deleteFiles() throws IOException {
         // Here we delete all the files in the resources/tests directory
         File file = new File(fileName);
         if (file.exists()) {
@@ -71,6 +71,9 @@ class StatsWriterTest {
                 f.delete();
             }
         }
+
+        File gitKeep = new File(fileName + ".gitkeep");
+        gitKeep.createNewFile();
     }
 
     private static PlayerStatsLine createLineOne() {
