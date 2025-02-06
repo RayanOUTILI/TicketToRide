@@ -99,13 +99,15 @@ class ObjectiveBotEngineTest {
         City city2 = new City("city2");
         City city3 = new City("city3");
         City city4 = new City("city4");
+        City city5 = new City("city5");
 
         DestinationCard card = new DestinationCard(city1, city4, 10);
-        Route route12 = new Route(city1, city2, 5, RouteType.TRAIN, Color.BLACK, 0);
+        Route route12 = new Route(city1, city2, 6, RouteType.TRAIN, Color.BLACK, 0);
         Route route23 = new Route(city2, city3, 6, RouteType.TRAIN, Color.BLACK, 0);
-        Route route34 = new Route(city3, city4, 6, RouteType.TRAIN, Color.BLACK, 0);
+        Route route34 = new Route(city3, city4, 5, RouteType.TRAIN, Color.BLACK, 0);
+        Route route45 = new Route(city4, city5, 4, RouteType.TRAIN, Color.BLACK, 0);
 
-        routesForObjective.put(card, List.of(route12, route23, route34));
+        routesForObjective.put(card, List.of(route12, route23, route34, route45));
 
         when(playerModel.getNumberOfWagonCardsIncludingAnyColor(Color.BLACK)).thenReturn(5);
         when(playerModel.getNumberOfWagons()).thenReturn(5);
@@ -114,7 +116,7 @@ class ObjectiveBotEngineTest {
 
         ClaimObject<RouteReadOnly> claimRoute = botEngine.askClaimRoute();
         assertNotNull(claimRoute);
-        assertEquals(route12, claimRoute.getClaimable());
+        assertEquals(route34, claimRoute.getClaimable());
     }
 
     @Test

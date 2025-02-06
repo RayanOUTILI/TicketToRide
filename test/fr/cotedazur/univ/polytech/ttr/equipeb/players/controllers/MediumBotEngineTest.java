@@ -214,4 +214,9 @@ class MediumBotEngineTest {
 
         assertEquals(niceToLyon, botEngine.askChooseRouteStation(paris));
     }
+
+    @Test
+    void testReset() {
+        assertTrue(botEngine.reset());
+    }
 }

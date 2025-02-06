@@ -1,8 +1,6 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
-import fr.cotedazur.univ.polytech.ttr.equipeb.exceptions.JsonParseException;
-import fr.cotedazur.univ.polytech.ttr.equipeb.factories.DestinationCardsFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IDestinationCardsControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
@@ -71,9 +69,9 @@ public class DestinationCardsController extends Controller {
         }
 
         player.receiveDestinationCards(chosenCards);
-
-        if (cards.removeAll(chosenCards)) {
-            gameModel.returnShortDestinationCardsToTheBottom(cards);
+        List<DestinationCard> discardedCards = new ArrayList<>(cards);
+        if (discardedCards.removeAll(chosenCards)) {
+            gameModel.returnShortDestinationCardsToTheBottom(discardedCards);
         }
 
         return Optional.empty();
@@ -83,7 +81,7 @@ public class DestinationCardsController extends Controller {
     public boolean resetPlayer(Player player) {
         List<DestinationCard> cardsInHand = player.getDestinationCards();
         List<DestinationCard> discardedCards = player.getDiscardDestinationCards();
-        List<DestinationCard> cards = cardsInHand;
+        List<DestinationCard> cards = new ArrayList<>(cardsInHand);
         cards.addAll(discardedCards);
         gameModel.returnShortDestinationCardsToTheBottom(cards.stream().filter(card -> card.getPoints() < DESTINATION_CARD_TYPE_THRESHOLD).toList());
         gameModel.returnLongDestinationCardsToTheBottom(cards.stream().filter(card -> card.getPoints() >= DESTINATION_CARD_TYPE_THRESHOLD).toList());
