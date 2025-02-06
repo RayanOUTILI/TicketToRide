@@ -58,6 +58,11 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     }
 
     @Override
+    public void actionSkipped(Action action, ReasonActionRefused reason) {
+        actionsController.actionSkipped(action, reason);
+    }
+
+    @Override
     public void actionCompleted(Action action) {
         actionsController.actionCompleted(action);
     }

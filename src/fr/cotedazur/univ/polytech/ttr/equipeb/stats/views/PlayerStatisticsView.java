@@ -83,6 +83,13 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
     }
 
     @Override
+    public void displayActionSkipped(Action action, ReasonActionRefused reason) {
+        statsLine.setAction(StatAction.valueOf(action.name()));
+        statsLine.setActionStatus(StatActionStatus.valueOf(reason.name()));
+        commitLine();
+    }
+
+    @Override
     public void displayActionCompleted(Action action) {
         statsLine.setAction(StatAction.valueOf(action.name()));
         statsLine.setActionStatus(StatActionStatus.YES);

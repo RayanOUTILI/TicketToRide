@@ -24,6 +24,11 @@ public class CompositePlayerEngineView implements IPlayerEngineViewable{
     }
 
     @Override
+    public void displayActionSkipped(Action action, ReasonActionRefused reason) {
+        views.forEach(v -> v.displayActionSkipped(action, reason));
+    }
+
+    @Override
     public void displayActionCompleted(Action action) {
         views.forEach(v -> v.displayActionCompleted(action));
     }
