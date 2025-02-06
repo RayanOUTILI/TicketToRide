@@ -57,8 +57,8 @@ public class CommandLineArgs {
         switch (verbose) {
             case 1 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.convertAnSLF4JLevel(Level.WARN));
             case 2 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.convertAnSLF4JLevel(Level.INFO));
-            case 3 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.DEBUG);
-            default -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.INFO);
+            case 3 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.convertAnSLF4JLevel(Level.DEBUG));
+            default -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.convertAnSLF4JLevel(Level.INFO));
         }
     }
 
