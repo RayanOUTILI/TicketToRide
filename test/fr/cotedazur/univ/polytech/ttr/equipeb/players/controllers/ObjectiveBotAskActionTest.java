@@ -154,14 +154,14 @@ class ObjectiveBotAskActionTest {
         assertEquals(3, routesForObjective.get(card).size());
 
         assertEquals(3, routesForObjective.get(card).size());
-        assertEquals(route12, routesForObjective.get(card).get(0));
+        assertEquals(route12, routesForObjective.get(card).getFirst());
         assertEquals(route23, routesForObjective.get(card).get(1));
         assertEquals(route34, routesForObjective.get(card).get(2));
 
         checkRoutesForClaiming.invoke(botEngine);
 
         assertEquals(2, routesForObjective.get(card).size());
-        assertEquals(route12, routesForObjective.get(card).get(0));
+        assertEquals(route12, routesForObjective.get(card).getFirst());
         assertEquals(route24, routesForObjective.get(card).get(1));
     }
 
@@ -187,7 +187,7 @@ class ObjectiveBotAskActionTest {
 
         assertEquals(2, routesForObjective.get(card).size());
 
-        assertEquals(route12, routesForObjective.get(card).get(0));
+        assertEquals(route12, routesForObjective.get(card).getFirst());
         assertEquals(route23, routesForObjective.get(card).get(1));
 
         checkRoutesForClaiming.invoke(botEngine);

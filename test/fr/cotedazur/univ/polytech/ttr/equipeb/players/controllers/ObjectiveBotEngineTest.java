@@ -152,7 +152,7 @@ class ObjectiveBotEngineTest {
 
 
         assertEquals(2, selectedCards.size());
-        assertEquals(dest13, selectedCards.get(0));
+        assertEquals(dest13, selectedCards.getFirst());
         assertEquals(dest14, selectedCards.get(1));
 
         assertTrue(routesForObjective.containsKey(dest13));
@@ -281,7 +281,7 @@ class ObjectiveBotEngineTest {
         when(gameModel.getListOfShownWagonCards()).thenReturn(shownCards);
 
         WagonCard selectedCard = botEngine.askWagonCardFromShownCards();
-        assertEquals(shownCards.get(0), selectedCard);
+        assertEquals(shownCards.getFirst(), selectedCard);
     }
 
     @Test

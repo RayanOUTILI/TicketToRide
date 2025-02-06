@@ -1,43 +1,32 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.views;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GameConsoleView implements IGameViewable {
-    private final Logger logger = Logger.getLogger(GameConsoleView.class.getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(GameConsoleView.class);
 
-    public GameConsoleView() {
-        logger.setLevel(Level.INFO);
+    public void displayEndGameReason(PlayerIdentification playerId, int nbOfWagons) {
+        logger.info("Player {} has run out of wagons ({} wagons left)", playerId, nbOfWagons);
     }
 
-    @Override
     public void displayNewGame() {
-        if(logger.isLoggable(Level.INFO)) {
-            logger.log(Level.INFO, "New game started");
-        }
+        logger.info("New game");
     }
 
     @Override
     public void displayNewTurn(int currentTurn) {
-        if(logger.isLoggable(Level.INFO)) {
-            logger.log(Level.INFO, String.format("Current turn: %d", currentTurn));
-        }
+        logger.info("New turn: {}", currentTurn);
     }
 
     @Override
     public void displayEndGameReason(PlayerIdentification playerId, int nbOfWagons, int nbTurns) {
-        if(logger.isLoggable(Level.INFO)) {
-            logger.log(Level.INFO, String.format("Player %s has run out of wagons", playerId));
-        }
+        logger.info("Player {} has run out of wagons ({} wagons left) after {} turns", playerId, nbOfWagons, nbTurns);
     }
 
     @Override
     public void displayWinner(PlayerIdentification playerId, int score) {
-        if(logger.isLoggable(Level.INFO)) {
-            logger.log(Level.INFO, String.format("Player %s has won with a score of %d", playerId, score));
-        }
+        logger.info("Player {} has won with a score of {}", playerId, score);
     }
-
 }

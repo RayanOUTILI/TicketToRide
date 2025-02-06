@@ -43,7 +43,7 @@ class MapFactoryTest {
         assertFalse(routes.isEmpty(), "The list of routes should not be empty.");
         assertEquals(1, routes.size(), "The list should contain one route.");
 
-        Route route = routes.get(0);
+        Route route = routes.getFirst();
         assertEquals("Paris", route.getFirstCity().getName());
         assertEquals("Lyon", route.getSecondCity().getName());
         assertEquals(4, route.getLength());
@@ -64,8 +64,8 @@ class MapFactoryTest {
         assertNotNull(routes, "The list of routes should not be null.");
         assertFalse(routes.isEmpty(), "The list of routes should not be empty.");
         assertEquals(1, routes.size(), "The list should contain one route.");
-        assertEquals("Nice", routes.get(0).getFirstCity().getName());
-        assertEquals("Marseille", routes.get(0).getSecondCity().getName());
+        assertEquals("Nice", routes.getFirst().getFirstCity().getName());
+        assertEquals("Marseille", routes.getFirst().getSecondCity().getName());
     }
 
     /**
@@ -89,7 +89,7 @@ class MapFactoryTest {
         assertFalse(smallMap.isEmpty(), "The small map should not be empty.");
         assertEquals(1, smallMap.size(), "The small map should contain exactly one route.");
 
-        Route route = smallMap.get(0);
+        Route route = smallMap.getFirst();
         assertEquals("Paris", route.getFirstCity().getName(), "The first city should be Paris.");
         assertEquals("Brest", route.getSecondCity().getName(), "The second city should be Brest.");
         assertEquals(3, route.getLength(), "The route length should be 3.");
