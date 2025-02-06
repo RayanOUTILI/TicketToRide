@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class PlayerStatsLine {
 
-    public static final String[] headers = new String[]{
+    private static final String[] headers = new String[]{
             "timestamp",
             "game_id",
             "player_id",
@@ -25,6 +25,10 @@ public class PlayerStatsLine {
             "calculated_current_destination_score",
             "label"
     };
+
+    public static String[] getHeaders() {
+        return headers;
+    }
 
     private long currentTime;
 

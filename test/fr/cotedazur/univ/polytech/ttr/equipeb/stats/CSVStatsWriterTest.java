@@ -121,7 +121,7 @@ class CSVStatsWriterTest {
     }
 
     private void openWriter(String testName) throws IOException {
-        writer = new CSVStatsWriter(getFileName(testName), PlayerStatsLine.headers, true);
+        writer = new CSVStatsWriter(getFileName(testName), PlayerStatsLine.getHeaders(), true);
     }
 
     private void openCSVReader(String testName) throws IOException {
@@ -162,7 +162,7 @@ class CSVStatsWriterTest {
         assertEquals(4, lines.size());
 
         // Check the header
-        assertArrayEquals(PlayerStatsLine.headers, lines.getFirst());
+        assertArrayEquals(PlayerStatsLine.getHeaders(), lines.getFirst());
 
         // Check the lines
         assertArrayEquals(lineOne.getValues(), lines.get(1));
@@ -195,7 +195,7 @@ class CSVStatsWriterTest {
         assertEquals(4, lines.size());
 
         // Check the header
-        assertArrayEquals(PlayerStatsLine.headers, lines.getFirst());
+        assertArrayEquals(PlayerStatsLine.getHeaders(), lines.getFirst());
 
         // Check the lines
         assertArrayEquals(lineOne.getValues(), lines.get(1));

@@ -115,30 +115,30 @@ public class EndGameScoreController extends Controller {
                 .map(player -> {
                     List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player);
                     Set<CityPair> allCityPairs = findLengthBetweenAllCityInGraph(getGraphFromRoutes(claimedRoutes));
-                    int longestPath = allCityPairs.stream()
+                    int longestPlayerPath = allCityPairs.stream()
                             .mapToInt(CityPair::getMaxLength)
                             .max()
                             .orElse(0);
 
-                    return new AbstractMap.SimpleEntry<>(player, longestPath);
+                    return new AbstractMap.SimpleEntry<>(player, longestPlayerPath);
                 })
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         if (playerLongestPaths.isEmpty()) return Collections.emptyList();
         int maxLongestPath = Collections.max(playerLongestPaths.values());
 
-        List<PlayerIdentification> playersWithLongestPath = playerLongestPaths.entrySet().stream()
+        List<PlayerIdentification> playersWithLongestPathList = playerLongestPaths.entrySet().stream()
                 .filter(entry -> entry.getValue() == maxLongestPath)
                 .map(Map.Entry::getKey)
                 .toList();
 
         this.longestPath = maxLongestPath;
 
-        playersWithLongestPath.forEach(
+        playersWithLongestPathList.forEach(
                 player -> scoreView.ifPresent(v -> v.displayPlayerHasLongestPath(player, maxLongestPath))
         );
 
-        return playersWithLongestPath;
+        return playersWithLongestPathList;
     }
 
     private int getFinalScore(Player player){
