@@ -1,6 +1,5 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.args;
 
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -55,10 +54,10 @@ public class CommandLineArgs {
     private void updateLogLevel() {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         switch (verbose) {
-            case 1 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(Level.WARN);
-            case 2 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(Level.INFO);
-            case 3 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(Level.DEBUG);
-            default -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(Level.INFO);
+            case 1 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.WARN);
+            case 2 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.INFO);
+            case 3 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.DEBUG);
+            default -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.INFO);
         }
     }
 
