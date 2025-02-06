@@ -42,20 +42,22 @@ public class ConsoleStatsWriter extends StatsWriter {
     @Override
     public void close() throws Exception {
         logger.info("Console statistics:");
-        for (String gameLabel : gameLabels.keySet()) {
-            logger.info("%nGame {} played {} times", gameLabel, gameLabels.get(gameLabel));
+        for (Map.Entry<String, Integer> entry : gameLabels.entrySet()) {
+            String gameLabel = entry.getKey();
+            Integer playCount = entry.getValue();
+            logger.info("Game {{}} played {} times", gameLabel, playCount);
             for (PlayerStatsInfos playerStatsInfo : this.playerStatsInfos.values()) {
                 if (playerStatsInfo.getGameLabel().equals(gameLabel)) {
-                    logger.info("{} : Player {} ({}) won {} games ({}%%), games with average score of {}",
-                            playerStatsInfo.getPlayerId(),
+                    logger.info("Player {} ({}) won {} games ({}%%), games with average score of {}",
                             playerStatsInfo.getPlayerColor(),
                             playerStatsInfo.getPlayerType(),
                             playerStatsInfo.getWinnedGames(),
-                            ((double) playerStatsInfo.getWinnedGames()) / gameLabels.get(gameLabel) * 100,
+                            ((double) playerStatsInfo.getWinnedGames()) / playCount * 100,
                             playerStatsInfo.calculateAverageScore()
                     );
                 }
             }
+            logger.info("-------- --------------- --------");
         }
     }
 }

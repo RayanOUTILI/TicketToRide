@@ -28,10 +28,4 @@
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
-
-    <!-- Root logger, définissant le niveau par défaut à INFO -->
-    <root level="INFO">
-        <appender-ref ref="STDOUT"/>
-    </root>
-
 </configuration>
