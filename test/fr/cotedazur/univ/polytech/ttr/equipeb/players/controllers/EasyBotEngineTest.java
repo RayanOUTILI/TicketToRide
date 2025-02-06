@@ -43,7 +43,7 @@ class EasyBotEngineTest {
         random = mock(RandomGenerator.class);
         view = mock(IPlayerEngineViewable.class);
 
-        easyBotEngine = new EasyBotEngine(playerModel, gameModel, view);
+        easyBotEngine = new EasyBotEngine(gameModel, playerModel, view);
 
         Field randomField = BotEngineWithRandom.class.getDeclaredField("random");
         randomField.setAccessible(true);

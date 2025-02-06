@@ -2,8 +2,9 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.factories.players;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.EasyBotEngine;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.MediumBotEngine;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.objectivebot.ObjectiveBotEngine;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.randombots.EasyBotEngine;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.randombots.MediumBotEngine;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
@@ -31,9 +32,9 @@ public class PlayerFactory {
     private Player createPlayer(PlayerType playerType, PlayerModel playerModel, GameModel gameModel, IPlayerEngineViewable playerEngineViewable){
         return new Player(
                 switch (playerType) {
-                    case EASY_BOT -> new EasyBotEngine(playerModel, gameModel, playerEngineViewable);
-                    case MEDIUM_BOT -> new MediumBotEngine(playerModel, gameModel, playerEngineViewable);
-                    case GOD_BOT -> throw new UnsupportedOperationException("God bot is not implemented yet");
+                    case EASY_BOT -> new EasyBotEngine(gameModel, playerModel, playerEngineViewable);
+                    case MEDIUM_BOT -> new MediumBotEngine(gameModel, playerModel, playerEngineViewable);
+                    case OBJECTIVE_BOT -> new ObjectiveBotEngine(gameModel, playerModel, playerEngineViewable);
                 },
                 playerModel
         );

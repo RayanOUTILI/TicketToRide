@@ -35,7 +35,7 @@ class MediumBotEngineTest {
         playerModel = mock(IPlayerModel.class);
         IPlayerEngineViewable view = mock(IPlayerEngineViewable.class);
         random = mock(RandomGenerator.class);
-        botEngine = new MediumBotEngine(playerModel, gameModel, view);
+        botEngine = new MediumBotEngine(gameModel, playerModel, view);
 
         Field randomField = BotEngineWithRandom.class.getDeclaredField("random");
         randomField.setAccessible(true);

@@ -56,7 +56,7 @@ class StatsWriterTest {
         playerColorThree = PlayerIdentification.GREEN;
         playerTypeOne = PlayerType.EASY_BOT;
         playerTypeTwo = PlayerType.MEDIUM_BOT;
-        playerTypeThree = PlayerType.GOD_BOT;
+        playerTypeThree = PlayerType.OBJECTIVE_BOT;
         lineOne = createLineOne();
         lineTwo = createLineTwo();
         lineThree = createLineThree();

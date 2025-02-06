@@ -69,7 +69,7 @@ public class CommandLineArgs {
 
         if (demo) {
             playersTypes.add(new GameExecutionInfos(
-                    List.of(PlayerType.EASY_BOT, PlayerType.EASY_BOT, PlayerType.MEDIUM_BOT),
+                    List.of(PlayerType.EASY_BOT, PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT),
                     1
             ));
         }
