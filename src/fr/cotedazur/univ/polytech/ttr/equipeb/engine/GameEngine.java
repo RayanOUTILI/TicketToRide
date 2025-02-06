@@ -186,11 +186,22 @@ public class GameEngine {
         Controller controller = gameControllers.get(action);
         Optional<ReasonActionRefused> actionRefused = controller.doAction(player);
 
-        if (actionRefused.isPresent()) {
+        TypeActionHandled typeActionHandled;
+
+        if (actionRefused.isPresent() && !actionRefused.get().isActionSkipTurn()) {
             player.actionRefused(action, actionRefused.get());
+            typeActionHandled = TypeActionHandled.REFUSED;
         }
-        else player.actionCompleted(action);
-        return actionRefused.isEmpty() ? TypeActionHandled.SUCCESS : TypeActionHandled.REFUSED;
+        else if(actionRefused.isPresent()) {
+            player.actionSkipped(action, actionRefused.get());
+            typeActionHandled = TypeActionHandled.SKIPPED;
+        }
+        else {
+            player.actionCompleted(action);
+            typeActionHandled = TypeActionHandled.SUCCESS;
+        }
+
+        return typeActionHandled;
     }
 
     private boolean nextPlayer() {

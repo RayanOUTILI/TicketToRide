@@ -141,6 +141,11 @@ public abstract class BotEngineControllable extends BotEngine {
     }
 
     @Override
+    public void actionSkipped(Action action, ReasonActionRefused reason) {
+        view.ifPresent(iPlayerEngineViewable -> iPlayerEngineViewable.displayActionSkipped(action, reason));
+    }
+
+    @Override
     public void actionCompleted(Action action) {
         view.ifPresent(iPlayerEngineViewable -> iPlayerEngineViewable.displayActionCompleted(action));
     }

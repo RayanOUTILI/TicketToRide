@@ -90,6 +90,11 @@ public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineV
     }
 
     @Override
+    public void displayActionSkipped(Action action, ReasonActionRefused reason) {
+        log(Level.WARNING, "Action skipped: " + action + " -> " + reason);
+    }
+
+    @Override
     public void displayActionCompleted(Action action) {
         log(Level.INFO,  "Action completed: " + action);
     }
