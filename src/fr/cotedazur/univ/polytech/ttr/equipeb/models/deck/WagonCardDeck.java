@@ -77,7 +77,17 @@ public class WagonCardDeck {
     }
 
     public boolean clearDeck() {
-        boolean added = stack.addAll(shownCards) && stack.addAll(maskedCards) && stack.addAll(discardPile);
+        boolean added = true;
+
+        if(!shownCards.isEmpty()) {
+            added = stack.addAll(shownCards);
+        }
+        if(!maskedCards.isEmpty() && added) {
+            added = stack.addAll(maskedCards);
+        }
+        if(!discardPile.isEmpty() && added) {
+            added = stack.addAll(discardPile);
+        }
         shownCards.clear();
         maskedCards.clear();
         discardPile.clear();

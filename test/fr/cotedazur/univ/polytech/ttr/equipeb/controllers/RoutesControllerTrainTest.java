@@ -1,11 +1,12 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimObject;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IRoutesControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ class RoutesControllerTrainTest {
     private RoutesController routesController;
     private IRoutesControllerGameModel gameModel;
     private Player player;
-    private ClaimRoute claimRoute;
+    private ClaimObject<RouteReadOnly> claimRoute;
     private Route route;
     private List<WagonCard> wagonCards;
 
@@ -32,25 +33,25 @@ class RoutesControllerTrainTest {
         when(gameModel.getNbOfPlayers()).thenReturn(3);
         routesController = new RoutesController(gameModel);
         player = mock(Player.class);
-        claimRoute = mock(ClaimRoute.class);
+        claimRoute = mock(ClaimObject.class);
         route = mock(Route.class);
         when(route.getId()).thenReturn(1);
         when(route.isClaimed()).thenReturn(false);
         when(route.getLength()).thenReturn(2);
         when(route.getColor()).thenReturn(Color.BLUE);
         when(gameModel.getRoute(1)).thenReturn(route);
-        when(claimRoute.route()).thenReturn(route);
+        when(claimRoute.getClaimable()).thenReturn(route);
         when(player.getNumberOfWagons()).thenReturn(2);
     }
 
     @org.junit.jupiter.api.Test
     void testNullRoute() {
-        when(claimRoute.route()).thenReturn(null);
+        when(claimRoute.getClaimable()).thenReturn(null);
         when(player.askClaimRoute()).thenReturn(claimRoute);
         Optional<ReasonActionRefused> actionRefused = routesController.doAction(player);
         assertTrue(actionRefused.isPresent());
         assertEquals(ReasonActionRefused.ROUTE_INVALID, actionRefused.get());
-        verify(claimRoute).route();
+        verify(claimRoute).getClaimable();
         verify(player).askClaimRoute();
     }
 

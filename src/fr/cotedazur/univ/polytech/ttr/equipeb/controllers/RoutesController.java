@@ -1,11 +1,12 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.controllers;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimObject;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IRoutesControllerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
 
 import java.util.ArrayList;
@@ -33,13 +34,13 @@ public class RoutesController extends Controller {
 
     @Override
     public Optional<ReasonActionRefused> doAction(Player player) {
-        ClaimRoute claimRoute = player.askClaimRoute();
+        ClaimObject<RouteReadOnly> claimRoute = player.askClaimRoute();
 
-        if(claimRoute == null || claimRoute.route() == null) {
+        if(claimRoute == null || claimRoute.getClaimable() == null) {
             return Optional.of(ReasonActionRefused.ROUTE_INVALID);
         }
 
-        Route route = gameModel.getRoute(claimRoute.route().getId());
+        Route route = gameModel.getRoute(claimRoute.getClaimable().getId());
 
         if(route == null) return Optional.of(ReasonActionRefused.ROUTE_WANTED_ROUTE_NOT_FOUND);
 
@@ -158,6 +159,8 @@ public class RoutesController extends Controller {
                 return Optional.of(ReasonActionRefused.ROUTE_TUNNEL_NOT_ENOUGH_REMOVED_WAGON_CARDS);
             }
         }
+
+        gameModel.discardWagonCards(drawnCards);
 
         return Optional.empty();
     }

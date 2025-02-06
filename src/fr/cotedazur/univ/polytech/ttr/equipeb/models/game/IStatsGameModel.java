@@ -5,8 +5,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentificatio
 
 import java.util.List;
 
-public interface IScoreControllerGameModel {
+public interface IStatsGameModel {
     List<RouteReadOnly> getAllRoutesClaimedByPlayer(PlayerIdentification player);
-
-    List<PlayerIdentification> getPlayersIdentification();
 }

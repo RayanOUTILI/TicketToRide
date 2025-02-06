@@ -7,7 +7,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.CityPair;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.Player;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.views.IScoreView;
 
 import java.util.*;
@@ -20,7 +20,8 @@ public class EndGameScoreController extends Controller {
     private static final int LONGEST_PATH_BONUS = 10;
     private final IScoreControllerGameModel gameModel;
     private final Optional<IScoreView> scoreView;
-    private final List<IPlayerModelControllable> playersWithLongestPath = new ArrayList<>();
+    private final List<PlayerIdentification> playersWithLongestPath = new ArrayList<>();
+    private int longestPath = 0;
 
     public EndGameScoreController(IScoreControllerGameModel gameModel, IScoreView scoreView) {
         this.gameModel = gameModel;
@@ -50,7 +51,8 @@ public class EndGameScoreController extends Controller {
             this.playersWithLongestPath.addAll(calculatePlayerWithTheLongestContinuousRoute());
         }
 
-        if(this.playersWithLongestPath.contains(player.getModelController())) {
+        if(this.playersWithLongestPath.contains(player.getIdentification())) {
+            player.setLongestContinuousRouteLength(longestPath);
             finalScore += LONGEST_PATH_BONUS;
         }
 
@@ -92,6 +94,7 @@ public class EndGameScoreController extends Controller {
                     CityPair pair = new CityPair(card.getStartCity(), card.getEndCity());
                     if (allCityPairs.contains(pair)) {
                         scoreView.ifPresent(v -> v.displayCompletedDestination(player.getIdentification(), card));
+                        player.incrementNumberOfCompletedObjectiveCards(1);
                         return card.getPoints();
                     } else {
                         scoreView.ifPresent(v -> v.displayFailedDestination(player.getIdentification(), card));
@@ -107,15 +110,16 @@ public class EndGameScoreController extends Controller {
         return score;
     }
 
-    private List<IPlayerModelControllable> calculatePlayerWithTheLongestContinuousRoute() {
-        Map<IPlayerModelControllable, Integer> playerLongestPaths = gameModel.getPlayers().stream()
+    private List<PlayerIdentification> calculatePlayerWithTheLongestContinuousRoute() {
+        Map<PlayerIdentification, Integer> playerLongestPaths = gameModel.getPlayersIdentification().stream()
                 .map(player -> {
-                    List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player.getIdentification());
+                    List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player);
                     Set<CityPair> allCityPairs = findLengthBetweenAllCityInGraph(getGraphFromRoutes(claimedRoutes));
                     int longestPath = allCityPairs.stream()
                             .mapToInt(CityPair::getMaxLength)
                             .max()
                             .orElse(0);
+
                     return new AbstractMap.SimpleEntry<>(player, longestPath);
                 })
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -123,13 +127,15 @@ public class EndGameScoreController extends Controller {
         if (playerLongestPaths.isEmpty()) return Collections.emptyList();
         int maxLongestPath = Collections.max(playerLongestPaths.values());
 
-        List<IPlayerModelControllable> playersWithLongestPath = playerLongestPaths.entrySet().stream()
+        List<PlayerIdentification> playersWithLongestPath = playerLongestPaths.entrySet().stream()
                 .filter(entry -> entry.getValue() == maxLongestPath)
                 .map(Map.Entry::getKey)
                 .toList();
 
+        this.longestPath = maxLongestPath;
+
         playersWithLongestPath.forEach(
-                player -> scoreView.ifPresent(v -> v.displayPlayerHasLongestPath(player.getIdentification(), maxLongestPath))
+                player -> scoreView.ifPresent(v -> v.displayPlayerHasLongestPath(player, maxLongestPath))
         );
 
         return playersWithLongestPath;
