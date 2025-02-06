@@ -100,7 +100,7 @@ public class ObjectiveBotEngine extends BotEngineControllable {
             for (RouteReadOnly route : entry.getValue()) {
                 if (route.isClaimed()) {
 
-                    if (route.getClaimerPlayer() != playerModel.getPlayerIdentification()) {
+                    if (route.getClaimerPlayer() != playerModel.getIdentification()) {
                         List<RouteReadOnly> allAvailableRoutes = gameModel.getNonControllableAvailableRoutes();
                         Map<City, Map<City, Integer>> citiesGraph = CitiesGraphUtils.getGraphFromRoutes(allAvailableRoutes);
                         routesForObjective.put(entry.getKey(),
@@ -123,7 +123,7 @@ public class ObjectiveBotEngine extends BotEngineControllable {
         for (Map.Entry<DestinationCard, List<RouteReadOnly>> entry : routesForObjective.entrySet()) {
             boolean completed = true;
             for (RouteReadOnly route : entry.getValue()) {
-                if (!route.isClaimed() || route.getClaimerPlayer() != playerModel.getPlayerIdentification()) {
+                if (!route.isClaimed() || route.getClaimerPlayer() != playerModel.getIdentification()) {
                     completed = false;
                     break;
                 }
@@ -170,7 +170,7 @@ public class ObjectiveBotEngine extends BotEngineControllable {
     @Override
     protected List<DestinationCard> chooseDestinationCards(List<DestinationCard> cards) {
         List<RouteReadOnly> allAvailableRoutes = new ArrayList<>(gameModel.getNonControllableAvailableRoutes());
-        List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(playerModel.getPlayerIdentification());
+        List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(playerModel.getIdentification());
         allAvailableRoutes.addAll(claimedRoutes);
 
         List<DestinationPath> destinationPaths = new ArrayList<>();

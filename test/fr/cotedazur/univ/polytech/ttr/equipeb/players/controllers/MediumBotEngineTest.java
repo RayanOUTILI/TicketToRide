@@ -2,8 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimObject;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
@@ -98,9 +97,9 @@ class MediumBotEngineTest {
         when(playerModel.getNumberOfWagonCardsIncludingAnyColor(any())).thenReturn(8);
         when(playerModel.getNumberOfWagons()).thenReturn(8);
 
-        ClaimRoute claimRoute = botEngine.askClaimRoute();
+        ClaimObject<RouteReadOnly> claimRoute = botEngine.askClaimRoute();
         assertNotNull(claimRoute);
-        assertEquals(routeLength8, claimRoute.route());
+        assertEquals(routeLength8, claimRoute.getClaimable());
     }
 
     private List<RouteReadOnly> createRoutesOfAllLengths() {
@@ -162,9 +161,9 @@ class MediumBotEngineTest {
         when(gameModel.getNonControllableAvailableCities()).thenReturn(Collections.singletonList(city));
         when(playerModel.getWagonCardsIncludingAnyColor(anyInt())).thenReturn(Arrays.asList(mock(WagonCard.class), mock(WagonCard.class), mock(WagonCard.class)));
 
-        ClaimStation claimStation = botEngine.askClaimStation();
+        ClaimObject<CityReadOnly> claimStation = botEngine.askClaimStation();
         assertNotNull(claimStation);
-        assertEquals(city, claimStation.city());
+        assertEquals(city, claimStation.getClaimable());
     }
 
     @Test

@@ -24,12 +24,12 @@ public abstract class BotEngineControllable extends BotEngine {
     }
 
     @Override
-    public ClaimRoute askClaimRoute() {
+    public ClaimObject<RouteReadOnly> askClaimRoute() {
         RouteReadOnly route = chooseRoute();
 
         if (route == null) return null;
 
-        return new ClaimRoute(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getType() == RouteType.FERRY ? route.getNbLocomotives() : 0));
+        return new ClaimObject<>(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getType() == RouteType.FERRY ? route.getNbLocomotives() : 0));
     }
 
     /**
@@ -38,13 +38,13 @@ public abstract class BotEngineControllable extends BotEngine {
      * @return the claim station action for the chosen city.
      */
     @Override
-    public ClaimStation askClaimStation() {
+    public ClaimObject<CityReadOnly> askClaimStation() {
         List<CityReadOnly> availableCities = gameModel.getNonControllableAvailableCities();
         if (availableCities.isEmpty()) {
             return null;
         }
         CityReadOnly bestCity = chooseCityToPlaceStation(availableCities);
-        return new ClaimStation(bestCity, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft() - 1)));
+        return new ClaimObject<>(bestCity, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft() - 1)));
     }
 
     /**
@@ -145,5 +145,10 @@ public abstract class BotEngineControllable extends BotEngine {
     @Override
     public void actionCompleted(Action action) {
         view.ifPresent(iPlayerEngineViewable -> iPlayerEngineViewable.displayActionCompleted(action));
+    }
+
+    @Override
+    public void actionStop() {
+        view.ifPresent(IPlayerEngineViewable::displayActionStop);
     }
 }

@@ -142,7 +142,7 @@ class ObjectiveBotAskActionTest {
 
         when(gameModel.getNonControllableRoutes()).thenReturn(List.of(route12, route23, route34, route24));
         when(gameModel.getNonControllableAvailableRoutes()).thenReturn(List.of(route12, route23, route24));
-        when(playerModel.getPlayerIdentification()).thenReturn(PlayerIdentification.BLACK);
+        when(playerModel.getIdentification()).thenReturn(PlayerIdentification.BLACK);
         routesForObjective.put(card, List.of(route12, route23, route34));
 
         route34.setClaimerPlayer(PlayerIdentification.GREEN);
@@ -176,7 +176,7 @@ class ObjectiveBotAskActionTest {
 
         when(gameModel.getNonControllableRoutes()).thenReturn(List.of(route12, route23));
         when(gameModel.getNonControllableAvailableRoutes()).thenReturn(List.of(route12, route23));
-        when(playerModel.getPlayerIdentification()).thenReturn(PlayerIdentification.BLACK);
+        when(playerModel.getIdentification()).thenReturn(PlayerIdentification.BLACK);
         routesForObjective.put(card, List.of(route12, route23));
 
         route23.setClaimerPlayer(PlayerIdentification.BLACK);
@@ -215,7 +215,7 @@ class ObjectiveBotAskActionTest {
         route23.setClaimerPlayer(PlayerIdentification.BLACK);
         route34.setClaimerPlayer(PlayerIdentification.BLACK);
 
-        when(playerModel.getPlayerIdentification()).thenReturn(PlayerIdentification.BLACK);
+        when(playerModel.getIdentification()).thenReturn(PlayerIdentification.BLACK);
 
         Method checkRoutesForObjectiveCompletion = ObjectiveBotEngine.class.getDeclaredMethod("checkRoutesForObjectiveCompletion");
         checkRoutesForObjectiveCompletion.setAccessible(true);

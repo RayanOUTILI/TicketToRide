@@ -1,7 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimObject;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
@@ -37,7 +37,7 @@ class ObjectiveBotEngineTest {
     void setUp() throws IllegalAccessException, NoSuchFieldException {
         gameModel = mock(IPlayerGameModel.class);
         playerModel = mock(IPlayerModel.class);
-        when(playerModel.getPlayerIdentification()).thenReturn(PlayerIdentification.BLACK);
+        when(playerModel.getIdentification()).thenReturn(PlayerIdentification.BLACK);
         IPlayerEngineViewable view = mock(IPlayerEngineViewable.class);
         botEngine = new ObjectiveBotEngine(gameModel, playerModel, view);
         routesForObjective = new HashMap<>();
@@ -111,9 +111,9 @@ class ObjectiveBotEngineTest {
         when(playerModel.getNumberOfWagonCards()).thenReturn(0);
         when(gameModel.getNonControllableRoutes()).thenReturn(List.of(route12, route23, route34));
 
-        ClaimRoute claimRoute = botEngine.askClaimRoute();
+        ClaimObject<RouteReadOnly> claimRoute = botEngine.askClaimRoute();
         assertNotNull(claimRoute);
-        assertEquals(route12, claimRoute.route());
+        assertEquals(route12, claimRoute.getClaimable());
     }
 
     @Test

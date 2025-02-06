@@ -2,7 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimObject;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
@@ -98,8 +98,8 @@ class EasyBotEngineTest {
         when(random.nextInt(anyInt())).thenReturn(0);
         when(gameModel.getNonControllableRoutes()).thenReturn(routes);
 
-        ClaimRoute claimRoute = easyBotEngine.askClaimRoute();
-        assertEquals(route, claimRoute.route());
+        ClaimObject<RouteReadOnly> claimRoute = easyBotEngine.askClaimRoute();
+        assertEquals(route, claimRoute.getClaimable());
         assertEquals(List.of(card), claimRoute.wagonCards());
     }
 
@@ -124,8 +124,8 @@ class EasyBotEngineTest {
         when(random.nextInt(anyInt())).thenReturn(0);
         when(gameModel.getNonControllableRoutes()).thenReturn(routes);
 
-        ClaimRoute claimRoute = easyBotEngine.askClaimRoute();
-        assertEquals(route, claimRoute.route());
+        ClaimObject<RouteReadOnly> claimRoute = easyBotEngine.askClaimRoute();
+        assertEquals(route, claimRoute.getClaimable());
         assertEquals(List.of(card), claimRoute.wagonCards());
     }
 
@@ -219,7 +219,7 @@ class EasyBotEngineTest {
         WagonCard card2 = new WagonCard(Color.BLACK);
         WagonCard card3 = new WagonCard(Color.BLACK);
         when(playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft() - 1))).thenReturn(List.of(card1, card2, card3));
-        assertEquals(paris, easyBotEngine.askClaimStation().city());
+        assertEquals(paris, easyBotEngine.askClaimStation().getClaimable());
     }
 
     @Test
