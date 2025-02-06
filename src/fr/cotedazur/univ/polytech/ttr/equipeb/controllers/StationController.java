@@ -65,7 +65,7 @@ public class StationController extends Controller{
         }
 
         // Check if the cards are the same color
-        WagonCard firstCard = removedCards.get(0);
+        WagonCard firstCard = removedCards.getFirst();
         boolean allCardsHaveSameColor = removedCards.stream().allMatch(
                 card -> card.getColor() == firstCard.getColor()
                         || card.getColor() == Color.ANY

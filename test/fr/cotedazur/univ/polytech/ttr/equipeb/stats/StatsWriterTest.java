@@ -161,7 +161,7 @@ class StatsWriterTest {
         assertEquals(4, lines.size());
 
         // Check the header
-        assertArrayEquals(PlayerStatsLine.headers, lines.get(0));
+        assertArrayEquals(PlayerStatsLine.headers, lines.getFirst());
 
         // Check the lines
         assertArrayEquals(lineOne.getValues(), lines.get(1));
@@ -194,7 +194,7 @@ class StatsWriterTest {
         assertEquals(4, lines.size());
 
         // Check the header
-        assertArrayEquals(PlayerStatsLine.headers, lines.get(0));
+        assertArrayEquals(PlayerStatsLine.headers, lines.getFirst());
 
         // Check the lines
         assertArrayEquals(lineOne.getValues(), lines.get(1));

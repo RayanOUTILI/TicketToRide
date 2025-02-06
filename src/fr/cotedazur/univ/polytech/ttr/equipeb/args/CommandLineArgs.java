@@ -90,7 +90,7 @@ public class CommandLineArgs {
         if (demo) {
             playersTypes.add(new GameExecutionInfos(
                     List.of(PlayerType.EASY_BOT, PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT),
-                    1
+                    1000
             ));
         }
 

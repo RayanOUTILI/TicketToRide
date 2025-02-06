@@ -149,7 +149,7 @@ public class ObjectiveBotEngine extends BotEngineControllable {
 
         if (usefulClaimableRoutes.isEmpty()) return null;
 
-        return usefulClaimableRoutes.get(0);
+        return usefulClaimableRoutes.getFirst();
     }
 
     /**
@@ -193,7 +193,7 @@ public class ObjectiveBotEngine extends BotEngineControllable {
                 .toList();
 
         List<DestinationPath> chosenDestinationPaths = destinationPathsSorted.stream()
-                .filter(n -> n.equals(destinationPathsSorted.get(0)))
+                .filter(n -> n.equals(destinationPathsSorted.getFirst()))
                 .limit(2)
                 .toList();
         List<DestinationCard> chosenCards = chosenDestinationPaths.stream().map(DestinationPath::getDestinationCard).toList();
@@ -219,7 +219,7 @@ public class ObjectiveBotEngine extends BotEngineControllable {
     protected List<DestinationCard> chooseInitialDestinationCards(List<DestinationCard> cards) {
         allObjectivesCompleted = false;
         List<DestinationCard> chosenCards = findDestinationsWithMostCommonCities(cards);
-        if (chosenCards.get(0) == null) {
+        if (chosenCards.getFirst() == null) {
             List<DestinationCard> mutableCards = new ArrayList<>(cards);
             mutableCards.sort(Comparator.comparingInt(DestinationCard::getPoints));
             chosenCards = mutableCards.reversed().subList(0, Math.min(2, mutableCards.size()));
