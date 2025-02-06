@@ -68,7 +68,7 @@ class GameExecutorFactoryTest {
         when(dataModelisationFactory.getPlayerModels()).thenReturn(Optional.of(playerModels));
         when(gameActionsFactory.getGameActions(gameModel)).thenReturn(Collections.emptyMap());
         when(gameActionsFactory.getEndTurnActions(gameModel)).thenReturn(Collections.emptyList());
-        when(gameActionsFactory.getEndGameActions(gameModel)).thenReturn(Collections.emptyList());
+        when(gameActionsFactory.getEndGameActions(gameModel, false)).thenReturn(Collections.emptyList());
         when(playerFactory.createPlayers(playerTypes, playerModels, gameModel, playerEngineViews)).thenReturn(Collections.emptyList());
 
         GameExecutor gameExecutor = GameExecutorFactory.createGame(

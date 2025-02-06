@@ -2,6 +2,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.views;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ class PlayerConsoleViewTest {
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
         playerConsoleView = new PlayerConsoleView();
+        playerConsoleView.setPlayerIdentification(PlayerIdentification.BLUE);
         logger = mock(Logger.class);
         Field loggerField = PlayerConsoleView.class.getDeclaredField("logger");
         loggerField.setAccessible(true);
@@ -28,19 +30,19 @@ class PlayerConsoleViewTest {
     void testDisplayClaimedRoute() {
         Route route = mock(Route.class);
         playerConsoleView.displayClaimedRoute(route);
-        verify(logger, times(1)).debug("Claimed route: {}", route);
+        verify(logger, times(1)).debug("Player {}: Claimed route: {}",PlayerIdentification.BLUE, route);
     }
 
     @Test
     void testDisplayNewScore() {
         playerConsoleView.displayNewScore(0);
-        verify(logger, times(1)).info("New score: {}", 0);
+        verify(logger, times(1)).info("Player {}: New score: {}",PlayerIdentification.BLUE, 0);
     }
 
     @Test
     void testDisplayClaimedStation() {
         City city = mock(City.class);
         playerConsoleView.displayClaimedStation(city, List.of(), 0);
-        verify(logger, times(1)).debug("Claimed station: {} with wagon cards: {}. Stations left: {}", city, List.of(), 0);
+        verify(logger, times(1)).debug("Player {}: Claimed station: {} with wagon cards: {}. Stations left: {}",PlayerIdentification.BLUE, city, List.of(), 0);
     }
 }
