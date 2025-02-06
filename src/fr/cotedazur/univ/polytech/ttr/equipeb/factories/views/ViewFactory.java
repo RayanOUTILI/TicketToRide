@@ -30,16 +30,14 @@ public class ViewFactory {
     public IGameViewable createEngineGameViewFor(List<ViewOptions> viewOptions){
         CompositeGameEngineView compositeGameEngineView = new CompositeGameEngineView();
 
-        if (viewOptions.contains(ViewOptions.CSV) || viewOptions.contains(ViewOptions.DATABASE)){
+        if (viewOptions.contains(ViewOptions.CSV)
+                || viewOptions.contains(ViewOptions.DATABASE)
+                || viewOptions.contains(ViewOptions.CLI_STATS)){
             compositeGameEngineView.addView(statsViewFactory.createStatsViewForGameEngine());
         }
 
         if (viewOptions.contains(ViewOptions.CLI_VERBOSE)){
             compositeGameEngineView.addView(new GameConsoleView());
-        }
-
-        if (viewOptions.contains(ViewOptions.CLI_STATS)){
-            throw new UnsupportedOperationException("Not implemented yet");
         }
 
         return compositeGameEngineView;
@@ -50,7 +48,9 @@ public class ViewFactory {
                 .map(playerModel -> new CompositePlayerEngineView()).toList();
 
         // CSV
-        if (viewOptions.contains(ViewOptions.CSV) || viewOptions.contains(ViewOptions.DATABASE)){
+        if (viewOptions.contains(ViewOptions.CSV)
+                || viewOptions.contains(ViewOptions.DATABASE)
+                || viewOptions.contains(ViewOptions.CLI_STATS)){
             List<PlayerStatisticsView> playerStatisticsViews = statsViewFactory.createStatsViewsForPlayers(playerTypes);
             for (int i = 0; i < playerTypes.size(); i++) {
                 compositePlayerEngineViews.get(i).addView(playerStatisticsViews.get(i));
@@ -65,11 +65,6 @@ public class ViewFactory {
             }
         }
 
-        // CLI_STATS
-        if (viewOptions.contains(ViewOptions.CLI_STATS)){
-            throw new UnsupportedOperationException("Not implemented yet");
-        }
-
         return new ArrayList<>(compositePlayerEngineViews);
     }
 
@@ -77,19 +72,12 @@ public class ViewFactory {
         List<CompositePlayerView> playerViews = playerTypes.stream()
                 .map(playerModel -> new CompositePlayerView()).toList();
 
-        // NOTHING TO DO WITH CSV
-
         // CLI_VERBOSE
         if (viewOptions.contains(ViewOptions.CLI_VERBOSE)){
             List<PlayerConsoleView> playerCLIViews = createOrGetConsoleView(playerTypes.size());
             for (int i = 0; i < playerTypes.size(); i++) {
                 playerViews.get(i).addView(playerCLIViews.get(i));
             }
-        }
-
-        // CLI_STATS
-        if (viewOptions.contains(ViewOptions.CLI_STATS)){
-            throw new UnsupportedOperationException("Not implemented yet");
         }
 
         return new ArrayList<>(playerViews);

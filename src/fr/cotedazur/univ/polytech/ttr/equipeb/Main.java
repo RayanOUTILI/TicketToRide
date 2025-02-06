@@ -12,6 +12,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.simulations.GameExecutor;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.PlayerStatsLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.console.ConsoleStatsWriter;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.csv.CSVStatsWriter;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.sql.SQLStatsWriter;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.StatsWriter;
@@ -37,6 +38,9 @@ public class Main {
         }
         if(commandLineArgs.getViewOptions().contains(ViewOptions.DATABASE)) {
             statsWriters.add(new SQLStatsWriter(true));
+        }
+        if(commandLineArgs.getViewOptions().contains(ViewOptions.CLI_STATS)) {
+            statsWriters.add(new ConsoleStatsWriter());
         }
 
         commandLineArgs.getPlayersTypesToPlay().forEach(gameExecutionInfos -> {
