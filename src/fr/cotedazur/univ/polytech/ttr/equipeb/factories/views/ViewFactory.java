@@ -30,8 +30,8 @@ public class ViewFactory {
     public IGameViewable createEngineGameViewFor(List<ViewOptions> viewOptions){
         CompositeGameEngineView compositeGameEngineView = new CompositeGameEngineView();
 
-        if (viewOptions.contains(ViewOptions.CSV)){
-            compositeGameEngineView.addView(statsViewFactory.createCSVViewForGameEngine());
+        if (viewOptions.contains(ViewOptions.CSV) || viewOptions.contains(ViewOptions.DATABASE)){
+            compositeGameEngineView.addView(statsViewFactory.createStatsViewForGameEngine());
         }
 
         if (viewOptions.contains(ViewOptions.CLI_VERBOSE)){
@@ -50,8 +50,8 @@ public class ViewFactory {
                 .map(playerModel -> new CompositePlayerEngineView()).toList();
 
         // CSV
-        if (viewOptions.contains(ViewOptions.CSV)){
-            List<PlayerStatisticsView> playerStatisticsViews = statsViewFactory.createCSVViewsForPlayers(playerTypes);
+        if (viewOptions.contains(ViewOptions.CSV) || viewOptions.contains(ViewOptions.DATABASE)){
+            List<PlayerStatisticsView> playerStatisticsViews = statsViewFactory.createStatsViewsForPlayers(playerTypes);
             for (int i = 0; i < playerTypes.size(); i++) {
                 compositePlayerEngineViews.get(i).addView(playerStatisticsViews.get(i));
             }
