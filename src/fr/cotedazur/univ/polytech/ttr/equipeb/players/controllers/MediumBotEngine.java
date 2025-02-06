@@ -19,7 +19,7 @@ import java.util.Optional;
  * This class defines the MediumBotEngine, an bot for the game "Ticket to Ride" that uses a more strategic approach
  * compared to the EasyBot. It considers available routes, destination cards, and stations to make decisions.
  */
-public class MediumBotEngine extends BotModelControllable {
+public class MediumBotEngine extends BotEngineControllable {
 
     /**
      * Constructs a MediumBotEngine with a specified player model, game model, and view.

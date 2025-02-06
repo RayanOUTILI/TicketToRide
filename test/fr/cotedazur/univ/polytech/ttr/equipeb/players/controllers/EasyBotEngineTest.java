@@ -43,7 +43,7 @@ class EasyBotEngineTest {
 
         easyBotEngine = new EasyBotEngine(playerModel, gameModel, view);
 
-        Field randomField = BotModelControllable.class.getDeclaredField("random");
+        Field randomField = BotEngineControllable.class.getDeclaredField("random");
         randomField.setAccessible(true);
         randomField.set(easyBotEngine, random);
     }

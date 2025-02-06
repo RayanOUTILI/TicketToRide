@@ -16,7 +16,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils;
 import java.util.*;
 
 
-public class ObjectiveBotEngine extends BotModelControllable {
+public class ObjectiveBotEngine extends BotEngineControllable {
     private final Map<DestinationCard, List<RouteReadOnly>> routesForObjective;
     private boolean allObjectivesCompleted;
 

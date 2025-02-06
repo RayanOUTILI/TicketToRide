@@ -15,10 +15,10 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class BotModelControllable extends BotModel {
+public abstract class BotEngineControllable extends BotEngine {
     protected final RandomGenerator random;
 
-    protected BotModelControllable(IPlayerGameModel gameModel, IPlayerModel playerModel, IPlayerEngineViewable view) {
+    protected BotEngineControllable(IPlayerGameModel gameModel, IPlayerModel playerModel, IPlayerEngineViewable view) {
         super(gameModel, playerModel, view);
         this.random = new RandomGenerator();
     }

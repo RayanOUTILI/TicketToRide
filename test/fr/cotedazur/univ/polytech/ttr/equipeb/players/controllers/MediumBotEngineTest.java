@@ -36,7 +36,7 @@ class MediumBotEngineTest {
         random = mock(RandomGenerator.class);
         botEngine = new MediumBotEngine(playerModel, gameModel, view);
 
-        Field randomField = BotModelControllable.class.getDeclaredField("random");
+        Field randomField = BotEngineControllable.class.getDeclaredField("random");
         randomField.setAccessible(true);
         randomField.set(botEngine, random);
     }

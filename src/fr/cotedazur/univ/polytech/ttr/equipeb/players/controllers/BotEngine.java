@@ -6,12 +6,12 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewabl
 
 import java.util.Optional;
 
-public abstract class BotModel implements IPlayerActionsControllable {
+public abstract class BotEngine implements IPlayerActionsControllable {
     protected final IPlayerGameModel gameModel;
     protected final IPlayerModel playerModel;
     protected final Optional<IPlayerEngineViewable> view;
 
-    protected BotModel(IPlayerGameModel gameModel, IPlayerModel playerModel, IPlayerEngineViewable view) {
+    protected BotEngine(IPlayerGameModel gameModel, IPlayerModel playerModel, IPlayerEngineViewable view) {
         this.gameModel = gameModel;
         this.playerModel = playerModel;
         this.view = view != null ? Optional.of(view) : Optional.empty();
