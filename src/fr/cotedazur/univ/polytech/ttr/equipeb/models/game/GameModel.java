@@ -11,6 +11,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.ScoreComparator;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelStats;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 
@@ -249,6 +250,14 @@ public class GameModel implements
         return routes.stream()
                 .filter(r -> r.isClaimed() && r.getClaimerPlayer().equals(player))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public IPlayerModelStats getPlayerWithIdentification(PlayerIdentification playerIdentification) {
+        return playerModels.stream()
+                .filter(p -> p.getIdentification().equals(playerIdentification))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override

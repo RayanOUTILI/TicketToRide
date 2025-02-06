@@ -35,6 +35,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
         this.discardDestinationCards = new ArrayList<>();
         this.chosenRouteStations = new ArrayList<>();
         this.view = Optional.ofNullable(view);
+        this.view.ifPresent(v -> v.setPlayerIdentification(playerIdentification));
         this.score = 0;
         this.stationsLeft = 0;
         this.numberOfWagons = 0;
@@ -44,6 +45,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
 
     public PlayerModel(PlayerIdentification playerIdentification, IPlayerViewable view) {
         this(playerIdentification, PlayerType.EASY_BOT, view);
+        if (view != null) view.setPlayerIdentification(playerIdentification);
     }
 
     public PlayerModel(PlayerIdentification playerIdentification) {

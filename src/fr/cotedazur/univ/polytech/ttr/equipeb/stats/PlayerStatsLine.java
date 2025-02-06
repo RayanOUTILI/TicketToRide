@@ -21,31 +21,35 @@ public class PlayerStatsLine {
             "displayed_score",
             "wagons_cards_hand_count",
             "destination_cards_hand_count",
-            "calculated_current_destination_score"
+            "calculated_current_destination_score",
+            "label"
     };
 
-    public long currentTime;
+    private long currentTime;
 
-    public UUID gameId;
-    public UUID playerId;
-    public PlayerType playerType;
-    public PlayerIdentification playerColor;
+    private UUID gameId;
+    private UUID playerId;
+    private PlayerType playerType;
+    private PlayerIdentification playerColor;
 
-    public int currentTurn;
-    public StatAction action;
-    public StatActionStatus actionStatus;
+    private int currentTurn;
+    private StatAction action;
+    private StatActionStatus actionStatus;
 
-    public int score;
-    public int wagonsCards;
-    public int destinationCards;
+    private int score;
+    private int wagonsCards;
+    private int destinationCards;
 
-    public int currentDestinationScore;
+    private int currentDestinationScore;
 
-    public PlayerStatsLine(UUID playerId, PlayerIdentification playerColor, PlayerType playerType) {
+    private String label;
+
+    public PlayerStatsLine(UUID playerId, PlayerIdentification playerColor, PlayerType playerType, String label) {
         this.gameId = null;
         this.playerId = playerId;
         this.playerColor = playerColor;
         this.playerType = playerType;
+        this.label = label;
         clearLine();
     }
 
@@ -156,8 +160,16 @@ public class PlayerStatsLine {
         this.currentDestinationScore = currentDestinationScore;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public PlayerStatsLine cloneWithTurn(){
-        PlayerStatsLine line = new PlayerStatsLine(this.playerId, this.playerColor, this.playerType);
+        PlayerStatsLine line = new PlayerStatsLine(this.playerId, this.playerColor, this.playerType, this.label);
         line.setGameId(this.gameId);
         line.setCurrentTurn(this.currentTurn);
         return line;
@@ -176,7 +188,8 @@ public class PlayerStatsLine {
                 String.valueOf(score),
                 String.valueOf(wagonsCards),
                 String.valueOf(destinationCards),
-                String.valueOf(currentDestinationScore)
+                String.valueOf(currentDestinationScore),
+                label
         };
     }
 }

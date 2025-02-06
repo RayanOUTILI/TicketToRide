@@ -28,7 +28,7 @@ public class MediumBotEngine extends BotEngineWithRandom {
      * @param gameModel the model of the game.
      * @param view the view interface used for displaying game actions.
      */
-    public MediumBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view) {
+    public MediumBotEngine(IPlayerGameModel gameModel, IPlayerModel playerModel, IPlayerEngineViewable view) {
         super(gameModel, playerModel, view);
     }
 

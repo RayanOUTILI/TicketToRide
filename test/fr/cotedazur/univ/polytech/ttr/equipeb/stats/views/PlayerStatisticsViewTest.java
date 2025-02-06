@@ -51,6 +51,7 @@ class PlayerStatisticsViewTest {
     private int wagonsCards;
     private List<DestinationCard> destinationCardsList;
     private List<RouteReadOnly> routes;
+    private String label;
 
     private String getTestPath() {
         return PATH + "test-" + runnedTest + ".csv";
@@ -88,7 +89,8 @@ class PlayerStatisticsViewTest {
                 String.valueOf(score),
                 String.valueOf(wagonsCards),
                 destinationCardsList.size() + "",
-                routes.size() + ""
+                routes.size() + "",
+                label
         };
     }
 
@@ -103,16 +105,16 @@ class PlayerStatisticsViewTest {
         this.wagonsCards = 63;
         this.destinationCardsList = List.of();
         this.routes = List.of();
+        this.label = "Test Game";
 
-        PlayerStatsLine statsLine = new PlayerStatsLine(playerId, playerColor, playerType);
+        PlayerStatsLine statsLine = new PlayerStatsLine(playerId, playerColor, playerType, label);
         this.playerModel = Mockito.mock(IPlayerModelStats.class);
         this.gameModel = Mockito.mock(IStatsGameModel.class);
         this.statsWriter = new StatsWriter(getTestPath(), PlayerStatsLine.headers, false);
         this.playerStatisticsView = new PlayerStatisticsView(statsLine, statsWriter);
-        this.playerStatisticsView.setPlayerModel(playerModel);
         this.playerStatisticsView.setGameModel(gameModel);
 
-        when(playerModel.getIdentification()).thenReturn(PlayerIdentification.BLACK);
+        when(gameModel.getPlayerWithIdentification(playerColor)).thenReturn(playerModel);
         when(playerModel.getPlayerType()).thenReturn(PlayerType.MEDIUM_BOT);
         when(playerModel.getScore()).thenReturn(score);
         when(playerModel.getNumberOfWagonCards()).thenReturn(wagonsCards);

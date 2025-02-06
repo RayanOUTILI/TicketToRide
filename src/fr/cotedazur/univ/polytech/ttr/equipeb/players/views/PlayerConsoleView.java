@@ -6,7 +6,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 
 import java.util.List;
 import java.util.logging.ConsoleHandler;
@@ -19,8 +18,7 @@ import java.util.logging.Logger;
 public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineViewable {
     private final Logger logger;
 
-    public PlayerConsoleView(PlayerIdentification playerIdentification) {
-        super(playerIdentification);
+    public PlayerConsoleView() {
         logger = Logger.getLogger(String.format("PlayerConsoleView {%s}", playerIdentification));
         logger.setLevel(Level.ALL);
 
@@ -31,7 +29,7 @@ public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineV
 
     private void log(Level level, String message) {
         if (logger.isLoggable(level)) {
-            logger.log(level, String.format("Player %s: %s", getPlayerIdentification(), message));
+            logger.log(level, String.format("Player %s: %s", playerIdentification, message));
         }
     }
 
