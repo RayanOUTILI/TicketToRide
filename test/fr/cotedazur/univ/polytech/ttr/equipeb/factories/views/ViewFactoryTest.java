@@ -24,7 +24,7 @@ class ViewFactoryTest {
     private StatsViewFactory statsViewFactory;
 
     @BeforeEach
-    void setUp() throws NoSuchFieldException, IllegalAccessException {
+    void setUp() {
         statsViewFactory = mock(StatsViewFactory.class);
         viewFactory = new ViewFactory(statsViewFactory);
     }
