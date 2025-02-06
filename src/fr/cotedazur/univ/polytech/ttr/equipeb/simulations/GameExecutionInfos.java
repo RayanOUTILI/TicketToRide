@@ -5,13 +5,9 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import java.util.List;
 
 public class GameExecutionInfos {
-<<<<<<< Updated upstream
     private final List<PlayerType> players;
     private final int executionNumber;
-=======
-    private List<PlayerType> players;
-    private int executionNumber;
->>>>>>> Stashed changes
+
     private String label;
 
     public GameExecutionInfos(List<PlayerType> players, int executionNumber) {
@@ -41,8 +37,4 @@ public class GameExecutionInfos {
     public int getExecutionNumber() {
         return executionNumber;
     }
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 }

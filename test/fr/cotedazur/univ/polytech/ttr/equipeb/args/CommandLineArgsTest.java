@@ -1,7 +1,6 @@
-package args;
+package fr.cotedazur.univ.polytech.ttr.equipeb.args;
 
 import com.beust.jcommander.ParameterException;
-import fr.cotedazur.univ.polytech.ttr.equipeb.args.CommandLineArgs;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.views.ViewOptions;
 import fr.cotedazur.univ.polytech.ttr.equipeb.simulations.GameExecutionInfos;
 import org.junit.jupiter.api.BeforeEach;
