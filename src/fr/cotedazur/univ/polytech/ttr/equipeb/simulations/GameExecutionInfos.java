@@ -5,8 +5,8 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import java.util.List;
 
 public class GameExecutionInfos {
-    private List<PlayerType> players;
-    private int executionNumber;
+    private final List<PlayerType> players;
+    private final int executionNumber;
     private String label;
 
     public GameExecutionInfos(List<PlayerType> players, int executionNumber) {
