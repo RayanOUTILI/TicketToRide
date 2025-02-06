@@ -1,4 +1,4 @@
-package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
+package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.randombots;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;

@@ -1,4 +1,4 @@
-package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
+package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.objectivebot;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
