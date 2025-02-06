@@ -47,7 +47,7 @@ public class GameExecutorFactory {
                         gameModel,
                         gameActionsFactory.getGameActions(gameModel),
                         gameActionsFactory.getEndTurnActions(gameModel),
-                        gameActionsFactory.getEndGameActions(gameModel),
+                        gameActionsFactory.getEndGameActions(gameModel, viewOptions.contains(ViewOptions.CLI_VERBOSE)),
                         playerFactory.createPlayers(
                                 playersTypes,
                                 playerModels.get(),

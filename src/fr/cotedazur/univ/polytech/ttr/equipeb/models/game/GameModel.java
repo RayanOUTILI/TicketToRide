@@ -147,6 +147,7 @@ public class GameModel implements
 
     @Override
     public boolean retrieveDeletedRoutes() {
+        if (removedRoutes.isEmpty()) return true;
         boolean added = routes.addAll(removedRoutes);
         removedRoutes.clear();
         return added;

@@ -87,14 +87,17 @@ public class GameEngine {
     public int startGame() {
         if (gameView.isPresent()) this.gameView.get().displayNewGame();
         int nbTurn = 1;
+        int previousNbTurn = 0;
 
         boolean forcedEndGame = false;
         int nbPlayersWantStop = 0;
 
         while(!isWasTheLastTurn() && !forcedEndGame) {
-            if (gameView.isPresent()) this.gameView.get().displayNewTurn(nbTurn);
+            if (previousNbTurn != nbTurn) {
+                previousNbTurn = nbTurn;
+                if (gameView.isPresent()) this.gameView.get().displayNewTurn(nbTurn);
+            }
             TypeActionHandled actionHandled ;
-
 
             if(isHisLastTurn(currentPlayer)) lastTurnPlayer = Optional.of(currentPlayer.getIdentification());
 
@@ -123,12 +126,12 @@ public class GameEngine {
             }
         }
 
-        askForEndGameActions();
-
         int finalNbTurn = nbTurn;
         lastTurnPlayer.ifPresent(playerIdentification ->
-            gameView.ifPresent(v -> v.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons(), finalNbTurn))
+                gameView.ifPresent(v -> v.displayEndGameReason(playerIdentification, currentPlayer.getNumberOfWagons(), finalNbTurn))
         );
+
+        askForEndGameActions();
 
         PlayerModel winner = gameModel.getWinner();
 
