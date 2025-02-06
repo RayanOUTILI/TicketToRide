@@ -183,7 +183,7 @@ class GameModelTest {
 
         List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(player);
         assertEquals(1, claimedRoutes.size());
-        assertEquals(route1, claimedRoutes.get(0));
+        assertEquals(route1, claimedRoutes.getFirst());
     }
 
     @Test
@@ -278,7 +278,7 @@ class GameModelTest {
 
         List<City> cities = gameModel.getCitiesClaimedByPlayer(player);
         assertEquals(1, cities.size());
-        assertEquals(city1, cities.get(0));
+        assertEquals(city1, cities.getFirst());
     }
 
     @Test

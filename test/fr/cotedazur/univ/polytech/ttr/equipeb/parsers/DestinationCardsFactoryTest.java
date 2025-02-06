@@ -30,7 +30,7 @@ class DestinationCardsFactoryTest {
             List<DestinationCard> cards = destinationCardsFactory.getAllDestinationCards();
             assertNotNull(cards);
             assertEquals(46, cards.size());
-            assertInstanceOf(DestinationCard.class, cards.get(0));
+            assertInstanceOf(DestinationCard.class, cards.getFirst());
             assertInstanceOf(DestinationCard.class, cards.get(41));
 
         } catch (JsonParseException e) {
@@ -47,7 +47,7 @@ class DestinationCardsFactoryTest {
             List<DestinationCard> cards = destinationCardsFactory.getShortDestinationCards();
             assertNotNull(cards);
             assertEquals(40, cards.size());
-            assertInstanceOf(DestinationCard.class, cards.get(0));
+            assertInstanceOf(DestinationCard.class, cards.getFirst());
 
         } catch (JsonParseException e) {
             fail("A parsing exception was thrown: " + e.getMessage());
@@ -63,7 +63,7 @@ class DestinationCardsFactoryTest {
             List<DestinationCard> cards = destinationCardsFactory.getLongDestinationCards();
             assertNotNull(cards);
             assertEquals(6, cards.size());
-            assertInstanceOf(DestinationCard.class, cards.get(0));
+            assertInstanceOf(DestinationCard.class, cards.getFirst());
 
         } catch (JsonParseException e) {
             fail("A parsing exception was thrown: " + e.getMessage());

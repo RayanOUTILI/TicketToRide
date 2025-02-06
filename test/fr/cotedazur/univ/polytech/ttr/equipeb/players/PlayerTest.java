@@ -83,8 +83,8 @@ class PlayerTest {
     @Test
     void askDrawWagonCardReturnsAction() {
         List<ActionDrawWagonCard> actions = Collections.singletonList(ActionDrawWagonCard.DRAW_FROM_DECK);
-        when(actionsController.askDrawWagonCard(actions)).thenReturn(Optional.of(actions.get(0)));
-        assertEquals(Optional.of(actions.get(0)), player.askDrawWagonCard(actions));
+        when(actionsController.askDrawWagonCard(actions)).thenReturn(Optional.of(actions.getFirst()));
+        assertEquals(Optional.of(actions.getFirst()), player.askDrawWagonCard(actions));
     }
 
     @Test

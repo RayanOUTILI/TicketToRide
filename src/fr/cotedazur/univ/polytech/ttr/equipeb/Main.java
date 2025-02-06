@@ -10,6 +10,8 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.factories.views.ViewFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.views.ViewOptions;
 import fr.cotedazur.univ.polytech.ttr.equipeb.simulations.GameExecutor;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.PlayerStatsLine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.csv.CSVStatsWriter;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.sql.SQLStatsWriter;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.StatsWriter;
@@ -20,6 +22,8 @@ import java.util.List;
 public class Main {
 
     private static final String FILE_PATH = "stats/gamestats.csv";
+
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
         CommandLineArgs commandLineArgs = CommandLineArgs.parse(args);
