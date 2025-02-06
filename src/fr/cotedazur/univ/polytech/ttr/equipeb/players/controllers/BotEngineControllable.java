@@ -10,17 +10,15 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
-import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
 
 import java.util.List;
 import java.util.Optional;
 
 public abstract class BotEngineControllable extends BotEngine {
-    protected final RandomGenerator random;
+
 
     protected BotEngineControllable(IPlayerGameModel gameModel, IPlayerModel playerModel, IPlayerEngineViewable view) {
         super(gameModel, playerModel, view);
-        this.random = new RandomGenerator();
     }
 
     @Override

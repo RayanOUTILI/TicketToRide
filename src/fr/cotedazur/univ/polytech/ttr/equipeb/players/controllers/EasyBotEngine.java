@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class EasyBotEngine extends BotEngineControllable {
+public class EasyBotEngine extends BotEngineWithRandom {
 
     public EasyBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view) {
         super(gameModel, playerModel, view);
