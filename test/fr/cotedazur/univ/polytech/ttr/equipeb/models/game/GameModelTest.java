@@ -363,4 +363,83 @@ class GameModelTest {
         assertTrue(availableCities.contains(city1));
         assertTrue(availableCities.contains(city2));
     }
+
+    @Test
+    void testRemoveCardFromShownCards() {
+        WagonCard card = mock(WagonCard.class);
+        when(wagonCardDeck.removeCardFromShownCards(card)).thenReturn(true);
+        assertTrue(gameModel.removeCardFromShownCards(card));
+    }
+
+    @Test
+    void testPlaceNewWagonCardOnShownCards() {
+        WagonCard card = mock(WagonCard.class);
+        when(wagonCardDeck.addCardToShownCards(card)).thenReturn(true);
+        assertTrue(gameModel.placeNewWagonCardOnShownCards(card));
+    }
+
+    @Test
+    void testPlaceShownWagonCards() {
+        List<WagonCard> cards = List.of(mock(WagonCard.class));
+        when(wagonCardDeck.replaceShownCards(cards)).thenReturn(true);
+        assertTrue(gameModel.placeShownWagonCards(cards));
+    }
+
+    @Test
+    void testReplaceShownWagonCardsInCaseOfLocomotives() {
+        List<WagonCard> cards = List.of(mock(WagonCard.class));
+        when(wagonCardDeck.shownCards()).thenReturn(cards);
+        when(wagonCardDeck.replaceShownCards(anyList())).thenReturn(true);
+        assertTrue(gameModel.replaceShownWagonCardsInCaseOfLocomotives(1));
+    }
+
+    @Test
+    void testClearWagonCardsDeck() {
+        when(wagonCardDeck.clearDeck()).thenReturn(true);
+        assertTrue(gameModel.clearWagonCardsDeck());
+    }
+
+    @Test
+    void testSetAllStationsNotClaimed() {
+        City city = mock(City.class);
+        when(city.getOwner()).thenReturn(null);
+        when(route.getFirstCity()).thenReturn(city);
+        when(route.getSecondCity()).thenReturn(city);
+        gameModel.setAllStationsNotClaimed();
+        verify(city, times(1)).setOwner(null);
+    }
+
+    @Test
+    void testRetrieveDeletedRoutes() {
+        when(route.getId()).thenReturn(1);
+        gameModel.deleteRoute(1);
+        assertTrue(gameModel.retrieveDeletedRoutes());
+        assertEquals(route, gameModel.getRoute(1));
+    }
+
+    @Test
+    void testSetAllRoutesIDs() {
+        gameModel.setAllRoutesIDs();
+        verify(route).setId(anyInt());
+    }
+
+    @Test
+    void testGetPlayerWithIdentification() {
+        PlayerIdentification playerId = PlayerIdentification.BLUE;
+        PlayerModel player = mock(PlayerModel.class);
+        when(player.getIdentification()).thenReturn(playerId);
+        players = List.of(player);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
+        assertEquals(player, gameModel.getPlayerWithIdentification(playerId));
+    }
+
+    @Test
+    void testGetPlayersIdentification() {
+        PlayerIdentification playerId = PlayerIdentification.BLUE;
+        PlayerModel player = mock(PlayerModel.class);
+        when(player.getIdentification()).thenReturn(playerId);
+        players = List.of(player);
+        gameModel = new GameModel(players, wagonCardDeck, shortDestinationCardDeck, longDestinationCardDeck, routes);
+        assertEquals(List.of(playerId), gameModel.getPlayersIdentification());
+    }
 }
