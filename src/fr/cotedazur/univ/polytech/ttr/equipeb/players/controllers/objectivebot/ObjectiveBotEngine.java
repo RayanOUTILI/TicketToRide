@@ -11,6 +11,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.CityPair;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.BotEngineControllable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.randombots.BotEngineWithRandom;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
@@ -22,10 +23,9 @@ import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.find
 import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.getGraphFromRoutes;
 
 
-public class ObjectiveBotEngine extends BotEngineWithRandom {
+public class ObjectiveBotEngine extends BotEngineControllable {
     private final Map<DestinationCard, List<RouteReadOnly>> routesForObjective;
     private boolean allObjectivesCompleted;
-    private int randint = 0;
 
     public ObjectiveBotEngine(IPlayerGameModel gameModel, IPlayerModel playerModel, IPlayerEngineViewable view) {
         super(gameModel, playerModel, view);
@@ -64,14 +64,6 @@ public class ObjectiveBotEngine extends BotEngineWithRandom {
         updateStateOfRoutes();
         checkRoutesForClaiming();
         checkRoutesForObjectiveCompletion();
-        List<RouteReadOnly> allNeededRoutes = new ArrayList<>();
-        for (List<RouteReadOnly> routes : routesForObjective.values()) {
-            allNeededRoutes.addAll(routes);
-        }
-        List<RouteReadOnly> usefulClaimableRoutes = allNeededRoutes.stream().filter(this::canTakeRoute).toList();
-        if (!usefulClaimableRoutes.isEmpty()) {
-            randint = random.nextInt(usefulClaimableRoutes.size());
-        }
 
         if (shouldClaimRoute()) {
             return Action.CLAIM_ROUTE;
@@ -92,7 +84,6 @@ public class ObjectiveBotEngine extends BotEngineWithRandom {
     public boolean reset() {
         routesForObjective.clear();
         allObjectivesCompleted = false;
-        randint = 0;
         return true;
     }
 
@@ -209,7 +200,7 @@ public class ObjectiveBotEngine extends BotEngineWithRandom {
 
         if (usefulClaimableRoutes.isEmpty()) return null;
 
-        return usefulClaimableRoutes.get(randint);
+        return usefulClaimableRoutes.getFirst();
     }
 
     /**
