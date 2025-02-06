@@ -15,11 +15,20 @@ public class CommandLineArgs {
     @Parameter(names = {"--csv"}, description = "Output the results in a CSV file")
     private boolean csv;
 
+    @Parameter(names = {"--database"}, description = "Output the results in a database")
+    private boolean database;
+
     @Parameter(names = {"--2thousands"}, description = "Play 2*1000 games, 1000 - Best bot vs Best bot, 1000 - Best bot vs Others")
     private boolean twothousands;
 
     @Parameter(names = {"--demo"}, description = "Run the demo")
     private boolean demo;
+
+    @Parameter(names = {"--force-log"}, description = "Force the log to be printed")
+    private boolean forceLog = false;
+
+    @Parameter(names = {"--nbOfGames"}, description = "Number of games to play")
+    private int nbOfGames = 0;
 
     public static CommandLineArgs parse(String[] args) {
         CommandLineArgs commandLineArgs = new CommandLineArgs();
@@ -33,12 +42,12 @@ public class CommandLineArgs {
     }
 
     private void validate() {
-        if (!csv && !twothousands && !demo) {
-            throw new ParameterException("At least one of --csv, --2thousands or --demo must be specified.");
+        if (!twothousands && !demo && nbOfGames == 0) {
+            throw new ParameterException("At least one of --nbOfGames, --2thousands or --demo must be specified.");
         }
 
-        if (demo && twothousands) {
-            throw new ParameterException("Cannot specify both --demo and --2thousands.");
+        if (demo && twothousands && nbOfGames != 0) {
+            throw new ParameterException("Cannot specify both --demo and --2thousands and --nbOfGames.");
         }
     }
 
@@ -48,7 +57,8 @@ public class CommandLineArgs {
 
         if (csv) viewOptions.add(ViewOptions.CSV);
         if (twothousands) viewOptions.add(ViewOptions.CLI_STATS);
-        if (demo) viewOptions.add(ViewOptions.CLI_VERBOSE);
+        if (demo || forceLog) viewOptions.add(ViewOptions.CLI_VERBOSE);
+        if (database) viewOptions.add(ViewOptions.DATABASE);
 
         return viewOptions;
     }
@@ -71,6 +81,12 @@ public class CommandLineArgs {
             playersTypes.add(new GameExecutionInfos(
                     List.of(PlayerType.EASY_BOT, PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT),
                     1
+            ));
+        }
+        if(nbOfGames > 0) {
+            playersTypes.add(new GameExecutionInfos(
+                    List.of(PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT),
+                    nbOfGames
             ));
         }
 

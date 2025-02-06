@@ -6,6 +6,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentificatio
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.action.StatAction;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.action.StatActionStatus;
+import fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.csv.CSVStatsWriter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,9 +21,9 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class StatsWriterTest {
+class CSVStatsWriterTest {
 
-    private StatsWriter writer;
+    private CSVStatsWriter writer;
     private CSVReader csvReader;
 
     private static final String fileName = "test-resources/writer/";
@@ -120,7 +121,7 @@ class StatsWriterTest {
     }
 
     private void openWriter(String testName) throws IOException {
-        writer = new StatsWriter(getFileName(testName), PlayerStatsLine.headers, true);
+        writer = new CSVStatsWriter(getFileName(testName), PlayerStatsLine.headers, true);
     }
 
     private void openCSVReader(String testName) throws IOException {
@@ -134,11 +135,11 @@ class StatsWriterTest {
         writer.commit(lineTwo);
         writer.commit(lineThree);
 
-        assertEquals(3, writer.buffer.size());
+        assertEquals(3, writer.getReadableBuffer().size());
 
         writer.push();
 
-        assertEquals(0, writer.buffer.size());
+        assertEquals(0, writer.getReadableBuffer().size());
 
         writer.close();
     }

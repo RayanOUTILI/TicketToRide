@@ -18,6 +18,7 @@ public class PlayerStatsLine {
             "current_turn",
             "action",
             "action_status",
+            "action_skip",
             "displayed_score",
             "wagons_cards_hand_count",
             "destination_cards_hand_count",
@@ -35,6 +36,7 @@ public class PlayerStatsLine {
     private int currentTurn;
     private StatAction action;
     private StatActionStatus actionStatus;
+    private boolean actionSkip;
 
     private int score;
     private int wagonsCards;
@@ -58,6 +60,7 @@ public class PlayerStatsLine {
         this.currentTurn = -1;
         this.action = null;
         this.actionStatus = null;
+        this.actionSkip = false;
         this.score = -1;
         this.wagonsCards = -1;
         this.destinationCards = -1;
@@ -128,6 +131,14 @@ public class PlayerStatsLine {
         this.actionStatus = actionStatus;
     }
 
+    public boolean isActionSkip() {
+        return actionSkip;
+    }
+
+    public void setActionSkip(boolean actionSkip) {
+        this.actionSkip = actionSkip;
+    }
+
     public int getScore() {
         return score;
     }
@@ -185,6 +196,7 @@ public class PlayerStatsLine {
                 String.valueOf(currentTurn),
                 action.toString(),
                 actionStatus.toString(),
+                actionSkip ? "YES" : "NO",
                 String.valueOf(score),
                 String.valueOf(wagonsCards),
                 String.valueOf(destinationCards),
