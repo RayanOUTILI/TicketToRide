@@ -1,11 +1,14 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.args;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import fr.cotedazur.univ.polytech.ttr.equipeb.factories.views.ViewOptions;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.simulations.GameExecutionInfos;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +24,18 @@ public class CommandLineArgs {
     @Parameter(names = {"--demo"}, description = "Run the demo")
     private boolean demo;
 
+    @Parameter(names = "--verbose", description = "Niveau de verbosité : 1=ERROR/WARN, 2=INFO, 3=DEBUG")
+    private int verbose = 2;
+
     public static CommandLineArgs parse(String[] args) {
         CommandLineArgs commandLineArgs = new CommandLineArgs();
         JCommander.newBuilder()
                 .addObject(commandLineArgs)
                 .build()
                 .parse(args);
-        commandLineArgs.validate();
 
+        commandLineArgs.validate();
+        commandLineArgs.updateLogLevel();
         return commandLineArgs;
     }
 
@@ -39,6 +46,19 @@ public class CommandLineArgs {
 
         if (demo && twothousands) {
             throw new ParameterException("Cannot specify both --demo and --2thousands.");
+        }
+    }
+
+    /**
+     * Change dynamiquement le niveau de log.
+     */
+    private void updateLogLevel() {
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        switch (verbose) {
+            case 1 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(Level.WARN);
+            case 2 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(Level.INFO);
+            case 3 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(Level.DEBUG);
+            default -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(Level.INFO);
         }
     }
 

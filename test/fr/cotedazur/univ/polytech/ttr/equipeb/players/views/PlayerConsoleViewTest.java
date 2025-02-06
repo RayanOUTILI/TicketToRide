@@ -2,7 +2,6 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.views;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -18,7 +17,7 @@ class PlayerConsoleViewTest {
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        playerConsoleView = new PlayerConsoleView(PlayerIdentification.GREEN);
+        playerConsoleView = new PlayerConsoleView();
         logger = mock(Logger.class);
         Field loggerField = PlayerConsoleView.class.getDeclaredField("logger");
         loggerField.setAccessible(true);
