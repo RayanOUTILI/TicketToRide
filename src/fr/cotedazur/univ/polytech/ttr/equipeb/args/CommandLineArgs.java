@@ -41,13 +41,20 @@ public class CommandLineArgs {
                 .addObject(commandLineArgs)
                 .build()
                 .parse(args);
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         commandLineArgs.validate();
         commandLineArgs.updateLogLevel();
         return commandLineArgs;
     }
 
+<<<<<<< Updated upstream
     private void validate() {
+=======
+    public void validate() {
+>>>>>>> Stashed changes
         if (!twothousands && !demo && nbOfGames == 0) {
             throw new ParameterException("At least one of --nbOfGames, --2thousands or --demo must be specified.");
         }
@@ -60,7 +67,11 @@ public class CommandLineArgs {
     /**
      * Change dynamiquement le niveau de log.
      */
+<<<<<<< Updated upstream
     private void updateLogLevel() {
+=======
+    public void updateLogLevel() {
+>>>>>>> Stashed changes
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         String loggerName = "fr.cotedazur.univ.polytech.ttr.equipeb";
         loggerContext.getLogger(loggerName).setLevel(
@@ -115,4 +126,35 @@ public class CommandLineArgs {
         return playersTypes;
 
     }
+<<<<<<< Updated upstream
+=======
+
+    public void setCsv(boolean csv) {
+        this.csv = csv;
+    }
+
+    public void setNbOfGames(int nbOfGames) {
+        this.nbOfGames = nbOfGames;
+    }
+
+    public void setDemo(boolean demo) {
+        this.demo = demo;
+    }
+
+    public void setTwothousands(boolean twothousands) {
+        this.twothousands = twothousands;
+    }
+
+    public void setDatabase(boolean database) {
+        this.database = database;
+    }
+
+    public int getVerbose() {
+        return verbose;
+    }
+
+    public void setVerbose(int i) {
+        this.verbose = i;
+    }
+>>>>>>> Stashed changes
 }
