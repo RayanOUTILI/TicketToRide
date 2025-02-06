@@ -1,8 +1,8 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.exceptions;
 
 public class SimulatorPhaseException extends RuntimeException {
-    private SimulatorPhaseError error;
-    private int turn;
+    private final SimulatorPhaseError error;
+    private final int turn;
     public SimulatorPhaseException(SimulatorPhaseError error, int turn) {
         super(error + ": " + error.getMessage(turn));
         this.error = error;

@@ -13,8 +13,8 @@ import java.util.List;
 
 public class ViewFactory {
 
-    private StatsViewFactory statsViewFactory;
-    private List<PlayerConsoleView> playerConsoleViews;
+    private final StatsViewFactory statsViewFactory;
+    private final List<PlayerConsoleView> playerConsoleViews;
 
     public ViewFactory(StatsViewFactory statsViewFactory){
         this.statsViewFactory = statsViewFactory;
