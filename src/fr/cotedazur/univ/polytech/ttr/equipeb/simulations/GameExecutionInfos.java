@@ -7,7 +7,6 @@ import java.util.List;
 public class GameExecutionInfos {
     private final List<PlayerType> players;
     private final int executionNumber;
-
     private String label;
 
     public GameExecutionInfos(List<PlayerType> players, int executionNumber) {
