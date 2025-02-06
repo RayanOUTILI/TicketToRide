@@ -8,7 +8,6 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.factories.views.ViewOptions;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.simulations.GameExecutionInfos;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +17,9 @@ public class CommandLineArgs {
     @Parameter(names = {"--csv"}, description = "Output the results in a CSV file")
     private boolean csv;
 
+    @Parameter(names = {"--database"}, description = "Output the results in a database")
+    private boolean database;
+
     @Parameter(names = {"--2thousands"}, description = "Play 2*1000 games, 1000 - Best bot vs Best bot, 1000 - Best bot vs Others")
     private boolean twothousands;
 
@@ -26,6 +28,12 @@ public class CommandLineArgs {
 
     @Parameter(names = "--verbose", description = "Niveau de verbosité : 1=ERROR/WARN, 2=INFO, 3=DEBUG")
     private int verbose = 2;
+
+    @Parameter(names = {"--force-log"}, description = "Force the log to be printed")
+    private boolean forceLog = false;
+
+    @Parameter(names = {"--nbOfGames"}, description = "Number of games to play")
+    private int nbOfGames = 0;
 
     public static CommandLineArgs parse(String[] args) {
         CommandLineArgs commandLineArgs = new CommandLineArgs();
@@ -40,12 +48,12 @@ public class CommandLineArgs {
     }
 
     private void validate() {
-        if (!csv && !twothousands && !demo) {
-            throw new ParameterException("At least one of --csv, --2thousands or --demo must be specified.");
+        if (!twothousands && !demo && nbOfGames == 0) {
+            throw new ParameterException("At least one of --nbOfGames, --2thousands or --demo must be specified.");
         }
 
-        if (demo && twothousands) {
-            throw new ParameterException("Cannot specify both --demo and --2thousands.");
+        if (demo && twothousands && nbOfGames != 0) {
+            throw new ParameterException("Cannot specify both --demo and --2thousands and --nbOfGames.");
         }
     }
 
@@ -54,12 +62,14 @@ public class CommandLineArgs {
      */
     private void updateLogLevel() {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        switch (verbose) {
-            case 1 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.convertAnSLF4JLevel(Level.WARN));
-            case 2 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.convertAnSLF4JLevel(Level.INFO));
-            case 3 -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.convertAnSLF4JLevel(Level.DEBUG));
-            default -> loggerContext.getLogger("fr.cotedazur.univ.polytech.ttr.equipeb").setLevel(ch.qos.logback.classic.Level.convertAnSLF4JLevel(Level.INFO));
-        }
+        String loggerName = "fr.cotedazur.univ.polytech.ttr.equipeb";
+        loggerContext.getLogger(loggerName).setLevel(
+                switch (verbose) {
+                    case 1 -> ch.qos.logback.classic.Level.WARN;
+                    case 3 -> ch.qos.logback.classic.Level.DEBUG;
+                    default -> ch.qos.logback.classic.Level.INFO;
+                }
+        );
     }
 
 
@@ -68,7 +78,8 @@ public class CommandLineArgs {
 
         if (csv) viewOptions.add(ViewOptions.CSV);
         if (twothousands) viewOptions.add(ViewOptions.CLI_STATS);
-        if (demo) viewOptions.add(ViewOptions.CLI_VERBOSE);
+        if (demo || forceLog) viewOptions.add(ViewOptions.CLI_VERBOSE);
+        if (database) viewOptions.add(ViewOptions.DATABASE);
 
         return viewOptions;
     }
@@ -90,7 +101,14 @@ public class CommandLineArgs {
         if (demo) {
             playersTypes.add(new GameExecutionInfos(
                     List.of(PlayerType.EASY_BOT, PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT),
-                    1000
+                    1
+            ));
+        }
+
+        if(nbOfGames > 0) {
+            playersTypes.add(new GameExecutionInfos(
+                    List.of(PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT),
+                    nbOfGames
             ));
         }
 
