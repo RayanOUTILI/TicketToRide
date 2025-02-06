@@ -1,7 +1,8 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
@@ -12,6 +13,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewabl
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class defines the MediumBotEngine, an bot for the game "Ticket to Ride" that uses a more strategic approach
@@ -88,10 +90,23 @@ public class MediumBotEngine extends BotModelControllable {
      * @return true if the bot has fewer than 3 destination cards and the destination deck is not empty, otherwise false.
      */
     private boolean shouldPickDestinationCards() {
-        return playerModel.getDestinationCardsHand().size() < 3 && !gameModel.isShortDestCardDeckEmpty();
+        return playerModel.getDestinationCards().size() < 3 && !gameModel.isShortDestCardDeckEmpty();
     }
 
     ////// Methods to determine what the bot asks for //////
+
+    @Override
+    protected Optional<ActionDrawWagonCard> chooseActionDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
+        return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
+    }
+
+    @Override
+    protected List<DestinationCard> chooseInitialDestinationCards(List<DestinationCard> cards) {
+        int index1 = random.nextInt(cards.size());
+        int index2 = random.nextInt(cards.size());
+        return List.of(cards.get(index1), cards.get(index2));
+    }
+
     /**
      * Finds the best available route for the bot to claim, based on the routes' priority.
      *
@@ -156,7 +171,7 @@ public class MediumBotEngine extends BotModelControllable {
      * @return the list of prioritized destination cards.
      */
     @Override
-    protected List<ShortDestinationCard> chooseDestinationCards(List<ShortDestinationCard> cards) {
+    protected List<DestinationCard> chooseDestinationCards(List<DestinationCard> cards) {
         return cards.stream()
                 .sorted(Comparator.comparingInt(this::evaluateDestinationCardPriority).reversed())
                 .limit(2)
@@ -180,7 +195,7 @@ public class MediumBotEngine extends BotModelControllable {
      * @param card the destination card to evaluate.
      * @return the priority score for the destination card.
      */
-    private int evaluateDestinationCardPriority(ShortDestinationCard card) {
+    private int evaluateDestinationCardPriority(DestinationCard card) {
         int priority = card.getPoints();
         for (RouteReadOnly route : gameModel.getAllRoutesClaimedByPlayer(playerModel.getPlayerIdentification())) {
             if (card.getCities().contains(route.getFirstCity()) || card.getCities().contains(route.getSecondCity())) {

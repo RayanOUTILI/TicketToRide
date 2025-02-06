@@ -1,7 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
+import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
@@ -54,7 +54,7 @@ public abstract class BotModelControllable extends BotModel {
      * @return a list of selected destination cards.
      */
     @Override
-    public List<ShortDestinationCard> askDestinationCards(List<ShortDestinationCard> cards) {
+    public List<DestinationCard> askDestinationCards(List<DestinationCard> cards) {
         return chooseDestinationCards(cards);
     }
 
@@ -66,8 +66,10 @@ public abstract class BotModelControllable extends BotModel {
     @Override
     public Optional<ActionDrawWagonCard> askDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
         if (possibleActions.isEmpty()) return Optional.empty();
-        return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
+        return chooseActionDrawWagonCard(possibleActions);
     }
+
+    protected abstract Optional<ActionDrawWagonCard> chooseActionDrawWagonCard(List<ActionDrawWagonCard> possibleActions);
 
     @Override
     public WagonCard askWagonCardFromShownCards() {
@@ -81,6 +83,19 @@ public abstract class BotModelControllable extends BotModel {
         if (availableRoutes.isEmpty()) return null;
         return chooseRouteFromCity(availableRoutes);
     }
+
+    @Override
+    public List<DestinationCard> askInitialDestinationCards(List<DestinationCard> cards) {
+        return chooseInitialDestinationCards(cards);
+    }
+
+    /**
+     * Determines the destination cards the bot will keep at the beginning of the game.
+     *
+     * @param cards the list of destination cards available to the bot.
+     * @return a list of selected destination cards.
+     */
+    protected abstract List<DestinationCard> chooseInitialDestinationCards(List<DestinationCard> cards);
 
     /**
      * Determines the route the bot will take next.
@@ -103,7 +118,7 @@ public abstract class BotModelControllable extends BotModel {
      * @param cards the list of destination cards available to the bot.
      * @return a list of selected destination cards.
      */
-    protected abstract List<ShortDestinationCard> chooseDestinationCards(List<ShortDestinationCard> cards);
+    protected abstract List<DestinationCard> chooseDestinationCards(List<DestinationCard> cards);
 
     /**
      * Chooses the wagon card the bot wants from the shown cards.

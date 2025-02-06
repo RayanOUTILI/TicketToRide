@@ -1,11 +1,7 @@
 package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.ShortDestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimRoute;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimStation;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
@@ -19,6 +15,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewabl
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class EasyBotEngine extends BotModelControllable {
 
@@ -58,6 +55,18 @@ public class EasyBotEngine extends BotModelControllable {
         }
     }
 
+    @Override
+    protected Optional<ActionDrawWagonCard> chooseActionDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
+        return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
+    }
+
+    @Override
+    protected List<DestinationCard> chooseInitialDestinationCards(List<DestinationCard> cards) {
+        int index1 = random.nextInt(cards.size());
+        int index2 = random.nextInt(cards.size());
+        return List.of(cards.get(index1), cards.get(index2));
+    }
+
     protected RouteReadOnly chooseRoute() {
         List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes().stream().filter(this::canTakeRoute).toList();
         if (availableRoutes.isEmpty()) return null;
@@ -72,8 +81,7 @@ public class EasyBotEngine extends BotModelControllable {
     }
 
     @Override
-    public List<DestinationCard> askDestinationCards(List<DestinationCard> cards) {
-    protected List<ShortDestinationCard> chooseDestinationCards(List<ShortDestinationCard> cards) {
+    protected List<DestinationCard> chooseDestinationCards(List<DestinationCard> cards) {
         int maxCardsNumber = cards.size();
 
         List<DestinationCard> cardsToKeep = new ArrayList<>(cards);
@@ -88,12 +96,6 @@ public class EasyBotEngine extends BotModelControllable {
         }
 
         return cardsToKeep;
-    }
-
-    @Override
-    public List<DestinationCard> askInitialDestinationCards(List<DestinationCard> cards) {
-        //TODO implement
-        return List.of();
     }
 
     @Override
