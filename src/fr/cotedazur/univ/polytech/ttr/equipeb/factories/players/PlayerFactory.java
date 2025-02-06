@@ -29,7 +29,7 @@ public class PlayerFactory {
         return players;
     }
 
-    private Player createPlayer(PlayerType playerType, PlayerModel playerModel, GameModel gameModel, IPlayerEngineViewable playerEngineViewable){
+    public Player createPlayer(PlayerType playerType, PlayerModel playerModel, GameModel gameModel, IPlayerEngineViewable playerEngineViewable){
         return new Player(
                 switch (playerType) {
                     case EASY_BOT -> new EasyBotEngine(gameModel, playerModel, playerEngineViewable);
