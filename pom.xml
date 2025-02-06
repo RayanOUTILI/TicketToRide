@@ -4,7 +4,7 @@
 
     <groupId>SI3_FISA_B</groupId> <!-- CHANGE ME -->
     <artifactId>ttr_europe</artifactId> <!-- CHANGE ME -->
-    <version>MIDTERM</version> <!-- CHANGE ME -->
+    <version>FINAL</version> <!-- CHANGE ME -->
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> <!-- CHANGE ME IF NEEDED, other : ISO-8859-1 -->
