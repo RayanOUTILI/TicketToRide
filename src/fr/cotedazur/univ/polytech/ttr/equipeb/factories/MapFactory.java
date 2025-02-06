@@ -30,13 +30,6 @@ public class MapFactory {
         this.routeParser = routeParser;
     }
 
-    /*
-     * Get the map from the JSON file
-     */
-    public List<Route> getMapFromJson() throws JsonParseException {
-        return routeParser.parseRoutes("data-europe/routes.json");
-    }
-
     /**
      * Get the map from the JSON file
      * Test purpose

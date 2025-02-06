@@ -6,11 +6,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class StatsWriter {
 
-    List<String[]> lines;
+    List<PlayerStatsLine> buffer;
     CSVWriter writer;
 
     public StatsWriter(String path, String[] headers, boolean append) throws IOException {
@@ -20,7 +21,7 @@ public class StatsWriter {
             this.writer.writeNext(headers);
         }
 
-        this.lines = new ArrayList<>();
+        this.buffer = new ArrayList<>();
     }
 
     private boolean needToWriteHeader(String path) {
@@ -30,13 +31,18 @@ public class StatsWriter {
         return !(fileExists) || isEmpty;
     }
 
-    public void commit(String[] line){
-        this.lines.add(line);
+    public void commit(PlayerStatsLine line){
+        line.setCurrentTime(System.nanoTime());
+        this.buffer.add(line);
     }
 
     public void push(){
-        writer.writeAll(lines);
-        lines.clear();
+        buffer.forEach(line -> writer.writeNext(line.getValues()));
+        buffer.clear();
+    }
+
+    public List<PlayerStatsLine> getReadableBuffer() {
+        return Collections.unmodifiableList(buffer);
     }
 
     public void close() throws IOException {
