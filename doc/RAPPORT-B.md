@@ -162,3 +162,27 @@ Elle est implémentée dans la classe `CommandLineArgs` et permet de définir le
 - `--2thousands` : Mode d'exécution 2*1000 parties, lance 1000 parties avec chacun des bots disponibles et 1000 parties avec le bot le plus fort `MEDIUM_BOT`. Il affichera les statistiques des parties dans la console.
 
 ***À noter que les arguments `--nbOfGames`, `--demo` et `--2thousands` ne peuvent pas être utilisés ensemble.***
+
+### 2.2 Qualité
+#### 2.2.1 Tests
+- Principalement concentrés sur les controllers du jeu et les joueurs.
+- Utilise des mocks pour simuler les actions et cas spécifiques.
+#### 2.2.2 SonarQube
+- Utilisation de SonarQube pour analyser la qualité du code.
+- Correction des erreurs et avertissements remontés.
+#### 2.2.3 Principes
+- Respect au maximum des principes SOLID.
+- Utilisation de design patterns pour structurer le code.
+
+### 2.3 Refactor et amélioration
+- Même si le coverage est supérieur à 80%, plus de tests d'intégration sont nécessaires.
+- Le game engine est encore perfectible surtout dans sa complexité.
+- Une séparation d'un GameModel en plusieurs sous classe pourrait être envisagée.
+- Cela est notamment représenté sur SonarQube avec le plugin Softvis3D.
+- La gestion des actions avec les contrôleurs est plutôt bien réussi et permet une mobilité importante.
+
+## 3. Répartition des points
+- `Louis`: `140` points
+- `Rayan`: `100` points
+- `Matvei`: `80` points
+- `Jim`: `80` points
