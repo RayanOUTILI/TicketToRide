@@ -27,7 +27,8 @@ public class DestinationCardsController extends Controller {
 
     @Override
     public boolean initPlayer(Player player) {
-        if(gameModel.isShortDestCardDeckEmpty() || gameModel.isLongDestCardDeckEmpty()) return false;
+        if(gameModel.isShortDestCardDeckEmpty() || gameModel.isLongDestCardDeckEmpty())
+            return false;
 
         List<DestinationCard> shortDestinationCards = gameModel.drawDestinationCards(STARTING_SHORT_DESTINATION_CARDS);
 
@@ -40,7 +41,8 @@ public class DestinationCardsController extends Controller {
 
         List<DestinationCard> longDestCards = gameModel.drawLongDestinationCards(STARTING_LONG_DESTINATION_CARDS);
 
-        if(longDestCards == null || longDestCards.isEmpty() || longDestCards.size() != STARTING_LONG_DESTINATION_CARDS) return false;
+        if(longDestCards == null || longDestCards.isEmpty() || longDestCards.size() != STARTING_LONG_DESTINATION_CARDS)
+            return false;
 
         List<DestinationCard> drawnCards = new ArrayList<>(shortDestinationCards);
         drawnCards.addAll(longDestCards);
@@ -67,6 +69,10 @@ public class DestinationCardsController extends Controller {
         }
 
         player.receiveDestinationCards(chosenCards);
+        List<DestinationCard> discardedCards = new ArrayList<>(cards);
+        if (discardedCards.removeAll(chosenCards)) {
+            gameModel.returnShortDestinationCardsToTheBottom(discardedCards);
+        }
 
         return Optional.empty();
     }
@@ -75,7 +81,7 @@ public class DestinationCardsController extends Controller {
     public boolean resetPlayer(Player player) {
         List<DestinationCard> cardsInHand = player.getDestinationCards();
         List<DestinationCard> discardedCards = player.getDiscardDestinationCards();
-        List<DestinationCard> cards = cardsInHand;
+        List<DestinationCard> cards = new ArrayList<>(cardsInHand);
         cards.addAll(discardedCards);
         gameModel.returnShortDestinationCardsToTheBottom(cards.stream().filter(card -> card.getPoints() < DESTINATION_CARD_TYPE_THRESHOLD).toList());
         gameModel.returnLongDestinationCardsToTheBottom(cards.stream().filter(card -> card.getPoints() >= DESTINATION_CARD_TYPE_THRESHOLD).toList());

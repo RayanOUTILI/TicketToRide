@@ -14,7 +14,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewabl
 import java.util.List;
 import java.util.Optional;
 
-public abstract class BotEngineControllable extends BotEngine {
+public abstract class BotEngineControllable extends BotEngine implements IPlayerActionsControllable{
 
 
     protected BotEngineControllable(IPlayerGameModel gameModel, IPlayerModel playerModel, IPlayerEngineViewable view) {
@@ -27,7 +27,12 @@ public abstract class BotEngineControllable extends BotEngine {
 
         if (route == null) return null;
 
-        return new ClaimObject<>(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), route.getType() == RouteType.FERRY ? route.getNbLocomotives() : 0));
+        int nbLocomotives = 0;
+        if(route.getType() == RouteType.FERRY) {
+            nbLocomotives += route.getNbLocomotives();
+        }
+
+        return new ClaimObject<>(route, playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength()-nbLocomotives, nbLocomotives));
     }
 
     /**

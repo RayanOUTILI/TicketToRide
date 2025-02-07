@@ -48,7 +48,7 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
 
     @Override
     public List<DestinationCard> askInitialDestinationCards(List<DestinationCard> cards) {
-        return actionsController.askDestinationCards(cards);
+        return actionsController.askInitialDestinationCards(cards);
     }
 
     @Override
@@ -89,6 +89,11 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     @Override
     public RouteReadOnly askChooseRouteStation(CityReadOnly city) {
         return actionsController.askChooseRouteStation(city);
+    }
+
+    @Override
+    public boolean reset() {
+        return actionsController.reset();
     }
 
     @Override

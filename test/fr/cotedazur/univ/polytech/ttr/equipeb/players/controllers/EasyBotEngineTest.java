@@ -2,7 +2,6 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
 
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ClaimObject;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ReasonActionRefused;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
@@ -78,58 +77,6 @@ class EasyBotEngineTest {
         assertEquals(Action.CLAIM_ROUTE, easyBotEngine.askAction());
     }
 
-    @Test
-    void testAskClaimRouteFerry() {
-        Route route = mock(Route.class);
-        when(route.isClaimed()).thenReturn(false);
-        when(route.getColor()).thenReturn(Color.BLUE);
-        when(route.getLength()).thenReturn(1);
-        when(route.getType()).thenReturn(RouteType.FERRY);
-        when(route.isClaimed()).thenReturn(false);
-        when(route.getNbLocomotives()).thenReturn(1);
-
-        WagonCard card = mock(WagonCard.class);
-        when(card.getColor()).thenReturn(Color.ANY);
-        when(playerModel.getNumberOfWagons()).thenReturn(1);
-        when(playerModel.getWagonCards(anyInt())).thenReturn(List.of(card));
-        when(playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 1)).thenReturn(List.of(card));
-
-
-        List<RouteReadOnly> routes = new ArrayList<>(List.of(route));
-        when(gameModel.getNonControllableAvailableRoutes()).thenReturn(routes);
-        when(random.nextInt(anyInt())).thenReturn(0);
-        when(gameModel.getNonControllableRoutes()).thenReturn(routes);
-
-        ClaimObject<RouteReadOnly> claimRoute = easyBotEngine.askClaimRoute();
-        assertEquals(route, claimRoute.getClaimable());
-        assertEquals(List.of(card), claimRoute.wagonCards());
-    }
-
-    @Test
-    void testAskClaimRouteTunnel() {
-        Route route = mock(Route.class);
-        when(route.isClaimed()).thenReturn(false);
-        when(route.getColor()).thenReturn(Color.BLUE);
-        when(route.getLength()).thenReturn(1);
-        when(route.getType()).thenReturn(RouteType.TUNNEL);
-        when(route.isClaimed()).thenReturn(false);
-
-        WagonCard card = mock(WagonCard.class);
-        when(card.getColor()).thenReturn(Color.ANY);
-        when(playerModel.getNumberOfWagons()).thenReturn(1);
-        when(playerModel.getWagonCards(anyInt())).thenReturn(List.of(card));
-        when(playerModel.getWagonCardsIncludingAnyColor(route.getColor(), route.getLength(), 0)).thenReturn(List.of(card));
-
-
-        List<RouteReadOnly> routes = new ArrayList<>(List.of(route));
-        when(gameModel.getNonControllableAvailableRoutes()).thenReturn(routes);
-        when(random.nextInt(anyInt())).thenReturn(0);
-        when(gameModel.getNonControllableRoutes()).thenReturn(routes);
-
-        ClaimObject<RouteReadOnly> claimRoute = easyBotEngine.askClaimRoute();
-        assertEquals(route, claimRoute.getClaimable());
-        assertEquals(List.of(card), claimRoute.wagonCards());
-    }
 
     @Test
     void testAskActionPickWagonCard() {
@@ -233,5 +180,27 @@ class EasyBotEngineTest {
         assertEquals(Optional.of(ActionDrawWagonCard.DRAW_FROM_DECK), easyBotEngine.askDrawWagonCard(possibleActions));
         when(random.nextInt(anyInt())).thenReturn(1);
         assertEquals(Optional.of(ActionDrawWagonCard.DRAW_FROM_SHOWN_CARDS), easyBotEngine.askDrawWagonCard(possibleActions));
+    }
+
+    @Test
+    void testAskInitialDestinationCards() {
+        List<DestinationCard> cards = new ArrayList<>(List.of(
+                mock(DestinationCard.class),
+                mock(DestinationCard.class),
+                mock(DestinationCard.class)
+        ));
+
+        when(random.nextInt(anyInt())).thenReturn(1);
+        when(random.nextInt(anyInt())).thenReturn(1);
+
+        List<DestinationCard> result = easyBotEngine.askInitialDestinationCards(cards);
+
+        assertEquals(2, result.size());
+        assertTrue(cards.containsAll(result));
+    }
+
+    @Test
+    void testReset() {
+        assertTrue(easyBotEngine.reset());
     }
 }

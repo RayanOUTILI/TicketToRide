@@ -88,7 +88,7 @@ public class CommandLineArgs {
         List<GameExecutionInfos> playersTypes = new ArrayList<>();
         if (twothousands) {
             playersTypes.add(new GameExecutionInfos(
-                    List.of(PlayerType.MEDIUM_BOT, PlayerType.EASY_BOT, PlayerType.EASY_BOT),
+                    List.of(PlayerType.OBJECTIVE_BOT, PlayerType.MEDIUM_BOT, PlayerType.EASY_BOT),
                     1000
             ));
 
@@ -100,8 +100,9 @@ public class CommandLineArgs {
 
         if (demo) {
             playersTypes.add(new GameExecutionInfos(
-                    List.of(PlayerType.EASY_BOT, PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT),
+                    List.of(PlayerType.OBJECTIVE_BOT, PlayerType.MEDIUM_BOT, PlayerType.EASY_BOT),
                     1
+
             ));
         }
 
