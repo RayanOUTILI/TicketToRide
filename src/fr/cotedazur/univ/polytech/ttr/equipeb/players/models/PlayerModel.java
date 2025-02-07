@@ -17,8 +17,8 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
     private final PlayerIdentification playerIdentification;
     private final PlayerType playerType;
     private final List<WagonCard> wagonCards;
-    private final List<DestinationCard> destinationCards;
-    private final List<DestinationCard> discardDestinationCards;
+    private final Set<DestinationCard> destinationCards;
+    private final Set<DestinationCard> discardDestinationCards;
     private final Optional<IPlayerViewable> view;
     private final List<RouteReadOnly> chosenRouteStations;
     private int stationsLeft;
@@ -31,8 +31,8 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
         this.playerIdentification = playerIdentification;
         this.playerType = playerType;
         this.wagonCards = new ArrayList<>();
-        this.destinationCards = new ArrayList<>();
-        this.discardDestinationCards = new ArrayList<>();
+        this.destinationCards = new HashSet<>();
+        this.discardDestinationCards = new HashSet<>();
         this.chosenRouteStations = new ArrayList<>();
         this.view = Optional.ofNullable(view);
         this.view.ifPresent(v -> v.setPlayerIdentification(playerIdentification));
@@ -124,12 +124,12 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
 
     @Override
     public List<DestinationCard> getDestinationCards() {
-        return destinationCards;
+        return new ArrayList<>(destinationCards);
     }
 
     @Override
     public List<DestinationCard> getDiscardDestinationCards() {
-        return discardDestinationCards;
+        return new ArrayList<>(discardDestinationCards);
     }
 
     @Override

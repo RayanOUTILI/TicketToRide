@@ -248,6 +248,16 @@ public class GameModel implements
     }
 
     @Override
+    public boolean isShortDestCardDeckFull() {
+        return shortDestinationCardDeck.isFull();
+    }
+
+    @Override
+    public boolean isLongDestCardDeckFull() {
+        return longDestinationCardDeck.isFull();
+    }
+
+    @Override
     public List<RouteReadOnly> getAllRoutesClaimedByPlayer(PlayerIdentification player) {
         return routes.stream()
                 .filter(r -> r.isClaimed() && r.getClaimerPlayer().equals(player))

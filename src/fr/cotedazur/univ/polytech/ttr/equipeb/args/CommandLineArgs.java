@@ -108,7 +108,7 @@ public class CommandLineArgs {
 
         if(nbOfGames > 0) {
             playersTypes.add(new GameExecutionInfos(
-                    List.of(PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT),
+                    List.of(PlayerType.MEDIUM_BOT, PlayerType.EASY_BOT, PlayerType.OBJECTIVE_BOT),
                     nbOfGames
             ));
         }

@@ -91,6 +91,9 @@ public class DestinationCardsController extends Controller {
 
     @Override
     public boolean resetGame() {
-        return !gameModel.isShortDestCardDeckEmpty() && !gameModel.isLongDestCardDeckEmpty();
+        return !gameModel.isShortDestCardDeckEmpty() &&
+                !gameModel.isLongDestCardDeckEmpty()
+                && gameModel.isLongDestCardDeckFull()
+                && gameModel.isShortDestCardDeckFull();
     }
 }
