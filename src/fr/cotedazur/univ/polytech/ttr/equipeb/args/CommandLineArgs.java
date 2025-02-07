@@ -62,15 +62,15 @@ public class CommandLineArgs {
             ));
 
             playersTypes.add(new GameExecutionInfos(
-                    List.of(PlayerType.OBJECTIVE_BOT, PlayerType.MEDIUM_BOT, PlayerType.EASY_BOT),
-                    0
+                    List.of(PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT),
+                    1000
             ));
         }
 
         if (demo) {
             playersTypes.add(new GameExecutionInfos(
-                    List.of(PlayerType.OBJECTIVE_BOT, PlayerType.OBJECTIVE_BOT, PlayerType.OBJECTIVE_BOT),
-                    20
+                    List.of(PlayerType.OBJECTIVE_BOT, PlayerType.MEDIUM_BOT, PlayerType.EASY_BOT),
+                    1000
 
             ));
         }
