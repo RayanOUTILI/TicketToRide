@@ -5,7 +5,7 @@
     <!-- Appender pour la console -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -14,7 +14,7 @@
         <file>logs/application_debug.log</file>
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) - %msg%n</pattern>
         </encoder>
     </appender>
 
