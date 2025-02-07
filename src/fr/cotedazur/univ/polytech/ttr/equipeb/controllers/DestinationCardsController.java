@@ -50,10 +50,9 @@ public class DestinationCardsController extends Controller {
         List<DestinationCard> chosenCards = player.askInitialDestinationCards(drawnCards);
 
         player.receiveDestinationCards(chosenCards);
-        if (drawnCards.removeAll(chosenCards)) {
-            player.discardDestinationCard(drawnCards);
-        }
-        return true;
+        drawnCards.removeAll(chosenCards);
+
+        return player.discardDestinationCard(drawnCards);
     }
 
     @Override
@@ -70,9 +69,11 @@ public class DestinationCardsController extends Controller {
 
         player.receiveDestinationCards(chosenCards);
         List<DestinationCard> discardedCards = new ArrayList<>(cards);
-        if (discardedCards.removeAll(chosenCards)) {
-            gameModel.returnShortDestinationCardsToTheBottom(discardedCards);
-        }
+
+        discardedCards.removeAll(chosenCards);
+
+        gameModel.returnShortDestinationCardsToTheBottom(discardedCards);
+
 
         return Optional.empty();
     }

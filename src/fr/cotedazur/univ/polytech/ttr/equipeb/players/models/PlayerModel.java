@@ -182,7 +182,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
     public boolean clearDestinationCards() {
         this.destinationCards.clear();
         this.discardDestinationCards.clear();
-        return true;
+        return this.destinationCards.isEmpty() && this.discardDestinationCards.isEmpty();
     }
 
     @Override
