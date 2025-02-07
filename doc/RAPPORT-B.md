@@ -46,8 +46,9 @@
     - Il determine les routes nécessaire en appliquant l'algorithme de Djiskstra sur un graph de villes
  
   - Comparaison avec le meuilleur bot (MediumBot):
-        Le MediumBot accumule au moins 10 cartes, puis essaye de capturer les routes les plus longues,
-        Cette stratégie arrive à battre le bot obectif car il va bloquer l'objectif long du bot et surtout il va épuiser ses Wagons avant que l'objectif complète ses destinations.
+    
+Le MediumBot accumule au moins 10 cartes, puis essaye de capturer les routes les plus longues,
+Cette stratégie arrive à battre le bot obectif car il va bloquer l'objectif long du bot et surtout il va épuiser ses Wagons avant que l'objectif complète ses destinations.
 
 
 ## 2. Architecture et qualité
