@@ -11,7 +11,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelStats;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.PlayerStatsLine;
-import fr.cotedazur.univ.polytech.ttr.equipeb.stats.StatsWriter;
+import fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.csv.CSVStatsWriter;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.action.StatAction;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.action.StatActionStatus;
 import org.junit.jupiter.api.AfterEach;
@@ -36,7 +36,7 @@ class PlayerStatisticsViewTest {
     private static int runnedTest = 0;
     private static final String PATH = "test-resources/view/";
     private PlayerStatisticsView playerStatisticsView;
-    private StatsWriter statsWriter;
+    private CSVStatsWriter statsWriter;
 
     private CSVReader csvReader;
 
@@ -47,10 +47,12 @@ class PlayerStatisticsViewTest {
     private int currentTurn;
     private StatAction action;
     private StatActionStatus actionStatus;
+    private boolean actionSkip;
     private int score;
     private int wagonsCards;
     private List<DestinationCard> destinationCardsList;
     private List<RouteReadOnly> routes;
+    private String label;
 
     private String getTestPath() {
         return PATH + "test-" + runnedTest + ".csv";
@@ -85,10 +87,12 @@ class PlayerStatisticsViewTest {
                 String.valueOf(currentTurn),
                 action.toString(),
                 actionStatus.toString(),
+                actionSkip ? "YES" : "NO",
                 String.valueOf(score),
                 String.valueOf(wagonsCards),
                 destinationCardsList.size() + "",
-                routes.size() + ""
+                routes.size() + "",
+                label
         };
     }
 
@@ -103,16 +107,16 @@ class PlayerStatisticsViewTest {
         this.wagonsCards = 63;
         this.destinationCardsList = List.of();
         this.routes = List.of();
+        this.label = "Test Game";
 
-        PlayerStatsLine statsLine = new PlayerStatsLine(playerId, playerColor, playerType);
+        PlayerStatsLine statsLine = new PlayerStatsLine(playerId, playerColor, playerType, label);
         this.playerModel = Mockito.mock(IPlayerModelStats.class);
         this.gameModel = Mockito.mock(IStatsGameModel.class);
-        this.statsWriter = new StatsWriter(getTestPath(), PlayerStatsLine.headers, false);
-        this.playerStatisticsView = new PlayerStatisticsView(statsLine, statsWriter);
-        this.playerStatisticsView.setPlayerModel(playerModel);
+        this.statsWriter = new CSVStatsWriter(getTestPath(), PlayerStatsLine.getHeaders(), false);
+        this.playerStatisticsView = new PlayerStatisticsView(statsLine, List.of(statsWriter));
         this.playerStatisticsView.setGameModel(gameModel);
 
-        when(playerModel.getIdentification()).thenReturn(PlayerIdentification.BLACK);
+        when(gameModel.getPlayerWithIdentification(playerColor)).thenReturn(playerModel);
         when(playerModel.getPlayerType()).thenReturn(PlayerType.MEDIUM_BOT);
         when(playerModel.getScore()).thenReturn(score);
         when(playerModel.getNumberOfWagonCards()).thenReturn(wagonsCards);
@@ -132,6 +136,7 @@ class PlayerStatisticsViewTest {
     void testWriteFromActionCompleted() throws IOException, CsvException {
         this.action = StatAction.CLAIM_ROUTE;
         this.actionStatus = StatActionStatus.YES;
+        this.actionSkip = false;
 
         playerStatisticsView.displayNewGame(gameId);
         playerStatisticsView.displayNewTurn(currentTurn);
@@ -147,6 +152,7 @@ class PlayerStatisticsViewTest {
     void testWriteFromActionRefused() throws IOException, CsvException {
         this.action = StatAction.PICK_DESTINATION_CARDS;
         this.actionStatus = StatActionStatus.ACTION_INVALID;
+        this.actionSkip = false;
 
 
         playerStatisticsView.displayNewGame(gameId);
@@ -163,6 +169,7 @@ class PlayerStatisticsViewTest {
     void testWriteFromActionStop() throws IOException, CsvException {
         this.action = StatAction.STOP;
         this.actionStatus = StatActionStatus.YES;
+        this.actionSkip = true;
 
         playerStatisticsView.displayNewGame(gameId);
         playerStatisticsView.displayNewTurn(currentTurn);
@@ -178,6 +185,7 @@ class PlayerStatisticsViewTest {
     void testWriteWinner() throws IOException, CsvException {
         this.action = StatAction.WINNER;
         this.actionStatus = StatActionStatus.YES;
+        this.actionSkip = false;
 
         playerStatisticsView.displayNewGame(gameId);
         playerStatisticsView.displayNewTurn(currentTurn);
@@ -193,6 +201,7 @@ class PlayerStatisticsViewTest {
     void multipleWriteAction() throws IOException, CsvException {
         this.action = StatAction.CLAIM_ROUTE;
         this.actionStatus = StatActionStatus.YES;
+        this.actionSkip = false;
 
         playerStatisticsView.displayNewGame(gameId);
         playerStatisticsView.displayNewTurn(currentTurn);

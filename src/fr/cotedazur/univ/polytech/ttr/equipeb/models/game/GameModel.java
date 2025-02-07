@@ -11,6 +11,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.Route;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.deck.WagonCardDeck;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.ScoreComparator;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelControllable;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelStats;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerModel;
 
@@ -146,6 +147,8 @@ public class GameModel implements
 
     @Override
     public boolean retrieveDeletedRoutes() {
+        if(removedRoutes.isEmpty()) return true;
+
         boolean added = routes.addAll(removedRoutes);
         removedRoutes.clear();
         return added;
@@ -245,10 +248,28 @@ public class GameModel implements
     }
 
     @Override
+    public boolean isShortDestCardDeckFull() {
+        return shortDestinationCardDeck.isFull();
+    }
+
+    @Override
+    public boolean isLongDestCardDeckFull() {
+        return longDestinationCardDeck.isFull();
+    }
+
+    @Override
     public List<RouteReadOnly> getAllRoutesClaimedByPlayer(PlayerIdentification player) {
         return routes.stream()
                 .filter(r -> r.isClaimed() && r.getClaimerPlayer().equals(player))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public IPlayerModelStats getPlayerWithIdentification(PlayerIdentification playerIdentification) {
+        return playerModels.stream()
+                .filter(p -> p.getIdentification().equals(playerIdentification))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override

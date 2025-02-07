@@ -27,7 +27,6 @@ public class GameStatisticsView implements IGameViewable {
 
     @Override
     public void displayEndGameReason(PlayerIdentification playerIdentification, int nbOfWagons, int nbTurns) {
-        // NOT USED
     }
 
     @Override

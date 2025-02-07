@@ -6,10 +6,12 @@ import java.util.*;
 
 public class DestinationCardDeck<T extends DestinationCard>{
     private final Deque<T> stack;
+    private final int size;
 
     public DestinationCardDeck(List<T> cards) {
         this.stack = new ArrayDeque<>();
         this.stack.addAll(cards);
+        this.size = cards.size();
     }
 
     public List<T> drawCard(int maximumDraw) {
@@ -37,5 +39,9 @@ public class DestinationCardDeck<T extends DestinationCard>{
         stack.clear();
         stack.addAll(list);
         return true;
+    }
+
+    public boolean isFull() {
+        return stack.size() == size;
     }
 }

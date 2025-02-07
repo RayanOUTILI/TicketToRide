@@ -17,8 +17,8 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
     private final PlayerIdentification playerIdentification;
     private final PlayerType playerType;
     private final List<WagonCard> wagonCards;
-    private final List<DestinationCard> destinationCards;
-    private final List<DestinationCard> discardDestinationCards;
+    private final Set<DestinationCard> destinationCards;
+    private final Set<DestinationCard> discardDestinationCards;
     private final Optional<IPlayerViewable> view;
     private final List<RouteReadOnly> chosenRouteStations;
     private int stationsLeft;
@@ -31,10 +31,11 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
         this.playerIdentification = playerIdentification;
         this.playerType = playerType;
         this.wagonCards = new ArrayList<>();
-        this.destinationCards = new ArrayList<>();
-        this.discardDestinationCards = new ArrayList<>();
+        this.destinationCards = new HashSet<>();
+        this.discardDestinationCards = new HashSet<>();
         this.chosenRouteStations = new ArrayList<>();
         this.view = Optional.ofNullable(view);
+        this.view.ifPresent(v -> v.setPlayerIdentification(playerIdentification));
         this.score = 0;
         this.stationsLeft = 0;
         this.numberOfWagons = 0;
@@ -44,6 +45,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
 
     public PlayerModel(PlayerIdentification playerIdentification, IPlayerViewable view) {
         this(playerIdentification, PlayerType.EASY_BOT, view);
+        if (view != null) view.setPlayerIdentification(playerIdentification);
     }
 
     public PlayerModel(PlayerIdentification playerIdentification) {
@@ -122,12 +124,12 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
 
     @Override
     public List<DestinationCard> getDestinationCards() {
-        return destinationCards;
+        return new ArrayList<>(destinationCards);
     }
 
     @Override
     public List<DestinationCard> getDiscardDestinationCards() {
-        return discardDestinationCards;
+        return new ArrayList<>(discardDestinationCards);
     }
 
     @Override
@@ -180,7 +182,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
     public boolean clearDestinationCards() {
         this.destinationCards.clear();
         this.discardDestinationCards.clear();
-        return true;
+        return this.destinationCards.isEmpty() && this.discardDestinationCards.isEmpty();
     }
 
     @Override
@@ -278,6 +280,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
     public List<WagonCard> getWagonCardsIncludingAnyColor(Color color, int numberOfCards, int numberLocomotives) {
         List<WagonCard> cards = new ArrayList<>();
         if(color == Color.ANY) color = getMostFrequentColor();
+
         for(WagonCard card : wagonCards) {
             if(card.getColor() == color && numberOfCards > 0) {
                 cards.add(card);
@@ -289,18 +292,20 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
             }
         }
 
-        if(numberOfCards > 0 ) {
-            for(WagonCard card : wagonCards) {
-                if(card.getColor() == Color.ANY && numberOfCards > 0 && !cards.contains(card)) {
-                    cards.add(card);
-                    numberOfCards--;
-                }
+        //Second check to add locomotives if there are not enough cards
+        for(int i = 0; i < wagonCards.size() && numberOfCards > 0; i++) {
+            WagonCard card = wagonCards.get(i);
+            if(card.getColor() == Color.ANY && !cards.contains(card)) {
+                cards.add(card);
+                numberOfCards--;
             }
         }
 
+        //If there are still not enough cards, return an empty list
         if(numberLocomotives > 0 || numberOfCards > 0) {
             return new ArrayList<>();
         }
+
         return cards;
     }
 
