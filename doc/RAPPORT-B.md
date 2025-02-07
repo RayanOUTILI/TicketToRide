@@ -5,23 +5,23 @@
 ### Fonctionnalités réalisées
 - Jeu complet avec couverture des règles : ferry, gares, tunnels, etc.
 - Parties jouables avec 3 types de bots.
-- Liste des fonctionnalités non implémentées : *à compléter*
+- Liste des fonctionnalités non implémentées : Aucune
 
 ### Logs
 - Utilisation de SLF4J avec mode verbose via JCommander.
-- Trois niveaux de verbosité disponibles :
-  1. **(ERROR/WARN)** : Affiche uniquement les erreurs et avertissements.
-     ```bash
-     mvn exec:java -Dexec.args="--verbose=1"
-     ```
-  2. **(INFO + ERROR/WARN)** : Niveau par défaut, affiche informations, erreurs et avertissements.
-     ```bash
-     mvn exec:java -Dexec.args="--verbose=2"
-     ```
-  3. **(DEBUG + INFO + ERROR/WARN)** : Affiche tous les détails.
-     ```bash
-     mvn exec:java -Dexec.args="--verbose=3"
-     ```
+  - Trois niveaux de verbosité disponibles :
+    1. **(ERROR/WARN)** : Affiche uniquement les erreurs et avertissements.
+       ```bash
+       mvn exec:java -Dexec.args="--verbose 1 --demo"
+       ```
+    2. **(INFO + ERROR/WARN)** : Niveau par défaut, affiche informations, erreurs et avertissements.
+       ```bash
+       mvn exec:java -Dexec.args="--verbose 2 --demo"
+       ```
+    3. **(DEBUG + INFO + ERROR/WARN)** : Affiche tous les détails.
+       ```bash
+       mvn exec:java -Dexec.args="--verbose 3 --demo"
+       ```
 ***À noter que cela gère l'affichage si une sortie console est défini sur le mode d'execution.*** Il est cependant possible de forcer l'affichage console avec l'argument : `--force-log`
 - Configuration des logs définie dans `/resources/logback.xml` :
   - Utilisation de **Logback** pour la gestion des logs.
@@ -199,7 +199,7 @@ Elle est implémentée dans la classe `CommandLineArgs` et permet de définir le
 - La gestion des actions avec les contrôleurs est plutôt bien réussi et permet une mobilité importante.
 
 ## 3. Répartition des points
-- `Louis`: `140` points
-- `Rayan`: `100` points
-- `Matvei`: `80` points
-- `Jim`: `80` points
+- `Louis Rainero`: `140` points
+- `Rayan Outili`: `100` points
+- `Matvei Maksimenka`: `80` points
+- `Jim Lainel`: `80` points
