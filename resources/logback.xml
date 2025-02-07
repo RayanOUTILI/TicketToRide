@@ -1,0 +1,37 @@
+<configuration>
+
+    <!-- Définition des appender pour console et fichier -->
+
+    <!-- Appender pour la console -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Appender pour un fichier de log -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/application_debug.log</file>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logger global avec niveau par défaut INFO -->
+    <logger name="fr.cotedazur.univ.polytech.ttr.equipeb" level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <!-- Logger pour DEBUG -->
+    <logger name="fr.cotedazur.univ.polytech.ttr.equipeb" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!-- Root logger, définissant le niveau par défaut à INFO -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

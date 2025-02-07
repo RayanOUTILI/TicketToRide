@@ -28,4 +28,7 @@ Desktop.ini
 $RECYCLE.BIN/
 
 *.json
+
+logs/
 stats/gamestats.csv
+.env
