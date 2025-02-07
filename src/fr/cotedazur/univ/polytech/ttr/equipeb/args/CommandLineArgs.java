@@ -47,7 +47,7 @@ public class CommandLineArgs {
         return commandLineArgs;
     }
 
-    private void validate() {
+    protected void validate() {
         if (!twothousands && !demo && nbOfGames == 0) {
             throw new ParameterException("At least one of --nbOfGames, --2thousands or --demo must be specified.");
         }
@@ -60,7 +60,7 @@ public class CommandLineArgs {
     /**
      * Change dynamiquement le niveau de log.
      */
-    private void updateLogLevel() {
+    protected void updateLogLevel() {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         String loggerName = "fr.cotedazur.univ.polytech.ttr.equipeb";
         loggerContext.getLogger(loggerName).setLevel(
@@ -114,5 +114,33 @@ public class CommandLineArgs {
 
         return playersTypes;
 
+    }
+
+    public void setCsv(boolean csv) {
+        this.csv = csv;
+    }
+
+    public void setNbOfGames(int nbOfGames) {
+        this.nbOfGames = nbOfGames;
+    }
+
+    public void setDemo(boolean demo) {
+        this.demo = demo;
+    }
+
+    public void setTwothousands(boolean twothousands) {
+        this.twothousands = twothousands;
+    }
+
+    public void setDatabase(boolean database) {
+        this.database = database;
+    }
+
+    public int getVerbose() {
+        return verbose;
+    }
+
+    public void setVerbose(int i) {
+        this.verbose = i;
     }
 }

@@ -112,7 +112,7 @@ class PlayerStatisticsViewTest {
         PlayerStatsLine statsLine = new PlayerStatsLine(playerId, playerColor, playerType, label);
         this.playerModel = Mockito.mock(IPlayerModelStats.class);
         this.gameModel = Mockito.mock(IStatsGameModel.class);
-        this.statsWriter = new CSVStatsWriter(getTestPath(), PlayerStatsLine.headers, false);
+        this.statsWriter = new CSVStatsWriter(getTestPath(), PlayerStatsLine.getHeaders(), false);
         this.playerStatisticsView = new PlayerStatisticsView(statsLine, List.of(statsWriter));
         this.playerStatisticsView.setGameModel(gameModel);
 

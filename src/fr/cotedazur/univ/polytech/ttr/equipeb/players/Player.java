@@ -48,7 +48,6 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
 
     @Override
     public List<DestinationCard> askInitialDestinationCards(List<DestinationCard> cards) {
-        //TODO check if works
         return actionsController.askDestinationCards(cards);
     }
 

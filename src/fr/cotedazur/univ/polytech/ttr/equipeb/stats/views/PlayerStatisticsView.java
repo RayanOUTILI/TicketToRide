@@ -85,10 +85,7 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
 
     @Override
     public void displayActionSkipped(Action action, ReasonActionRefused reason) {
-        statsLine.setAction(StatAction.valueOf(action.name()));
-        statsLine.setActionStatus(StatActionStatus.valueOf(reason.name()));
-        statsLine.setActionSkip(reason.isActionSkipTurn());
-        commitLine();
+        displayActionRefused(action, reason);
     }
 
     @Override
@@ -107,16 +104,6 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
         commitLine();
     }
 
-/*    public void displayEndGameReason(PlayerIdentification playerIdentification, int nbOfWagons, int nbTurns) {
-        statsLine.setCurrentTurn(nbTurns);
-        statsLine.setAction(StatAction.END_GAME);
-        if (playerIdentification.equals(playerModel.getPlayerIdentification())) {
-            statsLine.setActionStatus(StatActionStatus.YES);
-        } else {
-            statsLine.setActionStatus(StatActionStatus.NO);
-        }
-        commitLine();
-    }*/
 
     public void displayWinner(PlayerIdentification playerIdentification, int score) {
         statsLine.setAction(StatAction.WINNER);
