@@ -6,6 +6,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentificatio
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.action.StatAction;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.action.StatActionStatus;
+import fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.csv.CSVStatsWriter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,9 +21,9 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class StatsWriterTest {
+class CSVStatsWriterTest {
 
-    private StatsWriter writer;
+    private CSVStatsWriter writer;
     private CSVReader csvReader;
 
     private static final String fileName = "test-resources/writer/";
@@ -56,14 +57,14 @@ class StatsWriterTest {
         playerColorThree = PlayerIdentification.GREEN;
         playerTypeOne = PlayerType.EASY_BOT;
         playerTypeTwo = PlayerType.MEDIUM_BOT;
-        playerTypeThree = PlayerType.GOD_BOT;
+        playerTypeThree = PlayerType.OBJECTIVE_BOT;
         lineOne = createLineOne();
         lineTwo = createLineTwo();
         lineThree = createLineThree();
     }
 
     @AfterAll
-    static void deleteFiles() {
+    static void deleteFiles() throws IOException {
         // Here we delete all the files in the resources/tests directory
         File file = new File(fileName);
         if (file.exists()) {
@@ -71,10 +72,13 @@ class StatsWriterTest {
                 f.delete();
             }
         }
+
+        File gitKeep = new File(fileName + ".gitkeep");
+        gitKeep.createNewFile();
     }
 
     private static PlayerStatsLine createLineOne() {
-        PlayerStatsLine line = new PlayerStatsLine(playerIdOne, playerColorOne, playerTypeOne);
+        PlayerStatsLine line = new PlayerStatsLine(playerIdOne, playerColorOne, playerTypeOne, "Label One");
         line.setGameId(gameId);
         line.setAction(StatAction.CLAIM_ROUTE);
         line.setActionStatus(StatActionStatus.YES);
@@ -87,7 +91,7 @@ class StatsWriterTest {
     }
 
     private static PlayerStatsLine createLineTwo() {
-        PlayerStatsLine line = new PlayerStatsLine(playerIdTwo, playerColorTwo, playerTypeTwo);
+        PlayerStatsLine line = new PlayerStatsLine(playerIdTwo, playerColorTwo, playerTypeTwo, "Label Two");
         line.setGameId(gameId);
         line.setAction(StatAction.PICK_WAGON_CARD);
         line.setActionStatus(StatActionStatus.ACTION_INVALID);
@@ -100,7 +104,7 @@ class StatsWriterTest {
     }
 
     private static PlayerStatsLine createLineThree() {
-        PlayerStatsLine line = new PlayerStatsLine(playerIdThree, playerColorThree, playerTypeThree);
+        PlayerStatsLine line = new PlayerStatsLine(playerIdThree, playerColorThree, playerTypeThree, "Label Three");
         line.setGameId(gameId);
         line.setAction(StatAction.PICK_DESTINATION_CARDS);
         line.setActionStatus(StatActionStatus.YES);
@@ -117,7 +121,7 @@ class StatsWriterTest {
     }
 
     private void openWriter(String testName) throws IOException {
-        writer = new StatsWriter(getFileName(testName), PlayerStatsLine.headers, true);
+        writer = new CSVStatsWriter(getFileName(testName), PlayerStatsLine.getHeaders(), true);
     }
 
     private void openCSVReader(String testName) throws IOException {
@@ -127,15 +131,15 @@ class StatsWriterTest {
     @Test
     void testClearAfterPush() throws IOException {
         openWriter("clear-after-push");
-        writer.commit(lineOne.getValues());
-        writer.commit(lineTwo.getValues());
-        writer.commit(lineThree.getValues());
+        writer.commit(lineOne);
+        writer.commit(lineTwo);
+        writer.commit(lineThree);
 
-        assertEquals(3, writer.lines.size());
+        assertEquals(3, writer.getReadableBuffer().size());
 
         writer.push();
 
-        assertEquals(0, writer.lines.size());
+        assertEquals(0, writer.getReadableBuffer().size());
 
         writer.close();
     }
@@ -143,9 +147,9 @@ class StatsWriterTest {
     @Test
     void testWriteStatsWithoutExistingFile() throws IOException, CsvException {
         openWriter("write-stats-without-existing-file");
-        writer.commit(lineOne.getValues());
-        writer.commit(lineTwo.getValues());
-        writer.commit(lineThree.getValues());
+        writer.commit(lineOne);
+        writer.commit(lineTwo);
+        writer.commit(lineThree);
 
         writer.push();
         writer.close();
@@ -158,7 +162,7 @@ class StatsWriterTest {
         assertEquals(4, lines.size());
 
         // Check the header
-        assertArrayEquals(PlayerStatsLine.headers, lines.get(0));
+        assertArrayEquals(PlayerStatsLine.getHeaders(), lines.getFirst());
 
         // Check the lines
         assertArrayEquals(lineOne.getValues(), lines.get(1));
@@ -169,17 +173,17 @@ class StatsWriterTest {
     @Test
     void testWriteStatsWithAppend() throws IOException, CsvException {
         openWriter("write-stats-with-append");
-        writer.commit(lineOne.getValues());
+        writer.commit(lineOne);
         writer.push();
         writer.close();
 
         openWriter("write-stats-with-append");
-        writer.commit(lineTwo.getValues());
+        writer.commit(lineTwo);
         writer.push();
         writer.close();
 
         openWriter("write-stats-with-append");
-        writer.commit(lineThree.getValues());
+        writer.commit(lineThree);
         writer.push();
         writer.close();
 
@@ -191,7 +195,7 @@ class StatsWriterTest {
         assertEquals(4, lines.size());
 
         // Check the header
-        assertArrayEquals(PlayerStatsLine.headers, lines.get(0));
+        assertArrayEquals(PlayerStatsLine.getHeaders(), lines.getFirst());
 
         // Check the lines
         assertArrayEquals(lineOne.getValues(), lines.get(1));

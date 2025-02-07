@@ -48,13 +48,17 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
 
     @Override
     public List<DestinationCard> askInitialDestinationCards(List<DestinationCard> cards) {
-        //TODO check if works
-        return actionsController.askDestinationCards(cards);
+        return actionsController.askInitialDestinationCards(cards);
     }
 
     @Override
     public void actionRefused(Action action, ReasonActionRefused reason) {
         actionsController.actionRefused(action, reason);
+    }
+
+    @Override
+    public void actionSkipped(Action action, ReasonActionRefused reason) {
+        actionsController.actionSkipped(action, reason);
     }
 
     @Override
@@ -85,6 +89,11 @@ public class Player implements IPlayerActionsControllable, IPlayerModelControlla
     @Override
     public RouteReadOnly askChooseRouteStation(CityReadOnly city) {
         return actionsController.askChooseRouteStation(city);
+    }
+
+    @Override
+    public boolean reset() {
+        return actionsController.reset();
     }
 
     @Override

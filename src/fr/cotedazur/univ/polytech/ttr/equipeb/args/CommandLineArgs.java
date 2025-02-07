@@ -1,0 +1,147 @@
+package fr.cotedazur.univ.polytech.ttr.equipeb.args;
+
+import ch.qos.logback.classic.LoggerContext;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
+import fr.cotedazur.univ.polytech.ttr.equipeb.factories.views.ViewOptions;
+import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerType;
+import fr.cotedazur.univ.polytech.ttr.equipeb.simulations.GameExecutionInfos;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CommandLineArgs {
+
+    @Parameter(names = {"--csv"}, description = "Output the results in a CSV file")
+    private boolean csv;
+
+    @Parameter(names = {"--database"}, description = "Output the results in a database")
+    private boolean database;
+
+    @Parameter(names = {"--2thousands"}, description = "Play 2*1000 games, 1000 - Best bot vs Best bot, 1000 - Best bot vs Others")
+    private boolean twothousands;
+
+    @Parameter(names = {"--demo"}, description = "Run the demo")
+    private boolean demo;
+
+    @Parameter(names = "--verbose", description = "Niveau de verbosité : 1=ERROR/WARN, 2=INFO, 3=DEBUG")
+    private int verbose = 2;
+
+    @Parameter(names = {"--force-log"}, description = "Force the log to be printed")
+    private boolean forceLog = false;
+
+    @Parameter(names = {"--nbOfGames"}, description = "Number of games to play")
+    private int nbOfGames = 0;
+
+    public static CommandLineArgs parse(String[] args) {
+        CommandLineArgs commandLineArgs = new CommandLineArgs();
+        JCommander.newBuilder()
+                .addObject(commandLineArgs)
+                .build()
+                .parse(args);
+
+        commandLineArgs.validate();
+        commandLineArgs.updateLogLevel();
+        return commandLineArgs;
+    }
+
+    protected void validate() {
+        if (!twothousands && !demo && nbOfGames == 0) {
+            throw new ParameterException("At least one of --nbOfGames, --2thousands or --demo must be specified.");
+        }
+
+        if (demo && twothousands && nbOfGames != 0) {
+            throw new ParameterException("Cannot specify both --demo and --2thousands and --nbOfGames.");
+        }
+    }
+
+    /**
+     * Change dynamiquement le niveau de log.
+     */
+    protected void updateLogLevel() {
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        String loggerName = "fr.cotedazur.univ.polytech.ttr.equipeb";
+        loggerContext.getLogger(loggerName).setLevel(
+                switch (verbose) {
+                    case 1 -> ch.qos.logback.classic.Level.WARN;
+                    case 3 -> ch.qos.logback.classic.Level.DEBUG;
+                    default -> ch.qos.logback.classic.Level.INFO;
+                }
+        );
+    }
+
+
+    public List<ViewOptions> getViewOptions() {
+        List<ViewOptions> viewOptions = new ArrayList<>();
+
+        if (csv) viewOptions.add(ViewOptions.CSV);
+        if (twothousands) viewOptions.add(ViewOptions.CLI_STATS);
+        if (demo || forceLog) viewOptions.add(ViewOptions.CLI_VERBOSE);
+        if (database) viewOptions.add(ViewOptions.DATABASE);
+
+        return viewOptions;
+    }
+
+    public List<GameExecutionInfos> getPlayersTypesToPlay(){
+        List<GameExecutionInfos> playersTypes = new ArrayList<>();
+        if (twothousands) {
+            playersTypes.add(new GameExecutionInfos(
+                    List.of(PlayerType.OBJECTIVE_BOT, PlayerType.MEDIUM_BOT, PlayerType.EASY_BOT),
+                    1000
+            ));
+
+            playersTypes.add(new GameExecutionInfos(
+                    List.of(PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT, PlayerType.MEDIUM_BOT),
+                    1000
+            ));
+        }
+
+        if (demo) {
+            playersTypes.add(new GameExecutionInfos(
+                    List.of(PlayerType.OBJECTIVE_BOT, PlayerType.MEDIUM_BOT, PlayerType.EASY_BOT),
+                    1
+
+            ));
+        }
+
+        if(nbOfGames > 0) {
+            playersTypes.add(new GameExecutionInfos(
+                    List.of(PlayerType.MEDIUM_BOT, PlayerType.EASY_BOT, PlayerType.OBJECTIVE_BOT),
+                    nbOfGames
+            ));
+        }
+
+        return playersTypes;
+
+    }
+
+    public void setCsv(boolean csv) {
+        this.csv = csv;
+    }
+
+    public void setNbOfGames(int nbOfGames) {
+        this.nbOfGames = nbOfGames;
+    }
+
+    public void setDemo(boolean demo) {
+        this.demo = demo;
+    }
+
+    public void setTwothousands(boolean twothousands) {
+        this.twothousands = twothousands;
+    }
+
+    public void setDatabase(boolean database) {
+        this.database = database;
+    }
+
+    public int getVerbose() {
+        return verbose;
+    }
+
+    public void setVerbose(int i) {
+        this.verbose = i;
+    }
+}

@@ -41,7 +41,8 @@ class DestinationCardsControllerTest {
         when(gameModel.drawDestinationCards(3)).thenReturn(cards);
         when(gameModel.drawLongDestinationCards(1)).thenReturn(longDestCards);
         when(player.askInitialDestinationCards(allCards)).thenReturn(allCards);
-        assertTrue(destinationCardsController.initPlayer(player));;
+        when(player.discardDestinationCard(any())).thenReturn(true);
+        assertTrue(destinationCardsController.initPlayer(player));
         verify(player).receiveDestinationCards(allCards);
     }
 
@@ -113,10 +114,14 @@ class DestinationCardsControllerTest {
 
         when(gameModel.isShortDestCardDeckEmpty()).thenReturn(true);
         when(gameModel.isLongDestCardDeckEmpty()).thenReturn(false);
+        when(gameModel.isLongDestCardDeckFull()).thenReturn(false);
+        when(gameModel.isShortDestCardDeckEmpty()).thenReturn(false);
         assertFalse(destinationCardsController.resetGame());
 
         when(gameModel.isShortDestCardDeckEmpty()).thenReturn(false);
         when(gameModel.isLongDestCardDeckEmpty()).thenReturn(false);
+        when(gameModel.isLongDestCardDeckFull()).thenReturn(true);
+        when(gameModel.isShortDestCardDeckFull()).thenReturn(true);
         assertTrue(destinationCardsController.resetGame());
     }
 

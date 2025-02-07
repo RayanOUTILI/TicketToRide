@@ -1,26 +1,22 @@
-package fr.cotedazur.univ.polytech.ttr.equipeb.stats;
+package fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.csv;
 
 import com.opencsv.CSVWriter;
+import fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.StatsWriter;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class StatsWriter {
+public class CSVStatsWriter extends StatsWriter {
+    private final CSVWriter writer;
 
-    List<String[]> lines;
-    CSVWriter writer;
-
-    public StatsWriter(String path, String[] headers, boolean append) throws IOException {
+    public CSVStatsWriter(String path, String[] headers, boolean append) throws IOException {
+        super();
         this.writer = new CSVWriter(new FileWriter(path, append));
 
         if (!append || needToWriteHeader(path)) {
             this.writer.writeNext(headers);
         }
-
-        this.lines = new ArrayList<>();
     }
 
     private boolean needToWriteHeader(String path) {
@@ -30,15 +26,13 @@ public class StatsWriter {
         return !(fileExists) || isEmpty;
     }
 
-    public void commit(String[] line){
-        this.lines.add(line);
-    }
-
+    @Override
     public void push(){
-        writer.writeAll(lines);
-        lines.clear();
+        getBuffer().forEach(line -> writer.writeNext(line.getValues()));
+        clearBuffer();
     }
 
+    @Override
     public void close() throws IOException {
         writer.close();
     }

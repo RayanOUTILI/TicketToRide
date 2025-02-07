@@ -28,7 +28,7 @@ public interface IPlayerActionsControllable {
     List<DestinationCard> askInitialDestinationCards(List<DestinationCard> cards);
 
     void actionRefused(Action action, ReasonActionRefused reason);
-
+    void actionSkipped(Action action, ReasonActionRefused reason);
     void actionCompleted(Action action);
 
     void actionStop();
@@ -40,4 +40,6 @@ public interface IPlayerActionsControllable {
     WagonCard askWagonCardFromShownCards();
 
     RouteReadOnly askChooseRouteStation(CityReadOnly city);
+
+    boolean reset();
 }

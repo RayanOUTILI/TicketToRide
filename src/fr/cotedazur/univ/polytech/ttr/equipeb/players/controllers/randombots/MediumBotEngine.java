@@ -1,16 +1,15 @@
-package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers;
+package fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.randombots;
 
-import fr.cotedazur.univ.polytech.ttr.equipeb.actions.*;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
+import fr.cotedazur.univ.polytech.ttr.equipeb.actions.ActionDrawWagonCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.DestinationCard;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.cards.WagonCard;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.colors.Color;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.IPlayerGameModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
-import fr.cotedazur.univ.polytech.ttr.equipeb.utils.RandomGenerator;
 
 import java.util.Comparator;
 import java.util.List;
@@ -20,11 +19,8 @@ import java.util.Optional;
  * This class defines the MediumBotEngine, an bot for the game "Ticket to Ride" that uses a more strategic approach
  * compared to the EasyBot. It considers available routes, destination cards, and stations to make decisions.
  */
-public class MediumBotEngine implements IPlayerActionsControllable {
-    private final IPlayerGameModel gameModel;
-    private final IPlayerModel playerModel;
-    private final Optional<IPlayerEngineViewable> view;
-    private final RandomGenerator random;
+public class MediumBotEngine extends BotEngineWithRandom {
+
     /**
      * Constructs a MediumBotEngine with a specified player model, game model, and view.
      *
@@ -32,11 +28,8 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @param gameModel the model of the game.
      * @param view the view interface used for displaying game actions.
      */
-    public MediumBotEngine(IPlayerModel playerModel, IPlayerGameModel gameModel, IPlayerEngineViewable view) {
-        this.gameModel = gameModel;
-        this.playerModel = playerModel;
-        this.view = view != null ? Optional.of(view) : Optional.empty();
-        this.random = new RandomGenerator();
+    public MediumBotEngine(IPlayerGameModel gameModel, IPlayerModel playerModel, IPlayerEngineViewable view) {
+        super(gameModel, playerModel, view);
     }
 
     /**
@@ -68,96 +61,14 @@ public class MediumBotEngine implements IPlayerActionsControllable {
         return Action.STOP;
     }
 
+    @Override
+    public boolean reset() {
+        return true;
+    }
+
+    ////// Methods to determine the bot's next action //////
     private boolean shouldPickCards() {
         return playerModel.getNumberOfWagonCards() < 10 && !gameModel.isWagonCardDeckEmpty();
-    }
-
-    /**
-     * Determines the route the bot should claim, based on the best available option.
-     *
-     * @return the claim route action, or null if no route is available.
-     */
-    @Override
-    public ClaimObject<RouteReadOnly> askClaimRoute() {
-        RouteReadOnly bestRoute = findBestRouteToClaim();
-        if (bestRoute == null) {
-            return null;
-        }
-        return new ClaimObject<>(bestRoute, playerModel.getWagonCardsIncludingAnyColor(bestRoute.getColor(), bestRoute.getLength(), 0));
-    }
-
-    /**
-     * Chooses a city where the bot will place a station from the available cities.
-     *
-     * @return the claim station action for the chosen city.
-     */
-    @Override
-    public ClaimObject<CityReadOnly> askClaimStation() {
-        List<CityReadOnly> availableCities = gameModel.getNonControllableAvailableCities();
-        if (availableCities.isEmpty()) {
-            return null;
-        }
-        CityReadOnly bestCity = chooseCityToPlaceStation(availableCities);
-        return new ClaimObject<>(bestCity, playerModel.getWagonCardsIncludingAnyColor(3 - (playerModel.getStationsLeft() - 1)));
-    }
-
-    /**
-     * Determines the destination cards the bot will keep based on their priority.
-     *
-     * @param cards the list of destination cards available to the bot.
-     * @return a list of selected destination cards.
-     */
-    @Override
-    public List<DestinationCard> askDestinationCards(List<DestinationCard> cards) {
-        return prioritizeDestinationCards(cards);
-    }
-
-    @Override
-    public List<DestinationCard> askInitialDestinationCards(List<DestinationCard> cards) {
-        //TODO implement
-        return List.of();
-    }
-
-    @Override
-    public void actionRefused(Action action, ReasonActionRefused reason) {
-        view.ifPresent(iPlayerEngineViewable -> iPlayerEngineViewable.displayActionRefused(action, reason));
-    }
-
-    @Override
-    public void actionCompleted(Action action) {
-        view.ifPresent(iPlayerEngineViewable -> iPlayerEngineViewable.displayActionCompleted(action));
-    }
-
-    @Override
-    public void actionStop() {
-        view.ifPresent(IPlayerEngineViewable::displayActionStop);
-    }
-
-    @Override
-    public List<WagonCard> askWagonCardsForTunnel(int numberOfCards, Color acceptedColor) {
-        return playerModel.getWagonCardsOfColor(acceptedColor, numberOfCards);
-    }
-
-    @Override
-    public Optional<ActionDrawWagonCard> askDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
-        if (possibleActions == null || possibleActions.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
-    }
-
-    @Override
-    public WagonCard askWagonCardFromShownCards() {
-        List<WagonCard> shownCards = gameModel.getListOfShownWagonCards();
-        return shownCards.get(random.nextInt(shownCards.size()));
-    }
-
-    @Override
-    public RouteReadOnly askChooseRouteStation(CityReadOnly city) {
-        List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAdjacentRoutes(city);
-        if(availableRoutes.isEmpty()) return null;
-        int randomIndex = random.nextInt(availableRoutes.size());
-        return availableRoutes.get(randomIndex);
     }
 
     /**
@@ -166,7 +77,7 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @return true if the bot should claim a route, otherwise false.
      */
     private boolean shouldClaimRoute() {
-        return findBestRouteToClaim() != null;
+        return chooseRoute() != null;
     }
 
     /**
@@ -187,12 +98,27 @@ public class MediumBotEngine implements IPlayerActionsControllable {
         return playerModel.getDestinationCards().size() < 3 && !gameModel.isShortDestCardDeckEmpty();
     }
 
+    ////// Methods to determine what the bot asks for //////
+
+    @Override
+    protected Optional<ActionDrawWagonCard> chooseActionDrawWagonCard(List<ActionDrawWagonCard> possibleActions) {
+        return Optional.of(possibleActions.get(random.nextInt(possibleActions.size())));
+    }
+
+    @Override
+    protected List<DestinationCard> chooseInitialDestinationCards(List<DestinationCard> cards) {
+        int index1 = random.nextInt(cards.size());
+        int index2 = random.nextInt(cards.size());
+        return List.of(cards.get(index1), cards.get(index2));
+    }
+
     /**
      * Finds the best available route for the bot to claim, based on the routes' priority.
      *
      * @return the best route to claim, or null if no valid route is available.
      */
-    private RouteReadOnly findBestRouteToClaim() {
+    @Override
+    protected RouteReadOnly chooseRoute() {
         List<RouteReadOnly> availableRoutes = gameModel.getNonControllableAvailableRoutes();
 
         return availableRoutes.stream()
@@ -209,8 +135,13 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @return true if the bot can claim the route, otherwise false.
      */
     private boolean canTakeRoute(RouteReadOnly route) {
+        int requiredLength = route.getLength();
+        if (route.getType() == RouteType.TUNNEL) {
+            requiredLength += 1;
+        }
         return !route.isClaimed() &&
-                playerModel.getNumberOfWagonCardsIncludingAnyColor(route.getColor()) >= route.getLength() && playerModel.getNumberOfWagons() >= route.getLength();
+                playerModel.getNumberOfWagonCardsIncludingAnyColor(route.getColor()) >= requiredLength
+                && playerModel.getNumberOfWagons() >= route.getLength();
     }
 
     /**
@@ -237,7 +168,8 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @param availableCities the list of cities where the bot can place a station.
      * @return the city to place the station in.
      */
-    private CityReadOnly chooseCityToPlaceStation(List<CityReadOnly> availableCities) {
+    @Override
+    protected CityReadOnly chooseCityToPlaceStation(List<CityReadOnly> availableCities) {
         return availableCities.get(random.nextInt(availableCities.size()));
     }
 
@@ -248,11 +180,23 @@ public class MediumBotEngine implements IPlayerActionsControllable {
      * @param cards the list of destination cards to prioritize.
      * @return the list of prioritized destination cards.
      */
-    private List<DestinationCard> prioritizeDestinationCards(List<DestinationCard> cards) {
+    @Override
+    protected List<DestinationCard> chooseDestinationCards(List<DestinationCard> cards) {
         return cards.stream()
                 .sorted(Comparator.comparingInt(this::evaluateDestinationCardPriority).reversed())
                 .limit(2)
                 .toList();
+    }
+
+    @Override
+    protected WagonCard getWantedWagonCard(List<WagonCard> shownCards) {
+        return shownCards.get(random.nextInt(shownCards.size()));
+    }
+
+    @Override
+    protected RouteReadOnly chooseRouteFromCity(List<RouteReadOnly> availableRoutes) {
+        int randomIndex = random.nextInt(availableRoutes.size());
+        return availableRoutes.get(randomIndex);
     }
 
     /**

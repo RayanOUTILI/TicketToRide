@@ -16,4 +16,7 @@ public interface IDestinationCardsControllerGameModel {
 
     void returnShortDestinationCardsToTheBottom(List<DestinationCard> cards);
     void returnLongDestinationCardsToTheBottom(List<DestinationCard> cards);
+
+    boolean isShortDestCardDeckFull();
+    boolean isLongDestCardDeckFull();
 }

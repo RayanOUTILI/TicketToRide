@@ -12,13 +12,9 @@ import java.util.List;
  * Interface for the player viewable
  */
 public abstract class IPlayerViewable {
-    private final PlayerIdentification playerIdentification;
+    protected PlayerIdentification playerIdentification;
 
-    public PlayerIdentification getPlayerIdentification() {
-        return playerIdentification;
-    }
-
-    protected IPlayerViewable(PlayerIdentification playerIdentification) {
+    public void setPlayerIdentification(PlayerIdentification playerIdentification) {
         this.playerIdentification = playerIdentification;
     }
 

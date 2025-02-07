@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class PlayerStatsLine {
 
-    public static final String[] headers = new String[]{
+    private static final String[] headers = new String[]{
             "timestamp",
             "game_id",
             "player_id",
@@ -18,34 +18,44 @@ public class PlayerStatsLine {
             "current_turn",
             "action",
             "action_status",
+            "action_skip",
             "displayed_score",
             "wagons_cards_hand_count",
             "destination_cards_hand_count",
-            "calculated_current_destination_score"
+            "calculated_current_destination_score",
+            "label"
     };
 
-    public long currentTime;
+    public static String[] getHeaders() {
+        return headers;
+    }
 
-    public UUID gameId;
-    public UUID playerId;
-    public PlayerType playerType;
-    public PlayerIdentification playerColor;
+    private long currentTime;
 
-    public int currentTurn;
-    public StatAction action;
-    public StatActionStatus actionStatus;
+    private UUID gameId;
+    private UUID playerId;
+    private PlayerType playerType;
+    private PlayerIdentification playerColor;
 
-    public int score;
-    public int wagonsCards;
-    public int destinationCards;
+    private int currentTurn;
+    private StatAction action;
+    private StatActionStatus actionStatus;
+    private boolean actionSkip;
 
-    public int currentDestinationScore;
+    private int score;
+    private int wagonsCards;
+    private int destinationCards;
 
-    public PlayerStatsLine(UUID playerId, PlayerIdentification playerColor, PlayerType playerType) {
+    private int currentDestinationScore;
+
+    private String label;
+
+    public PlayerStatsLine(UUID playerId, PlayerIdentification playerColor, PlayerType playerType, String label) {
         this.gameId = null;
         this.playerId = playerId;
         this.playerColor = playerColor;
         this.playerType = playerType;
+        this.label = label;
         clearLine();
     }
 
@@ -54,6 +64,7 @@ public class PlayerStatsLine {
         this.currentTurn = -1;
         this.action = null;
         this.actionStatus = null;
+        this.actionSkip = false;
         this.score = -1;
         this.wagonsCards = -1;
         this.destinationCards = -1;
@@ -124,6 +135,14 @@ public class PlayerStatsLine {
         this.actionStatus = actionStatus;
     }
 
+    public boolean isActionSkip() {
+        return actionSkip;
+    }
+
+    public void setActionSkip(boolean actionSkip) {
+        this.actionSkip = actionSkip;
+    }
+
     public int getScore() {
         return score;
     }
@@ -156,8 +175,16 @@ public class PlayerStatsLine {
         this.currentDestinationScore = currentDestinationScore;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public PlayerStatsLine cloneWithTurn(){
-        PlayerStatsLine line = new PlayerStatsLine(this.playerId, this.playerColor, this.playerType);
+        PlayerStatsLine line = new PlayerStatsLine(this.playerId, this.playerColor, this.playerType, this.label);
         line.setGameId(this.gameId);
         line.setCurrentTurn(this.currentTurn);
         return line;
@@ -173,10 +200,12 @@ public class PlayerStatsLine {
                 String.valueOf(currentTurn),
                 action.toString(),
                 actionStatus.toString(),
+                actionSkip ? "YES" : "NO",
                 String.valueOf(score),
                 String.valueOf(wagonsCards),
                 String.valueOf(destinationCards),
-                String.valueOf(currentDestinationScore)
+                String.valueOf(currentDestinationScore),
+                label
         };
     }
 }
