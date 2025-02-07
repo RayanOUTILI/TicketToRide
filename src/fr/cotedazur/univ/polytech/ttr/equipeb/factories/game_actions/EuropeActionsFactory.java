@@ -3,6 +3,7 @@ package fr.cotedazur.univ.polytech.ttr.equipeb.factories.game_actions;
 import fr.cotedazur.univ.polytech.ttr.equipeb.actions.Action;
 import fr.cotedazur.univ.polytech.ttr.equipeb.controllers.*;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.game.GameModel;
+import fr.cotedazur.univ.polytech.ttr.equipeb.views.ScoreConsoleView;
 
 import java.util.List;
 import java.util.Map;
@@ -26,10 +27,10 @@ public class EuropeActionsFactory extends GameActionsFactory {
     }
 
     @Override
-    public List<Controller> getEndGameActions(GameModel gameModel) {
+    public List<Controller> getEndGameActions(GameModel gameModel, boolean display) {
         return List.of(
                 new ChooseRouteStationController(gameModel),
-                new EndGameScoreController(gameModel)
+                new EndGameScoreController(gameModel, display ? new ScoreConsoleView() : null)
         );
     }
 }

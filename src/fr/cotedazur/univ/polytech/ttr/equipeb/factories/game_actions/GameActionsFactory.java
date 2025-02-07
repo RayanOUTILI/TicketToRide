@@ -10,5 +10,5 @@ import java.util.Map;
 public abstract class GameActionsFactory {
     public abstract Map<Action, Controller> getGameActions(GameModel gameModel);
     public abstract List<Controller> getEndTurnActions(GameModel gameModel);
-    public abstract List<Controller> getEndGameActions(GameModel gameModel);
+    public abstract List<Controller> getEndGameActions(GameModel gameModel, boolean display);
 }

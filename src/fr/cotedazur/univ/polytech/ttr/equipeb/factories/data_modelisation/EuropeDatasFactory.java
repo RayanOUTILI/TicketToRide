@@ -13,9 +13,9 @@ import java.util.List;
 
 public class EuropeDatasFactory extends DataModelisationFactory{
 
-    private MapFactory mapFactory;
-    private WagonCardsFactory wagonCardsFactory;
-    private DestinationCardsFactory destinationCardsFactory;
+    MapFactory mapFactory;
+    WagonCardsFactory wagonCardsFactory;
+    DestinationCardsFactory destinationCardsFactory;
 
     public EuropeDatasFactory(){
         this.mapFactory = new MapFactory();
@@ -24,7 +24,7 @@ public class EuropeDatasFactory extends DataModelisationFactory{
     }
 
     @Override
-    protected List<Route> createRoutes() {
+    public List<Route> createRoutes() {
         try {
             return mapFactory.getMapFromJson("data-europe/routes.json");
         } catch (JsonParseException e) {
@@ -48,7 +48,6 @@ public class EuropeDatasFactory extends DataModelisationFactory{
 
     @Override
     protected DestinationCardDeck<DestinationCard> createlongDestinationCardDeck() {
-        //TODO: BIG REFACTORING
         try {
             return new DestinationCardDeck<>(destinationCardsFactory.getLongDestinationCards());
         } catch (JsonParseException e) {

@@ -17,56 +17,53 @@ import java.util.List;
 public class PlayerConsoleView extends IPlayerViewable implements IPlayerEngineViewable {
     private final Logger logger = LoggerFactory.getLogger(PlayerConsoleView.class);
 
-    public PlayerConsoleView() {
-    }
-
     @Override
     public void displayReceivedWagonCards(WagonCard... wagonCards) {
-        logger.debug("Received wagon cards: {}", (Object) wagonCards);
+        logger.debug("Player {}: Received wagon cards: {}", super.playerIdentification, wagonCards);
     }
 
     @Override
     public void displayReceivedWagonCards(List<WagonCard> wagonCards) {
-        logger.debug("Received wagon cards: {}", wagonCards);
+        logger.debug("Player {}: Received wagon cards: {}", super.playerIdentification, wagonCards);
     }
 
     @Override
     public void displayClaimedRoute(RouteReadOnly route) {
-        logger.debug("Claimed route: {}", route);
+        logger.debug("Player {}: Claimed route: {}", super.playerIdentification, route);
     }
 
     @Override
     public void displayReceivedDestinationCards(List<DestinationCard> destinationCards) {
-        logger.debug("Received destination cards: {}", destinationCards);
+        logger.debug("Player {}: Received destination cards: {}", super.playerIdentification, destinationCards);
     }
 
     @Override
     public void displayNewScore(int score) {
-        logger.info("New score: {}", score);
+        logger.info("Player {}: New score: {}", super.playerIdentification, score);
     }
 
     @Override
     public void displayClaimedStation(CityReadOnly city, List<WagonCard> wagonCards, int stationsLeft) {
-        logger.debug("Claimed station: {} with wagon cards: {}. Stations left: {}", city, wagonCards, stationsLeft);
+        logger.debug("Player {}: Claimed station: {} with wagon cards: {}. Stations left: {}", super.playerIdentification, city, wagonCards, stationsLeft);
     }
 
     @Override
     public void displayActionRefused(Action action, ReasonActionRefused reason) {
-        logger.warn("Action refused: {} -> {}", action, reason);
+        logger.warn("Player {}: Action refused: {} -> {}", super.playerIdentification, action, reason);
     }
 
     @Override
     public void displayActionSkipped(Action action, ReasonActionRefused reason) {
-        logger.warn("Action skipped: {} -> {}", action, reason);
+        logger.warn("Player {}: Action skipped: {} -> {}", super.playerIdentification, action, reason);
     }
 
     @Override
     public void displayActionCompleted(Action action) {
-        logger.info("Action completed: {}", action);
+        logger.info("Player {}: Action completed: {}", super.playerIdentification, action);
     }
 
     @Override
     public void displayActionStop() {
-        logger.info("Action Ask Stop Game");
+        logger.info("Player {}: Action Ask Stop Game", super.playerIdentification);
     }
 }
