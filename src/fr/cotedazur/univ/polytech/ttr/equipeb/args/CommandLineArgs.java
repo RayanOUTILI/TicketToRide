@@ -48,12 +48,16 @@ public class CommandLineArgs {
     }
 
     protected void validate() {
-        if (!twothousands && !demo && nbOfGames == 0) {
+        if (!twothousands && !demo && nbOfGames == 0 && !csv) {
             throw new ParameterException("At least one of --nbOfGames, --2thousands or --demo must be specified.");
         }
 
         if (demo && twothousands && nbOfGames != 0) {
             throw new ParameterException("Cannot specify both --demo and --2thousands and --nbOfGames.");
+        }
+
+        if (csv && nbOfGames == 0){
+            nbOfGames = 1000;
         }
     }
 
