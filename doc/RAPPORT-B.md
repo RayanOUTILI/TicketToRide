@@ -32,8 +32,14 @@
 
 ### Statistiques en CSV
 - Utilisation de la bibliothèque **OpenCSV**.
-- Génération et exportation des données statistiques au format CSV.
-- POWER BI
+- Récupération des informations à partir des vues.
+- Stockage de toutes les actions des joueurs en Objet `PlayerStatsLine`.
+- Utilisation de la classe abstraite `StatsWriter` pour écrire les statistiques dans un fichier CSV. (Implémentation de `CSVStatsWriter`).
+- Écriture des statistiques dans un fichier CSV nommé `stats/gamestats.csv`.
+- Les statistiques sont écrites dans le fichier CSV à la fin de chaque partie.
+
+Via cette manière de procéder, il est possible de récupérer des statistiques très poussées et précises pour chacune des parties jouées ainsi que des informations pertinentes sur les comportements et les stratégies des bots / joueurs.
+Dans notre cas, nous avons utilisé POWER BI afin d'analyser au mieux les statistiques.
 
 ### Bot spécifique ObjectiveBot
 - Implémentation d’un bot dédié avec comparaison à notre meilleur bot.
@@ -46,7 +52,7 @@
     - Si il a remplit ses objectifs il en pioche des nouveaux
     - Il determine les routes nécessaire en appliquant l'algorithme de Djiskstra sur un graph de villes
  
-  - Comparaison avec le meuilleur bot (MediumBot):
+  - Comparaison avec le meilleur bot (`MEDIUM_BOT`):
     
       Le MediumBot accumule au moins 10 cartes, puis essaye de capturer les routes les plus longues,
       Cette stratégie arrive à battre le bot obectif car il va bloquer l'objectif long du bot et surtout il va épuiser ses Wagons avant que l'objectif complète ses destinations.
