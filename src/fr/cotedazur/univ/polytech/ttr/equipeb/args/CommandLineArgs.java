@@ -70,7 +70,7 @@ public class CommandLineArgs {
         if (demo) {
             playersTypes.add(new GameExecutionInfos(
                     List.of(PlayerType.OBJECTIVE_BOT, PlayerType.MEDIUM_BOT, PlayerType.EASY_BOT),
-                    1000
+                    1
 
             ));
         }
