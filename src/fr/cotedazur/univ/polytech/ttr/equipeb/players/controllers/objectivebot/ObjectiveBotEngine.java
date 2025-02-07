@@ -10,17 +10,16 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.City;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.CityReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteReadOnly;
 import fr.cotedazur.univ.polytech.ttr.equipeb.models.map.RouteType;
-import fr.cotedazur.univ.polytech.ttr.equipeb.models.score.CityPair;
+
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.BotEngineControllable;
-import fr.cotedazur.univ.polytech.ttr.equipeb.players.controllers.randombots.BotEngineWithRandom;
+
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModel;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils;
 
 import java.util.*;
 
-import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.findLengthBetweenAllCityInGraph;
-import static fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils.getGraphFromRoutes;
+
 
 
 public class ObjectiveBotEngine extends BotEngineControllable {
