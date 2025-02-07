@@ -14,7 +14,7 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewabl
 import java.util.List;
 import java.util.Optional;
 
-public abstract class BotEngineControllable extends BotEngine {
+public abstract class BotEngineControllable extends BotEngine implements IPlayerActionsControllable{
 
 
     protected BotEngineControllable(IPlayerGameModel gameModel, IPlayerModel playerModel, IPlayerEngineViewable view) {
