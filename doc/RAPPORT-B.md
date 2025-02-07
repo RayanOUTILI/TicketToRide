@@ -34,9 +34,20 @@
 - Génération et exportation des données statistiques au format CSV.
 - POWER BI
 
-### Bot spécifique
+### Bot spécifique ObjectiveBot
 - Implémentation d’un bot dédié avec comparaison à notre meilleur bot.
 - Analyse des performances et identification des points forts du bot gagnant.
+- Fonctionnement du bot:
+    - Stocke ses destinations et y asssocie les routes nécessaires
+    - À chaque début de partie il vérifie si les routes qui l'interessent on été claim
+    - Il va prioriser le fait d'essayer de claim ses routes
+    - S'il peut pas il pioche des cartes pour ses routes
+    - Si il a remplit ses objectifs il en pioche des nouveaux
+    - Il determine les routes nécessaire en appliquant l'algorithme de Djiskstra sur un graph de villes
+ 
+  - Comparaison avec le meuilleur bot (MediumBot):
+        Le MediumBot accumule au moins 10 cartes, puis essaye de capturer les routes les plus longues,
+        Cette stratégie arrive à battre le bot obectif car il va bloquer l'objectif long du bot et surtout il va épuiser ses Wagons avant que l'objectif complète ses destinations.
 
 
 ## 2. Architecture et qualité
