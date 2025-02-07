@@ -10,9 +10,9 @@ import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.IPlayerModelStats;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.models.PlayerIdentification;
 import fr.cotedazur.univ.polytech.ttr.equipeb.players.views.IPlayerEngineViewable;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.PlayerStatsLine;
-import fr.cotedazur.univ.polytech.ttr.equipeb.stats.StatsWriter;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.action.StatAction;
 import fr.cotedazur.univ.polytech.ttr.equipeb.stats.action.StatActionStatus;
+import fr.cotedazur.univ.polytech.ttr.equipeb.stats.writers.StatsWriter;
 import fr.cotedazur.univ.polytech.ttr.equipeb.utils.CitiesGraphUtils;
 
 import java.util.ArrayList;
@@ -24,9 +24,9 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
 
     private PlayerStatsLine statsLine;
     private IStatsGameModel gameModel;
-    private StatsWriter statsWriter;
+    private List<StatsWriter> statsWriter;
 
-    public PlayerStatisticsView(PlayerStatsLine statsLine, StatsWriter playerWriter) {
+    public PlayerStatisticsView(PlayerStatsLine statsLine, List<StatsWriter> playerWriter) {
         this.statsWriter = playerWriter;
         this.statsLine = statsLine;
     }
@@ -36,7 +36,7 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
     }
 
     public void writeStats(){
-        statsWriter.push();
+        this.statsWriter.forEach(StatsWriter::push);
     }
 
     private void commitLine() {
@@ -46,7 +46,7 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
         this.statsLine.setDestinationCards(playerModel.getDestinationCards().size());
         this.statsLine.setCurrentDestinationScore(calculateDestinationCardsScore(playerModel));
 
-        statsWriter.commit(statsLine);
+        this.statsWriter.forEach(sw -> sw.commit(statsLine));
         statsLine = statsLine.cloneWithTurn();
     }
 
@@ -79,20 +79,20 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
     public void displayActionRefused(Action action, ReasonActionRefused reason) {
         statsLine.setAction(StatAction.valueOf(action.name()));
         statsLine.setActionStatus(StatActionStatus.valueOf(reason.name()));
+        statsLine.setActionSkip(reason.isActionSkipTurn());
         commitLine();
     }
 
     @Override
     public void displayActionSkipped(Action action, ReasonActionRefused reason) {
-        statsLine.setAction(StatAction.valueOf(action.name()));
-        statsLine.setActionStatus(StatActionStatus.valueOf(reason.name()));
-        commitLine();
+        displayActionRefused(action, reason);
     }
 
     @Override
     public void displayActionCompleted(Action action) {
         statsLine.setAction(StatAction.valueOf(action.name()));
         statsLine.setActionStatus(StatActionStatus.YES);
+        statsLine.setActionSkip(false);
         commitLine();
     }
 
@@ -100,19 +100,10 @@ public class PlayerStatisticsView implements IPlayerEngineViewable {
     public void displayActionStop() {
         statsLine.setAction(StatAction.STOP);
         statsLine.setActionStatus(StatActionStatus.YES);
+        statsLine.setActionSkip(true);
         commitLine();
     }
 
-/*    public void displayEndGameReason(PlayerIdentification playerIdentification, int nbOfWagons, int nbTurns) {
-        statsLine.setCurrentTurn(nbTurns);
-        statsLine.setAction(StatAction.END_GAME);
-        if (playerIdentification.equals(playerModel.getPlayerIdentification())) {
-            statsLine.setActionStatus(StatActionStatus.YES);
-        } else {
-            statsLine.setActionStatus(StatActionStatus.NO);
-        }
-        commitLine();
-    }*/
 
     public void displayWinner(PlayerIdentification playerIdentification, int score) {
         statsLine.setAction(StatAction.WINNER);

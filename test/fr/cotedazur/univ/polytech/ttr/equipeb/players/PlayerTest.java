@@ -83,8 +83,8 @@ class PlayerTest {
     @Test
     void askDrawWagonCardReturnsAction() {
         List<ActionDrawWagonCard> actions = Collections.singletonList(ActionDrawWagonCard.DRAW_FROM_DECK);
-        when(actionsController.askDrawWagonCard(actions)).thenReturn(Optional.of(actions.get(0)));
-        assertEquals(Optional.of(actions.get(0)), player.askDrawWagonCard(actions));
+        when(actionsController.askDrawWagonCard(actions)).thenReturn(Optional.of(actions.getFirst()));
+        assertEquals(Optional.of(actions.getFirst()), player.askDrawWagonCard(actions));
     }
 
     @Test
@@ -226,5 +226,61 @@ class PlayerTest {
     void getScoreReturnsScore() {
         when(modelController.getScore()).thenReturn(10);
         assertEquals(10, player.getScore());
+    }
+
+    @Test
+    void clearDestinationCardsCallsController() {
+        player.clearDestinationCards();
+        verify(modelController).clearDestinationCards();
+    }
+
+    @Test
+    void clearChosenRouteStationsCallsController() {
+        player.clearChosenRouteStations();
+        verify(modelController).clearChosenRouteStations();
+    }
+
+    @Test
+    void clearScoreCallsController() {
+        player.clearScore();
+        verify(modelController).clearScore();
+    }
+
+    @Test
+    void clearStationsLeftCallsController() {
+        player.clearStationsLeft();
+        verify(modelController).clearStationsLeft();
+    }
+
+    @Test
+    void clearNumberOfWagonsCallsController() {
+        player.clearNumberOfWagons();
+        verify(modelController).clearNumberOfWagons();
+    }
+
+    @Test
+    void incrementNumberOfCompletedObjectiveCardsCallsController() {
+        player.incrementNumberOfCompletedObjectiveCards(5);
+        verify(modelController).incrementNumberOfCompletedObjectiveCards(5);
+    }
+
+    @Test
+    void setLongestContinuousRouteLengthCallsController() {
+        player.setLongestContinuousRouteLength(15);
+        verify(modelController).setLongestContinuousRouteLength(15);
+    }
+
+    @Test
+    void discardDestinationCardCallsController() {
+        List<DestinationCard> cards = Collections.singletonList(mock(DestinationCard.class));
+        player.discardDestinationCard(cards);
+        verify(modelController).discardDestinationCard(cards);
+    }
+
+    @Test
+    void getDiscardDestinationCardsReturnsCards() {
+        List<DestinationCard> cards = Collections.singletonList(mock(DestinationCard.class));
+        when(modelController.getDiscardDestinationCards()).thenReturn(cards);
+        assertEquals(cards, player.getDiscardDestinationCards());
     }
 }

@@ -41,7 +41,7 @@ class DestinationCardsControllerTest {
         when(gameModel.drawDestinationCards(3)).thenReturn(cards);
         when(gameModel.drawLongDestinationCards(1)).thenReturn(longDestCards);
         when(player.askInitialDestinationCards(allCards)).thenReturn(allCards);
-        assertTrue(destinationCardsController.initPlayer(player));;
+        assertTrue(destinationCardsController.initPlayer(player));
         verify(player).receiveDestinationCards(allCards);
     }
 

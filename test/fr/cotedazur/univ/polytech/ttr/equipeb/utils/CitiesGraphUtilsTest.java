@@ -182,7 +182,7 @@ class CitiesGraphUtilsTest {
 
         List<RouteReadOnly> path = CitiesGraphUtils.findShortestPathBetweenCities(graph,allRoutes,nice, paris);
         assertEquals(3, path.size());
-        assertEquals(niceMarseille, path.get(0));
+        assertEquals(niceMarseille, path.getFirst());
         assertEquals(marseilleLyon, path.get(1));
         assertEquals(lyonParis, path.get(2));
     }
@@ -205,7 +205,7 @@ class CitiesGraphUtilsTest {
 
         List<RouteReadOnly> path = CitiesGraphUtils.findShortestPathBetweenCities(graph, allRoutes, nice, paris);
         assertEquals(2, path.size());
-        assertEquals(niceMarseille, path.get(0));
+        assertEquals(niceMarseille, path.getFirst());
         assertEquals(marseilleParis, path.get(1));
     }
 }

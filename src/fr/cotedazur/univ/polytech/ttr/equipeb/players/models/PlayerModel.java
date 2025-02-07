@@ -280,6 +280,7 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
     public List<WagonCard> getWagonCardsIncludingAnyColor(Color color, int numberOfCards, int numberLocomotives) {
         List<WagonCard> cards = new ArrayList<>();
         if(color == Color.ANY) color = getMostFrequentColor();
+
         for(WagonCard card : wagonCards) {
             if(card.getColor() == color && numberOfCards > 0) {
                 cards.add(card);
@@ -291,18 +292,20 @@ public class PlayerModel implements IPlayerModel, IPlayerModelControllable, IPla
             }
         }
 
-        if(numberOfCards > 0 ) {
-            for(WagonCard card : wagonCards) {
-                if(card.getColor() == Color.ANY && numberOfCards > 0 && !cards.contains(card)) {
-                    cards.add(card);
-                    numberOfCards--;
-                }
+        //Second check to add locomotives if there are not enough cards
+        for(int i = 0; i < wagonCards.size() && numberOfCards > 0; i++) {
+            WagonCard card = wagonCards.get(i);
+            if(card.getColor() == Color.ANY && !cards.contains(card)) {
+                cards.add(card);
+                numberOfCards--;
             }
         }
 
+        //If there are still not enough cards, return an empty list
         if(numberLocomotives > 0 || numberOfCards > 0) {
             return new ArrayList<>();
         }
+
         return cards;
     }
 
