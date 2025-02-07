@@ -109,10 +109,6 @@ public class ObjectiveBotEngine extends BotEngineControllable {
                 && chooseRoute() != null;
     }
 
-    private boolean shouldPickDestinationCards() {
-        return allObjectivesCompleted;
-    }
-
     private void checkRoutesForClaiming() {
         for (Map.Entry<DestinationCard, List<RouteReadOnly>> entry : routesForObjective.entrySet()) {
             for (RouteReadOnly route : entry.getValue()) {
@@ -139,33 +135,9 @@ public class ObjectiveBotEngine extends BotEngineControllable {
         }
     }
 
-    private List<DestinationCard> checkObjectives() {
-        List<DestinationCard> destinationCards = routesForObjective.keySet().stream().toList();
-        List<RouteReadOnly> claimedRoutes = gameModel.getAllRoutesClaimedByPlayer(playerModel.getIdentification());
-
-        List<DestinationCard> completedObjectives = new ArrayList<>();
-
-        // Combine all routes
-        List<RouteReadOnly> allRoutes = new ArrayList<>();
-        allRoutes.addAll(claimedRoutes);
-
-        // Find all pairs of cities with continuous routes
-        Map<City, Map<City, Integer>> claimedPlayerRouteGraph = getGraphFromRoutes(allRoutes);
-        Set<CityPair> allCityPairs = findLengthBetweenAllCityInGraph(claimedPlayerRouteGraph);
-
-        // Calculate the score based on destination cards
-        for (DestinationCard dest : destinationCards) {
-            CityPair pair = new CityPair(dest.getStartCity(), dest.getEndCity());
-            if (allCityPairs.contains(pair)) {
-                completedObjectives.add(dest);
-            }
-        }
-        return completedObjectives;
-    }
 
     private void checkRoutesForObjectiveCompletion() {
         List<DestinationCard> completedObjectives = new ArrayList<>();
-        //completedObjectives.addAll(checkObjectives());
 
         for (Map.Entry<DestinationCard, List<RouteReadOnly>> entry : routesForObjective.entrySet()) {
             boolean completed = true;
